@@ -1,7 +1,7 @@
 {
     "name": "helpdesk",
     "version": "1.0.0",
-    "description": "",
+    "description": "API de Help Desk",
     "main": "./src/main.ts",
     "scripts": {
         "dev": "tsx --env-file .env --watch src/server.ts"
@@ -11,6 +11,7 @@
     "license": "ISC",
     "type": "commonjs",
     "dependencies": {
+        "@prisma/client": "^6.16.2",
         "express": "^5.1.0",
         "zod": "^4.1.11"
     },

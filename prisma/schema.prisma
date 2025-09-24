@@ -5,5 +5,62 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
+}
+
+enum UserRole {
+  admin
+  tecnical
+  client
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  closed
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  role    UserRole @default(client)
+  tickets Ticket[]
+
+  @@map("users")
+}
+
+model Ticket {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  status      TicketStatus @default(open)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  userId  String    @map("user_id")
+  user    User      @relation(fields: [userId], references: [id])
+  service Service[]
+
+  @@map("tickets")
+}
+
+model Service {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  price       Float
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  ticketId String @default(uuid()) @map("ticket_id")
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+
+  @@map("services")
 }
