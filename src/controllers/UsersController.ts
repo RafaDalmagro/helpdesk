@@ -27,11 +27,19 @@ class UsersController {
             },
         });
 
-        // if (userAlreadyExists) {
-        //     throw new AppError("User already exists");
-        // }
+        if (userAlreadyExists) {
+            throw new AppError("This email already exists");
+        }
 
-        return res.status(201).json({ name, email, password });
+        const user = await prisma.user.create({
+            data: {
+                name,
+                email,
+                password,
+            },
+        });
+
+        return res.status(201).json({ user });
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
