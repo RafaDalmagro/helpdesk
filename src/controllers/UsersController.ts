@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { z } from "zod";
+import { AppError } from "@/utils/AppError";
+import { z, ZodError } from "zod";
 import { prisma } from "@/database/prisma";
 
 class UsersController {
@@ -19,6 +20,16 @@ class UsersController {
         });
 
         const { name, email, password } = userSchema.parse(req.body);
+
+        const userAlreadyExists = await prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+
+        // if (userAlreadyExists) {
+        //     throw new AppError("User already exists");
+        // }
 
         return res.status(201).json({ name, email, password });
     }

@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -10,7 +9,7 @@ datasource db {
 
 enum UserRole {
   admin
-  tecnical
+  tech
   client
 }
 
@@ -59,7 +58,7 @@ model Service {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  ticketId String @default(uuid()) @map("ticket_id")
+  ticketId String @map("ticket_id")
   ticket   Ticket @relation(fields: [ticketId], references: [id])
 
   @@map("services")
