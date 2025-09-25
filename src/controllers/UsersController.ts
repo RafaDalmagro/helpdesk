@@ -87,7 +87,7 @@ class UsersController {
                 id,
             },
         });
-        
+
         if (!user) {
             throw new AppError("Usuário não encontrado", 404);
         }
@@ -96,7 +96,62 @@ class UsersController {
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Update" });
+        const userSchema = z.object({
+            name: z
+                .string()
+                .min(2, { message: "O nome deve ter no mínimo 2 caracteres" })
+                .optional(),
+            email: z.email().optional(),
+            password: z
+                .string()
+                .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
+                .optional(),
+            role: z.enum(["admin", "client", "tech"]).optional(),
+        });
+
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+
+        const { name, email, password, role } = userSchema.parse(req.body);
+
+        const prevUser = await prisma.user.findUnique({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+                role: true,
+            },
+            where: {
+                id,
+            },
+        });
+
+        if (!prevUser) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                name,
+                email,
+                role,
+                password,
+            },
+        });
+
+        const { password: _, ...updatedUserWithoutPassword } = updatedUser;
+
+        return res.status(200).json({
+            prevUser,
+            updatedUser: updatedUserWithoutPassword,
+        });
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
