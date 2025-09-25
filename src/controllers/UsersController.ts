@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "@/utils/AppError";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { prisma } from "@/database/prisma";
 
 class UsersController {
@@ -101,7 +101,7 @@ class UsersController {
                 .string()
                 .min(2, { message: "O nome deve ter no mínimo 2 caracteres" })
                 .optional(),
-            email: z.email().optional(),
+            email: z.email({ message: "Formato de email inválido" }).optional(),
             password: z
                 .string()
                 .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
@@ -155,7 +155,29 @@ class UsersController {
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
-        return res.status(204).json({ message: "Delete" });
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        await prisma.user.delete({
+            where: {
+                id,
+            },
+        });
+
+        return res.status(204).json();
     }
 }
 
