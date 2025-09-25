@@ -4,10 +4,6 @@ import { z, ZodError } from "zod";
 import { prisma } from "@/database/prisma";
 
 class UsersController {
-    async index(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Index" });
-    }
-
     async create(req: Request, res: Response, next: NextFunction) {
         const userSchema = z.object({
             name: z
@@ -42,12 +38,65 @@ class UsersController {
         return res.status(201).json({ user });
     }
 
-    async update(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Update" });
+    async index(req: Request, res: Response, next: NextFunction) {
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                tickets: {
+                    select: {
+                        id: true,
+                        title: true,
+                    },
+                },
+            },
+        });
+
+        if (!users) {
+            throw new AppError("Usuários não encontrados", 404);
+        }
+
+        return res.status(200).json({ users });
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Show" });
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+
+        const user = await prisma.user.findUnique({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                tickets: {
+                    select: {
+                        id: true,
+                        title: true,
+                    },
+                },
+            },
+            where: {
+                id,
+            },
+        });
+        
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        return res.status(200).json({ user });
+    }
+
+    async update(req: Request, res: Response, next: NextFunction) {
+        return res.status(200).json({ message: "Update" });
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
