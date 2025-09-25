@@ -171,11 +171,21 @@ class UsersController {
             throw new AppError("Usuário não encontrado", 404);
         }
 
-        await prisma.user.delete({
-            where: {
-                id,
-            },
-        });
+        if (!user.isActive) {
+            throw new AppError("Usuário já está inativo", 400);
+        }
+        const when = new Date();
+
+        await prisma.$transaction([
+            prisma.ticket.updateMany({
+                where: { userId: id, isActive: true },
+                data: { isActive: false, deletedAt: when },
+            }),
+            prisma.user.update({
+                where: { id },
+                data: { isActive: false, deletedAt: when },
+            }),
+        ]);
 
         return res.status(204).json();
     }

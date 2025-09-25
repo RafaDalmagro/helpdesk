@@ -20,15 +20,17 @@ enum TicketStatus {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   name     String
-  email    String @unique
+  email    String   @unique
   password String
+  role     UserRole @default(client)
+
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
 
   createdAt DateTime @default(now()) @map("created_at")
-
-  role    UserRole @default(client)
-  tickets Ticket[]
+  tickets   Ticket[]
 
   @@map("users")
 }
@@ -41,6 +43,9 @@ model Ticket {
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
+
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
 
   userId  String    @map("user_id")
   user    User      @relation(fields: [userId], references: [id])
@@ -57,6 +62,9 @@ model Service {
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
+
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
 
   ticketId String @map("ticket_id")
   ticket   Ticket @relation(fields: [ticketId], references: [id])
