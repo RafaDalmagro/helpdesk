@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
+import { title } from "process";
 
 class TicketController {
     async index(req: Request, res: Response, next: NextFunction) {
@@ -29,6 +30,18 @@ class TicketController {
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
+        const bodySchema = z.object({
+            title: z.string().min(3, {
+                message: "O título deve ter no mínimo 3 caracteres",
+            }),
+            description: z.string().min(10, {
+                message: "A descrição deve ter no mínimo 10 caracteres",
+            }),
+            status: z.enum(["open", "in_progress", "closed"]).optional(),
+            userId: z.uuid({ message: "ID de usuário inválido" }),
+			
+        });
+
         return res.status(201).json({ message: "Create" });
     }
 

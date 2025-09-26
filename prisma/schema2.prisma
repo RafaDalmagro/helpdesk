@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum UserRole {
+  admin
+  tech
+  client
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  closed
+}
+
+enum ServiceType {
+  initial    // Serviço selecionado pelo cliente na criação
+  additional // Serviço adicionado pelo técnico
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      UserRole  @default(client)
+  
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  
+  // Relacionamentos
+  ticketsAsClient User[] @relation("ClientTickets")
+  ticketsAsTech   User[] @relation("TechTickets")
+  
+  @@map("users")
+}
+
+model Ticket {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  status      TicketStatus @default(open)
+  totalValue  Float        @default(0) // Valor total calculado
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime?    @updatedAt @map("updated_at")
+  isActive    Boolean      @default(true)
+  deletedAt   DateTime?
+  
+  // Relacionamentos Cliente-Técnico
+  clientId String @map("client_id")
+  client   User   @relation("ClientTickets", fields: [clientId], references: [id])
+  
+  techId String @map("tech_id") 
+  tech   User   @relation("TechTickets", fields: [techId], references: [id])
+  
+  // Relacionamento com serviços através de tabela intermediária
+  ticketServices TicketService[]
+  
+  @@map("tickets")
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  isActive    Boolean   @default(true)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+  
+  // Relacionamento com tickets através de tabela intermediária
+  ticketServices TicketService[]
+  
+  @@map("services")
+}
+
+// Tabela intermediária para relacionamento many-to-many entre Ticket e Service
+model TicketService {
+  id        String      @id @default(uuid())
+  quantity  Int         @default(1)
+  unitPrice Float       // Preço no momento da inclusão (pode ser diferente do preço atual do serviço)
+  totalPrice Float      // quantity * unitPrice
+  type      ServiceType @default(initial) // Se foi serviço inicial ou adicional
+  addedAt   DateTime    @default(now()) @map("added_at")
+  
+  // Quem adicionou o serviço (cliente ou técnico)
+  addedById String @map("added_by_id")
+  addedBy   User   @relation(fields: [addedById], references: [id])
+  
+  // Relacionamentos
+  ticketId  String  @map("ticket_id")
+  ticket    Ticket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  
+  serviceId String  @map("service_id")
+  service   Service @relation(fields: [serviceId], references: [id])
+  
+  @@unique([ticketId, serviceId]) // Um serviço só pode ser adicionado uma vez por ticket
+  @@map("ticket_services")
+}
