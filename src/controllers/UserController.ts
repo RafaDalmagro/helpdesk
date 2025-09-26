@@ -3,7 +3,7 @@ import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
 
-class UsersController {
+class UserController {
     async create(req: Request, res: Response, next: NextFunction) {
         const userSchema = z.object({
             name: z
@@ -191,4 +191,4 @@ class UsersController {
     }
 }
 
-export { UsersController };
+export { UserController };
