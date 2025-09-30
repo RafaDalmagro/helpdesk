@@ -35,7 +35,9 @@ class UserController {
             },
         });
 
-        return res.status(201).json({ user });
+        const { password: _, ...userWithoutPassword } = user;
+
+        return res.status(201).json({ user: userWithoutPassword });
     }
 
     async index(req: Request, res: Response, next: NextFunction) {
@@ -46,7 +48,13 @@ class UserController {
                 email: true,
                 role: true,
                 createdAt: true,
-                tickets: {
+                ticketsAsClient: {
+                    select: {
+                        id: true,
+                        title: true,
+                    },
+                },
+                ticketsAsTech: {
                     select: {
                         id: true,
                         title: true,
@@ -68,31 +76,69 @@ class UserController {
         });
 
         const { id } = paramsSchema.parse(req.params);
+        let role = null;
 
-        const user = await prisma.user.findUnique({
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                createdAt: true,
-                tickets: {
-                    select: {
-                        id: true,
-                        title: true,
-                    },
-                },
-            },
+        const userWithoutRole = await prisma.user.findUnique({
             where: {
                 id,
             },
         });
 
-        if (!user) {
+        if (!userWithoutRole) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+        console.log(userWithoutRole.role);
+
+        if (userWithoutRole?.role === "client") {
+            role = await prisma.user.findUnique({
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    ticketsAsClient: {
+                        select: {
+                            id: true,
+                            title: true,
+                        },
+                    },
+                },
+                where: { id },
+            });
+        } else if (userWithoutRole?.role === "tech") {
+            role = await prisma.user.findUnique({
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    ticketsAsTech: {
+                        select: {
+                            id: true,
+                            title: true,
+                        },
+                    },
+                },
+                where: { id },
+            });
+        } else if (userWithoutRole?.role === "admin") {
+            role = await prisma.user.findUnique({
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    createdAt: true,
+                },
+                where: { id },
+            });
+        }
+
+        if (!role) {
             throw new AppError("Usuário não encontrado", 404);
         }
 
-        return res.status(200).json({ user });
+        return res.status(200).json({ user: role });
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
@@ -122,8 +168,8 @@ class UserController {
                 id: true,
                 name: true,
                 email: true,
-                createdAt: true,
                 role: true,
+                createdAt: true,
             },
             where: {
                 id,
@@ -178,7 +224,7 @@ class UserController {
 
         await prisma.$transaction([
             prisma.ticket.updateMany({
-                where: { userId: id, isActive: true },
+                where: { id, isActive: true },
                 data: { isActive: false, deletedAt: when },
             }),
             prisma.user.update({
