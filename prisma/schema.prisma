@@ -25,20 +25,20 @@ enum ServiceType {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  role      UserRole  @default(client)
-  
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  role     UserRole @default(client)
+
   isActive  Boolean   @default(true)
   deletedAt DateTime?
   createdAt DateTime  @default(now()) @map("created_at")
-  
-  ticketsAsClient Ticket[] @relation("ClientTickets")
-  ticketsAsTech   Ticket[] @relation("TechTickets")
+
+  ticketsAsClient     Ticket[]        @relation("ClientTickets")
+  ticketsAsTech       Ticket[]        @relation("TechTickets")
   ticketServicesAdded TicketService[] @relation("TicketServiceAddedBy")
-  
+
   @@map("users")
 }
 
@@ -49,57 +49,57 @@ model Ticket {
   status      TicketStatus @default(open)
   totalValue  Float        @default(0)
 
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime?    @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
-  isActive    Boolean      @default(true)
-  deletedAt   DateTime?
-  
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+
   clientId String @map("client_id")
   client   User   @relation("ClientTickets", fields: [clientId], references: [id])
-  
-  techId String @map("tech_id") 
+
+  techId String @map("tech_id")
   tech   User   @relation("TechTickets", fields: [techId], references: [id])
-  
+
   ticketServices TicketService[]
-  
+
   @@map("tickets")
 }
 
 model Service {
-  id          String    @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
   price       Float
 
-  isActive    Boolean   @default(true)
+  isActive Boolean @default(true)
 
-  deletedAt   DateTime?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   ticketServices TicketService[]
-  
+
   @@map("services")
 }
 
 model TicketService {
-  id        String      @id @default(uuid())
-  quantity  Int         @default(1)
-  unitPrice Float
+  id         String      @id @default(uuid())
+  quantity   Int         @default(1)
+  unitPrice  Float
   totalPrice Float
-  type      ServiceType @default(initial)
-  addedAt   DateTime    @default(now()) @map("added_at")
-  
+  type       ServiceType @default(initial)
+  addedAt    DateTime    @default(now()) @map("added_at")
+
   addedById String @map("added_by_id")
   addedBy   User   @relation("TicketServiceAddedBy", fields: [addedById], references: [id])
-  
-  ticketId  String  @map("ticket_id")
-  ticket    Ticket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  
+
+  ticketId String @map("ticket_id")
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
   serviceId String  @map("service_id")
   service   Service @relation(fields: [serviceId], references: [id])
-  
+
   @@unique([ticketId, serviceId])
   @@map("ticket_services")
 }

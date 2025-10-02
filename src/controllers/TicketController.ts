@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
-import { title } from "process";
 
 class TicketController {
     async index(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +11,13 @@ class TicketController {
                 title: true,
                 description: true,
                 isActive: true,
-                user: {
+                client: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                tech: {
                     select: {
                         id: true,
                         name: true,
@@ -23,9 +28,11 @@ class TicketController {
                 isActive: true,
             },
         });
+
         if (!tickets) {
             throw new AppError("Não foi possível encontrar os Tickets", 404);
         }
+        
         return res.status(200).json({ tickets });
     }
 
@@ -37,12 +44,28 @@ class TicketController {
             description: z.string().min(10, {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
-            status: z.enum(["open", "in_progress", "closed"]).optional(),
-            userId: z.uuid({ message: "ID de usuário inválido" }),
-			
+            techId: z.uuid({ message: "ID de técnico inválido" }),
+            clientId: z.uuid({ message: "ID de cliente inválido" }),
         });
 
-        return res.status(201).json({ message: "Create" });
+        const { title, description, techId, clientId } = bodySchema.parse(
+            req.body
+        );
+
+        const ticket = await prisma.ticket.create({
+            data: {
+                title,
+                description,
+                techId,
+                clientId,
+            },
+        }) as Ticket;
+
+        if (!ticket) {
+            throw new AppError("Não foi possível criar o Ticket", 400);
+        }
+
+        return res.status(201).json({ ticket });
     }
 
     async update(req: Request, res: Response, next: NextFunction) {

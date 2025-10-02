@@ -61,6 +61,9 @@ class UserController {
                     },
                 },
             },
+            where: {
+                isActive: true,
+            },
         });
 
         if (!users) {
