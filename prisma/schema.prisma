@@ -19,11 +19,6 @@ enum TicketStatus {
   closed
 }
 
-enum ServiceType {
-  initial
-  additional
-}
-
 model User {
   id       String   @id @default(uuid())
   name     String
@@ -84,12 +79,10 @@ model Service {
 }
 
 model TicketService {
-  id         String      @id @default(uuid())
-  quantity   Int         @default(1)
+  id         String   @id @default(uuid())
   unitPrice  Float
   totalPrice Float
-  type       ServiceType @default(initial)
-  addedAt    DateTime    @default(now()) @map("added_at")
+  addedAt    DateTime @default(now()) @map("added_at")
 
   addedById String @map("added_by_id")
   addedBy   User   @relation("TicketServiceAddedBy", fields: [addedById], references: [id])

@@ -10,7 +10,10 @@ class TicketController {
                 id: true,
                 title: true,
                 description: true,
-                isActive: true,
+                status: true,
+                totalValue: true,
+                createdAt: true,
+                updatedAt: true,
                 client: {
                     select: {
                         id: true,
@@ -32,7 +35,7 @@ class TicketController {
         if (!tickets) {
             throw new AppError("Não foi possível encontrar os Tickets", 404);
         }
-        
+
         return res.status(200).json({ tickets });
     }
 
@@ -52,14 +55,14 @@ class TicketController {
             req.body
         );
 
-        const ticket = await prisma.ticket.create({
+        const ticket = (await prisma.ticket.create({
             data: {
                 title,
                 description,
                 techId,
                 clientId,
             },
-        }) as Ticket;
+        })) as Ticket;
 
         if (!ticket) {
             throw new AppError("Não foi possível criar o Ticket", 400);
@@ -69,15 +72,74 @@ class TicketController {
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Update" });
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID de Ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const bodySchema = z.object({
+            title: z.string().min(3, {
+                message: "O título deve ter no mínimo 3 caracteres",
+            }),
+            description: z.string().min(10, {
+                message: "A descrição deve ter no mínimo 10 caracteres",
+            }),
+            techId: z.uuid({ message: "ID de técnico inválido" }),
+        });
+
+        const { title, description, techId } = bodySchema.parse(req.body);
+
+        const updatedTicket = (await prisma.ticket.update({
+            where: { id },
+            data: {
+                title,
+                description,
+                techId,
+            },
+        })) as Ticket;
+
+        if (!updatedTicket) {
+            throw new AppError("Não foi possível atualizar o Ticket", 400);
+        }
+
+        const prevTicket = await prisma.ticket.findUnique({
+            where: { id },
+        });
+
+        return res.status(200).json({ prevTicket, updatedTicket });
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({ message: "Show" });
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID de Ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const ticket = await prisma.ticket.findUnique({
+            where: { id },
+        });
+
+        return res.status(200).json({ ticket });
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
-        return res.status(204).json({ message: "Delete" });
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID de Ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const ticket = await prisma.ticket.delete({
+            where: { id },
+        });
+
+        if (!ticket) {
+            throw new AppError("Não foi possível deletar o Ticket", 400);
+        }
+
+        return res.status(204).json();
     }
 }
 
