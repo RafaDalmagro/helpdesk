@@ -40,13 +40,13 @@ class ServiceController {
 
         const { name, description, price } = bodySchema.parse(req.body);
 
-        const service = await prisma.service.create({
+        const service = (await prisma.service.create({
             data: {
                 name,
                 description,
                 price,
             },
-        });
+        })) as Service;
 
         return res.status(201).json({ service });
     }
@@ -116,7 +116,7 @@ class ServiceController {
             throw new AppError("Item não encontrado", 404);
         }
 
-        const updatedItem = await prisma.service.update({
+        const updatedItem = (await prisma.service.update({
             where: {
                 id,
             },
@@ -125,7 +125,7 @@ class ServiceController {
                 description,
                 price,
             },
-        });
+        })) as Service;
 
         return res.status(200).json({ prev: item, new: updatedItem });
     }
