@@ -8,6 +8,11 @@ class ServiceController {
         const items = await prisma.service.findMany({
             select: {
                 id: true,
+                name: true,
+                description: true,
+                price: true,
+                createdAt: true,
+                updatedAt: true,
             },
             where: {
                 isActive: true,
@@ -31,16 +36,19 @@ class ServiceController {
             price: z
                 .number({ message: "O preço é obrigatório" })
                 .positive({ message: "Preço deve ser um número positivo" }),
-            ticketId: z.uuid({ message: "ID do ticket inválido" }),
         });
 
-        const data = bodySchema.parse(req.body);
+        const { name, description, price } = bodySchema.parse(req.body);
 
-        const item = await prisma.service.create({
-            data,
+        const service = await prisma.service.create({
+            data: {
+                name,
+                description,
+                price,
+            },
         });
 
-        return res.status(201).json({ item });
+        return res.status(201).json({ service });
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
@@ -51,6 +59,14 @@ class ServiceController {
         const { id } = paramsSchema.parse(req.params);
 
         const item = await prisma.service.findUnique({
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                price: true,
+                createdAt: true,
+                updatedAt: true,
+            },
             where: {
                 id,
                 isActive: true,
@@ -70,34 +86,48 @@ class ServiceController {
         });
 
         const bodySchema = z.object({
-            // Add validation schema here (optional fields)
+            name: z
+                .string()
+                .trim()
+                .min(1, { message: "Nome é obrigatório" })
+                .optional(),
+            description: z
+                .string()
+                .trim()
+                .min(1, { message: "Descrição é obrigatória" })
+                .optional(),
+            price: z
+                .number({ message: "O preço é obrigatório" })
+                .positive({ message: "Preço deve ser um número positivo" })
+                .optional(),
         });
 
         const { id } = paramsSchema.parse(req.params);
-        const updateData = bodySchema.parse(req.body);
+        const { name, description, price } = bodySchema.parse(req.body);
 
-        const itemExists = await prisma.service.findUnique({
+        const item = await prisma.service.findUnique({
             where: {
                 id,
                 isActive: true,
             },
         });
 
-        if (!itemExists) {
+        if (!item) {
             throw new AppError("Item não encontrado", 404);
         }
 
-        const item = await prisma.service.update({
+        const updatedItem = await prisma.service.update({
             where: {
                 id,
             },
             data: {
-                ...updateData,
-                updatedAt: new Date(),
+                name,
+                description,
+                price,
             },
         });
 
-        return res.status(200).json({ item });
+        return res.status(200).json({ prev: item, new: updatedItem });
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {
@@ -118,7 +148,6 @@ class ServiceController {
             throw new AppError("Item não encontrado", 404);
         }
 
-        // Soft delete
         await prisma.service.update({
             where: {
                 id,
