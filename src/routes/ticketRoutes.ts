@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { TicketController } from "@/controllers/TicketController";
+import { verifyUserAuthorization } from "@/middlewares/verifyUserAuthorization";
 
 const ticketRoutes = Router();
 const ticketController = new TicketController();
 
 ticketRoutes.get("/", ticketController.index);
-ticketRoutes.post("/", ticketController.create);
-ticketRoutes.put("/:id", ticketController.update);
+ticketRoutes.post("/", verifyUserAuthorization(["admin"]), ticketController.create);
+ticketRoutes.put("/:id", verifyUserAuthorization(["admin"]), ticketController.update);
 ticketRoutes.get("/:id", ticketController.show);
-ticketRoutes.delete("/:id", ticketController.delete);
+ticketRoutes.delete("/:id", verifyUserAuthorization(["admin"]), ticketController.delete);
 
 export { ticketRoutes };

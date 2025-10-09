@@ -5,11 +5,14 @@ import { ticketRoutes } from "./ticketRoutes";
 import { serviceRoutes } from "./serviceRoutes";
 import { ticketServicesRoutes } from "./ticketServicesRoutes";
 import { sessionRoutes } from "./sessionRoutes";
+import { ensureAuthenticated } from "@/middlewares/ensureAuthenticated";
 
 const routes = Router();
 
 routes.use("/users", userRoutes);
 routes.use("/sessions", sessionRoutes);
+
+routes.use(ensureAuthenticated);
 routes.use("/tickets", ticketRoutes);
 routes.use("/services", serviceRoutes);
 routes.use("/ticket-services", ticketServicesRoutes);

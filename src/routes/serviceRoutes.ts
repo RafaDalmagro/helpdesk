@@ -1,13 +1,26 @@
 import { Router } from "express";
 import { ServiceController } from "@/controllers/ServiceController";
+import { verifyUserAuthorization } from "@/middlewares/verifyUserAuthorization";
 
 const serviceRoutes = Router();
 const serviceController = new ServiceController();
 
 serviceRoutes.get("/", serviceController.index);
-serviceRoutes.post("/", serviceController.create);
+serviceRoutes.post(
+    "/",
+    verifyUserAuthorization(["admin"]),
+    serviceController.create
+);
 serviceRoutes.get("/:id", serviceController.show);
-serviceRoutes.put("/:id", serviceController.update);
-serviceRoutes.delete("/:id", serviceController.delete);
+serviceRoutes.put(
+    "/:id",
+    verifyUserAuthorization(["admin"]),
+    serviceController.update
+);
+serviceRoutes.delete(
+    "/:id",
+    verifyUserAuthorization(["admin"]),
+    serviceController.delete
+);
 
 export { serviceRoutes };
