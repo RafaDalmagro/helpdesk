@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
+import { compare } from "bcrypt";
 
 class SessionController {
     async create(req: Request, res: Response, next: NextFunction) {
@@ -22,11 +23,13 @@ class SessionController {
             throw new AppError("Usuário ou senha incorretos", 404);
         }
 
-        if (user.password !== password) {
-            throw new AppError("Usuário ou senha incorretos", 401);
+        const passwordMatch = await compare(password, user.password);
+
+        if (!passwordMatch) {
+            throw new AppError("Usuário ou senha incorretos", 404);
         }
 
-        return res.status(200).json({ email, password });
+        return res.status(200).json();
     }
 }
 export { SessionController };
