@@ -80,6 +80,7 @@ model Service {
 
 model TicketService {
   id         String   @id @default(uuid())
+  quantity   Int      @default(1)
   unitPrice  Float
   totalPrice Float
   addedAt    DateTime @default(now()) @map("added_at")
