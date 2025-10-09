@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+    api-helpdesk:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: nodejs
+        container_name: api-helpdesk
+        restart: unless-stopped
+        env_file:
+            - ./.env
+        ports:
+            - "3000:3000"
+        depends_on:
+            - postgres
+    postgres:
+        image: postgres:latest
+        container_name: postgres
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: api-helpdesk
+        ports:
+            - "5432:5432"
+        volumes:
+            - database:/var/lib/postgresql/data
+volumes:
+    database:
