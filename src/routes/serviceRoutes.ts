@@ -14,7 +14,7 @@ serviceRoutes.post(
 serviceRoutes.get("/:id", serviceController.show);
 serviceRoutes.put(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin","tech"]),
     serviceController.update
 );
 serviceRoutes.delete(

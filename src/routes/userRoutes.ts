@@ -6,16 +6,16 @@ const userRoutes = Router();
 const userController = new UserController();
 
 userRoutes.get("/", userController.index);
-userRoutes.post("/", verifyUserAuthorization(["admin"]), userController.create);
+userRoutes.post("/", userController.create);
 userRoutes.put(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech", "client"]),
     userController.update
 );
 userRoutes.get("/:id", userController.show);
 userRoutes.delete(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech", "client"]),
     userController.delete
 );
 

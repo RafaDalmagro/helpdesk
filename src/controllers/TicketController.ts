@@ -124,6 +124,38 @@ class TicketController {
         return res.status(200).json({ ticket });
     }
 
+    async updateStatus(req: Request, res: Response, next: NextFunction) {
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID de Ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const bodySchema = z.object({
+            status: z.enum(["open", "in_progress", "closed"], {
+                message: "Status inválido",
+            }),
+        });
+        const { status } = bodySchema.parse(req.body);
+
+        const ticket = await prisma.ticket.findUnique({
+            where: { id },
+        });
+
+        if (!ticket) {
+            throw new AppError("Ticket não encontrado", 404);
+        }
+
+        const updatedTicket = await prisma.ticket.update({
+            where: { id },
+            data: { status },
+        });
+
+        return res
+            .status(200)
+            .json({ previous: ticket, updated: updatedTicket });
+    }
+
     async delete(req: Request, res: Response, next: NextFunction) {
         const paramSchema = z.object({
             id: z.uuid({ message: "ID de Ticket inválido" }),
