@@ -13,7 +13,7 @@ ticketRoutes.post(
 );
 ticketRoutes.put(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech", "client"]),
     ticketController.update
 );
 ticketRoutes.patch(
@@ -24,7 +24,7 @@ ticketRoutes.patch(
 ticketRoutes.get("/:id", ticketController.show);
 ticketRoutes.delete(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech", "client"]),
     ticketController.delete
 );
 

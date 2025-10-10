@@ -3,9 +3,6 @@ import { AppError } from "@/utils/AppError";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";
 
-const user = {
-    id: "42fb9458-7d4f-4d95-af72-effb0295dfb7",
-};
 class TicketServiceController {
     async index(req: Request, res: Response, next: NextFunction) {
         const ticketServices = await prisma.ticketService.findMany({});
@@ -14,7 +11,12 @@ class TicketServiceController {
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
-        // const {id} = req.params.user;
+        if (req.user?.role !== "admin") {
+            throw new AppError(
+                "Apenas administradores podem adicionar serviços ao ticket",
+                401
+            );
+        }
 
         const bodySchema = z.object({
             ticketId: z.uuid({ message: "ID do ticket inválido" }),
@@ -48,7 +50,7 @@ class TicketServiceController {
         const data: CreateTicketServiceData = {
             ticketId: ticket.id,
             serviceId: service.id,
-            addedById: user.id,
+            addedById: req.user.id,
             unitPrice: service.price,
             totalPrice: service.price,
         };
@@ -59,9 +61,9 @@ class TicketServiceController {
 
         const ticketServices = await prisma.ticketService.create({
             data: {
-                ticket: { connect: { id: data.ticketId } },
-                service: { connect: { id: data.serviceId } },
-                addedBy: { connect: { id: data.addedById } },
+                ticketId: data.ticketId,
+                serviceId: data.serviceId,
+                addedById: data.addedById,
                 unitPrice: data.unitPrice,
                 totalPrice: data.totalPrice,
             },

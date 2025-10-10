@@ -5,6 +5,16 @@ import { prisma } from "@/database/prisma";
 
 class TicketController {
     async index(req: Request, res: Response, next: NextFunction) {
+        const actor = req.user!;
+
+        let where: any = { isActive: true };
+
+        if (actor.role === "client") {
+            where = { ...where, clientId: actor.id };
+        } else if (actor.role === "tech") {
+            where = { ...where, techId: actor.id };
+        }
+
         const tickets = await prisma.ticket.findMany({
             select: {
                 id: true,
@@ -14,22 +24,11 @@ class TicketController {
                 totalValue: true,
                 createdAt: true,
                 updatedAt: true,
-                client: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                tech: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
+                client: { select: { id: true, name: true } },
+                tech: { select: { id: true, name: true } },
             },
-            where: {
-                isActive: true,
-            },
+            where,
+            orderBy: { createdAt: "desc" },
         });
 
         if (!tickets) {
@@ -48,7 +47,7 @@ class TicketController {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
             techId: z.uuid({ message: "ID de técnico inválido" }),
-            clientId: z.uuid({ message: "ID de cliente inválido" }),
+            clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
         });
 
         const { title, description, techId, clientId } = bodySchema.parse(
@@ -60,7 +59,7 @@ class TicketController {
                 title,
                 description,
                 techId,
-                clientId,
+                clientId: clientId || req.user!.id,
             },
         })) as Ticket;
 
@@ -85,29 +84,61 @@ class TicketController {
             description: z.string().min(10, {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
-            techId: z.uuid({ message: "ID de técnico inválido" }),
+            techId: z.uuid({ message: "ID de técnico inválido" }).optional(),
         });
 
         const { title, description, techId } = bodySchema.parse(req.body);
 
-        const updatedTicket = (await prisma.ticket.update({
-            where: { id },
-            data: {
-                title,
-                description,
-                techId,
-            },
-        })) as Ticket;
+        const user = req.user as { id: string; role: string };
 
-        if (!updatedTicket) {
-            throw new AppError("Não foi possível atualizar o Ticket", 400);
+        if (user.role === "client") {
+            const prevTicket = await prisma.ticket.findUnique({
+                where: { id },
+            });
+
+            if (prevTicket?.clientId !== user.id) {
+                throw new AppError("Esse ticket não pertence ao cliente", 401);
+            }
+
+            const updatedTicket = (await prisma.ticket.update({
+                where: { id },
+                data: {
+                    title,
+                    description,
+                    techId,
+                },
+            })) as Ticket;
+
+            if (!updatedTicket) {
+                throw new AppError("Não foi possível atualizar o Ticket", 400);
+            }
+            return res.status(200).json({ prevTicket, updatedTicket });
         }
 
-        const prevTicket = await prisma.ticket.findUnique({
-            where: { id },
-        });
+        if (user.role === "tech") {
+            const prevTicket = await prisma.ticket.findUnique({
+                where: { id },
+            });
 
-        return res.status(200).json({ prevTicket, updatedTicket });
+            if (prevTicket?.techId !== user.id) {
+                throw new AppError("Esse ticket não pertence ao técnico", 401);
+            }
+
+            const updatedTicket = (await prisma.ticket.update({
+                where: { id },
+                data: {
+                    title,
+                    description,
+                    techId,
+                },
+            })) as Ticket;
+
+            if (!updatedTicket) {
+                throw new AppError("Não foi possível atualizar o Ticket", 400);
+            }
+
+            return res.status(200).json({ prevTicket, updatedTicket });
+        }
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
