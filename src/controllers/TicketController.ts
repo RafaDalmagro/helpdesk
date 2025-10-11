@@ -48,26 +48,63 @@ class TicketController {
             }),
             techId: z.uuid({ message: "ID de técnico inválido" }),
             clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
+            serviceId: z.uuid({ message: "ID de serviço inválido" }),
         });
 
-        const { title, description, techId, clientId } = bodySchema.parse(
-            req.body
-        );
+        const { title, description, techId, clientId, serviceId } =
+            bodySchema.parse(req.body);
 
-        const ticket = (await prisma.ticket.create({
-            data: {
-                title,
-                description,
-                techId,
-                clientId: clientId || req.user!.id,
-            },
-        })) as Ticket;
+        try {
+            const newTicket = await prisma.$transaction(async (tx) => {
+                const ticket = await tx.ticket.create({
+                    data: {
+                        title,
+                        description,
+                        techId,
+                        clientId: clientId || req.user!.id,
+                    },
+                });
 
-        if (!ticket) {
+                const service = await tx.service.findFirst({
+                    where: { id: serviceId, isActive: true },
+                    select: { id: true, price: true },
+                });
+                if (!service) {
+                    throw new AppError(
+                        "Serviço não encontrado ou inativo",
+                        404
+                    );
+                }
+
+                await tx.ticketService.create({
+                    data: {
+                        ticketId: ticket.id,
+                        serviceId: service.id,
+                        addedById: req.user!.id,
+                        unitPrice: service.price,
+                        totalPrice: service.price,
+                    },
+                });
+
+                const sum = await tx.ticketService.aggregate({
+                    where: { ticketId: ticket.id },
+                    _sum: { totalPrice: true },
+                });
+
+                await tx.ticket.update({
+                    where: { id: ticket.id },
+                    data: {
+                        totalValue: sum._sum.totalPrice ?? 0,
+                    },
+                });
+
+                return ticket;
+            });
+        } catch (error) {
             throw new AppError("Não foi possível criar o Ticket", 400);
         }
 
-        return res.status(201).json({ ticket });
+        return res.status(201).json();
     }
 
     async update(req: Request, res: Response, next: NextFunction) {

@@ -8,6 +8,8 @@
     },
     "scripts": {
         "dev": "tsx --env-file .env --watch src/server.ts",
+        "db": "docker-compose up -d postgres",
+        "prisma": "npx prisma studio",
         "build": "tsup src --out-dir build"
     },
     "keywords": [],
