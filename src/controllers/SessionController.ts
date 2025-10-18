@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "@/utils/AppError";
-import { authConfig } from "@/config/AuthConfig";
+import { authConfig } from "@/configs/AuthConfig";
 import { sign } from "jsonwebtoken";
 import { z } from "zod";
 import { prisma } from "@/database/prisma";

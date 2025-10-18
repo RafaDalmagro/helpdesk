@@ -20,7 +20,7 @@ const MULTER = {
     }),
 };
 
-export {
+export default {
     TMP_FOLDER,
     UPLOADS_FOLDER,
     MAX_FILE_SIZE,

@@ -1,4 +1,4 @@
-import { authConfig } from "@/config/AuthConfig";
+import { authConfig } from "@/configs/AuthConfig";
 import { AppError } from "@/utils/AppError";
 import { NextFunction, Request, Response } from "express";
 import { request } from "http";
