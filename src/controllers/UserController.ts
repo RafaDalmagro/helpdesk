@@ -44,6 +44,8 @@ class UserController {
     }
 
     async index(req: Request, res: Response, next: NextFunction) {
+        const { role } = req.query;
+
         const users = await prisma.user.findMany({
             select: {
                 id: true,
@@ -52,20 +54,18 @@ class UserController {
                 role: true,
                 createdAt: true,
                 ticketsAsClient: {
-                    select: {
-                        id: true,
-                        title: true,
-                    },
+                    select: { id: true, title: true },
                 },
                 ticketsAsTech: {
-                    select: {
-                        id: true,
-                        title: true,
-                    },
+                    select: { id: true, title: true },
                 },
             },
             where: {
                 isActive: true,
+                ...(role &&
+                (role === "admin" || role === "client" || role === "tech")
+                    ? { role: role as "admin" | "client" | "tech" }
+                    : {}),
             },
         });
 
