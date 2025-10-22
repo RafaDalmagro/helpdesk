@@ -52,6 +52,7 @@ class UserController {
                 name: true,
                 email: true,
                 role: true,
+                filename: true,
                 createdAt: true,
                 ticketsAsClient: {
                     select: { id: true, title: true },

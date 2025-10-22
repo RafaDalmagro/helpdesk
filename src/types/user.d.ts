@@ -10,6 +10,7 @@ type User = {
     email: string;
     password: string;
     role?: UserRole;
+    filename?: string | null;
     isActive?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
