@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserController } from "@/controllers/UserController";
 import { verifyUserAuthorization } from "@/middlewares/verifyUserAuthorization";
+import { verifyUserSelf } from "@/middlewares/verifyIsUserSelf";
 import { ensureAuthenticated } from "@/middlewares/ensureAuthenticated";
 
 const userRoutes = Router();
@@ -11,14 +12,15 @@ userRoutes.post("/", userController.create);
 userRoutes.put(
     "/:id",
     ensureAuthenticated,
-    verifyUserAuthorization(["admin", "tech", "client"]),
+    // verifyUserAuthorization(["admin", "tech", "client"]),
+    verifyUserSelf(),
     userController.update
 );
 userRoutes.get("/:id", userController.show);
 userRoutes.delete(
     "/:id",
     ensureAuthenticated,
-    verifyUserAuthorization(["admin", "tech"]),
+    verifyUserAuthorization(["admin"]),
     userController.delete
 );
 userRoutes.patch(

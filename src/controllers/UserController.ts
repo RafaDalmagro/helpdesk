@@ -152,14 +152,9 @@ class UserController {
         const userSchema = z.object({
             name: z
                 .string()
-                .min(2, { message: "O nome deve ter no mínimo 2 caracteres" })
-                .optional(),
-            email: z.email({ message: "Formato de email inválido" }).optional(),
-            password: z
-                .string()
-                .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
-                .optional(),
-            role: z.enum(["admin", "client", "tech"]).optional(),
+                .min(2, { message: "O nome deve ter no mínimo 2 caracteres" }),
+            email: z.email({ message: "Formato de email inválido" }),
+            role: z.enum(["admin", "client", "tech"]),
         });
 
         const paramsSchema = z.object({
@@ -168,7 +163,14 @@ class UserController {
 
         const { id } = paramsSchema.parse(req.params);
 
-        const { name, email, password, role } = userSchema.parse(req.body);
+        const { name, email, role } = userSchema.parse(req.body);
+
+        if (req.user?.id !== id && req.user?.role !== "admin") {
+            throw new AppError(
+                "Você não está autorizado a atualizar este usuário",
+                401
+            );
+        }
 
         const prevUser = await prisma.user.findUnique({
             select: {
@@ -195,7 +197,6 @@ class UserController {
                 name,
                 email,
                 role,
-                password,
             },
         });
 
