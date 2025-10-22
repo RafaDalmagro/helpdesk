@@ -21,5 +21,11 @@ userRoutes.delete(
     verifyUserAuthorization(["admin", "tech"]),
     userController.delete
 );
+userRoutes.patch(
+    "/password/:id",
+    ensureAuthenticated,
+    verifyUserAuthorization(["admin"]),
+    userController.updatePassword
+);
 
 export { userRoutes };

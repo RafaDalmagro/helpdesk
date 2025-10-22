@@ -242,6 +242,44 @@ class UserController {
 
         return res.status(204).json();
     }
+
+    async updatePassword(req: Request, res: Response, next: NextFunction) {
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+
+        const bodySchema = z.object({
+            password: z
+                .string()
+                .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+            confirmPassword: z.string().min(6).optional(),
+        });
+
+        const { password, confirmPassword } = bodySchema.parse(req.body);
+
+        if (confirmPassword && password !== confirmPassword) {
+            throw new AppError("As senhas não conferem", 400);
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id },
+        });
+
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        const hashedPassword = await hash(password, 8);
+
+        await prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+
+        return res.status(204).json();
+    }
 }
 
 export { UserController };
