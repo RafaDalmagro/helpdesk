@@ -31,7 +31,7 @@ class UploadController {
                             message: `O tamanho do arquivo excede o limite de ${UploadConfig.MAX_FILE_SIZE}MB.`,
                         }),
                 })
-                .passthrough();
+                .loose();
 
             const file = fileSchema.parse(req.file);
             const filename = await diskStorage.saveFile(file.filename);

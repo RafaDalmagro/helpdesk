@@ -19,7 +19,7 @@ export function verifyUserSelf() {
 
         if (!isSelf) {
             throw new AppError(
-                "Apenas o proprietário do usuário pode realizar essa ação",
+                "Você não tem permissão para alterar dados de outros usuários",
                 401
             );
         }
