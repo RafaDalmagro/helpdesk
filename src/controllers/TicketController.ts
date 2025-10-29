@@ -47,7 +47,7 @@ class TicketController {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
             techId: z.uuid({ message: "ID de técnico inválido" }),
-            clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
+            clientId: z.uuid({ message: "ID de cliente inválido" }),
             serviceId: z.uuid({ message: "ID de serviço inválido" }),
         });
 
@@ -61,7 +61,7 @@ class TicketController {
                         title,
                         description,
                         techId,
-                        clientId: clientId || req.user!.id,
+                        clientId: clientId ? clientId : req.user!.id,
                     },
                 });
 
@@ -190,6 +190,27 @@ class TicketController {
         });
 
         return res.status(200).json({ ticket });
+    }
+
+    async showTicketsByUser(req: Request, res: Response, next: NextFunction) {
+        const paramSchema = z.object({
+            userId: z.uuid({ message: "ID de usuário inválido" }),
+        });
+
+        const { userId } = paramSchema.parse(req.params);
+
+        if (req.user?.role === "client") {
+            const tickets = await prisma.ticket.findMany({
+                where: { clientId: req.user.id },
+            });
+            return res.status(200).json({ tickets });
+        }
+
+        const tickets = await prisma.ticket.findMany({
+            where: { techId: userId },
+        });
+
+        return res.status(200).json({ tickets });
     }
 
     async updateStatus(req: Request, res: Response, next: NextFunction) {

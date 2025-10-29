@@ -27,5 +27,6 @@ ticketRoutes.delete(
     verifyUserAuthorization(["admin", "tech", "client"]),
     ticketController.delete
 );
+ticketRoutes.get("/user/:userId", ticketController.showTicketsByUser);
 
 export { ticketRoutes };
