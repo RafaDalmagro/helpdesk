@@ -187,6 +187,26 @@ class TicketController {
 
         const ticket = await prisma.ticket.findUnique({
             where: { id },
+            select: {
+                title: true,
+                description: true,
+                createdAt: true,
+                updatedAt: true,
+                status: true,
+                client: { select: { id: true, name: true } },
+                tech: { select: { id: true, name: true } },
+                ticketServices: {
+                    select: {
+                        service: {
+                            select: {
+                                name: true,
+                                description: true,
+                            },
+                        },
+                        addedBy: { select: { id: true, name: true } },
+                    },
+                },
+            },
         });
 
         return res.status(200).json({ ticket });
