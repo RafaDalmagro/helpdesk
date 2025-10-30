@@ -258,6 +258,14 @@ class UserController {
             confirmPassword: z.string().min(6).optional(),
         });
 
+        const userLoged = req.user as { id: string; role: string };
+
+        if (userLoged.id !== id && userLoged.role !== "admin") {
+            throw new AppError(
+                "Você não tem permissão para alterar esta senha",
+                403
+            );
+        }
         const { password, confirmPassword } = bodySchema.parse(req.body);
 
         if (confirmPassword && password !== confirmPassword) {
@@ -272,6 +280,13 @@ class UserController {
             throw new AppError("Usuário não encontrado", 404);
         }
 
+        if (user.firstLogin === true) {
+            throw new AppError(
+                "A senha só pode ser alterada após o primeiro acesso",
+                403
+            );
+        }
+
         const hashedPassword = await hash(password, 8);
 
         await prisma.user.update({
@@ -279,7 +294,9 @@ class UserController {
             data: { password: hashedPassword },
         });
 
-        return res.status(204).json();
+        return res
+            .status(200)
+            .json({ message: "Senha atualizada com sucesso" });
     }
 }
 

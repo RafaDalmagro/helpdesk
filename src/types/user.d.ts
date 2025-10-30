@@ -11,6 +11,7 @@ type User = {
     password: string;
     role?: UserRole;
     filename?: string | null;
+    firstLogin?: boolean;
     isActive?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
