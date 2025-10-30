@@ -129,27 +129,10 @@ class TicketController {
         const user = req.user as { id: string; role: string };
 
         if (user.role === "client") {
-            const prevTicket = await prisma.ticket.findUnique({
-                where: { id },
-            });
-
-            if (prevTicket?.clientId !== user.id) {
-                throw new AppError("Esse ticket não pertence ao cliente", 401);
-            }
-
-            const updatedTicket = (await prisma.ticket.update({
-                where: { id },
-                data: {
-                    title,
-                    description,
-                    techId,
-                },
-            })) as Ticket;
-
-            if (!updatedTicket) {
-                throw new AppError("Não foi possível atualizar o Ticket", 400);
-            }
-            return res.status(200).json({ prevTicket, updatedTicket });
+            throw new AppError(
+                "Você não tem permissão para atualizar este ticket",
+                401
+            );
         }
 
         if (user.role === "tech") {
@@ -158,7 +141,10 @@ class TicketController {
             });
 
             if (prevTicket?.techId !== user.id) {
-                throw new AppError("Esse ticket não pertence ao técnico", 401);
+                throw new AppError(
+                    "Você não é o técnico responsável por este ticket",
+                    401
+                );
             }
 
             const updatedTicket = (await prisma.ticket.update({
@@ -176,6 +162,25 @@ class TicketController {
 
             return res.status(200).json({ prevTicket, updatedTicket });
         }
+
+        const prevTicket = await prisma.ticket.findUnique({
+            where: { id },
+        });
+
+        const updatedTicket = (await prisma.ticket.update({
+            where: { id },
+            data: {
+                title,
+                description,
+                techId,
+            },
+        })) as Ticket;
+
+        if (!updatedTicket) {
+            throw new AppError("Não foi possível atualizar o Ticket", 400);
+        }
+
+        return res.status(200).json({ prevTicket, updatedTicket });
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
@@ -271,6 +276,15 @@ class TicketController {
         });
 
         const { id } = paramSchema.parse(req.params);
+
+        const user = req.user as { id: string; role: string };
+
+        if (user.role === "client") {
+            throw new AppError(
+                "Você não tem permissão para deletar este ticket",
+                401
+            );
+        }
 
         const ticket = await prisma.ticket.delete({
             where: { id },
