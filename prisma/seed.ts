@@ -1,45 +1,12 @@
 import { prisma } from "@/database/prisma";
 import { hash } from "bcrypt";
-import { BUSINESS_WEEKDAYS } from "@/utils/availability";
-
-const TECH1_TIMES = [
-    "08:00",
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-] as const;
-
-const TECH2_TIMES = [
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-] as const;
-
-const TECH3_TIMES = [
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "18:00",
-    "19:00",
-    "20:00",
-    "21:00",
-    "22:00",
-] as const;
+import {
+    BUSINESS_WEEKDAYS,
+    TECH1_TIMES,
+    TECH2_TIMES,
+    TECH3_TIMES,
+} from "@/utils/availability";
+import { SERVICES_CATALOG } from "@/utils/services";
 
 function buildSlots(techId: string, times: readonly string[]) {
     return BUSINESS_WEEKDAYS.flatMap((weekday) =>
@@ -93,7 +60,6 @@ async function seed() {
             },
         });
 
-        // 3) Disponibilidade: apaga as antigas (se houver) e recria
         await tx.techAvailability.deleteMany({
             where: { techId: { in: [tech1.id, tech2.id, tech3.id] } },
         });
@@ -106,6 +72,29 @@ async function seed() {
             ],
             skipDuplicates: true,
         });
+
+        await tx.service.upsert({
+            where: { id: "" },
+            update: {},
+            create: {
+                name: "Serviço Padrão",
+                description: "Descrição do Serviço Padrão",
+                price: 100,
+            },
+        });
+
+        const existingServices = await tx.service.findMany({
+            select: { name: true },
+        });
+        const existingNames = new Set(existingServices.map((s) => s.name));
+
+        const toCreate = SERVICES_CATALOG.filter(
+            (s) => !existingNames.has(s.name)
+        );
+
+        if (toCreate.length > 0) {
+            await tx.service.createMany({ data: toCreate });
+        }
 
         console.log("Seed concluída:", {
             admin: admin.email,
