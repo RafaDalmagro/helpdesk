@@ -12,6 +12,9 @@
         "prisma": "npx prisma studio",
         "build": "tsup src --out-dir build"
     },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
+    },
     "keywords": [],
     "author": "Rafael Lima Dalmagro",
     "license": "ISC",

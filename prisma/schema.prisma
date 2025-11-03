@@ -32,11 +32,26 @@ model User {
   deletedAt DateTime?
   createdAt DateTime  @default(now()) @map("created_at")
 
-  ticketsAsClient     Ticket[]        @relation("ClientTickets")
-  ticketsAsTech       Ticket[]        @relation("TechTickets")
-  ticketServicesAdded TicketService[] @relation("TicketServiceAddedBy")
+  ticketsAsClient     Ticket[]           @relation("ClientTickets")
+  ticketsAsTech       Ticket[]           @relation("TechTickets")
+  ticketServicesAdded TicketService[]    @relation("TicketServiceAddedBy")
+  TechAvailability    TechAvailability[]
 
   @@map("users")
+}
+
+model TechAvailability {
+  id      String @id @default(uuid())
+  techId  String @map("tech_id")
+  tech    User   @relation(fields: [techId], references: [id])
+  weekday Int
+  time    String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([techId, weekday, time])
+  @@index([techId, weekday, time])
+  @@map("tech_availability")
 }
 
 model Ticket {
