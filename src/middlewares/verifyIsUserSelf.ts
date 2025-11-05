@@ -16,8 +16,9 @@ export function verifyUserSelf() {
         }
 
         const isSelf = user.id === id;
+        const isAdmin = user.role === "admin";
 
-        if (!isSelf) {
+        if (!isSelf && !isAdmin) {
             throw new AppError(
                 "Você não tem permissão para alterar dados de outros usuários",
                 401

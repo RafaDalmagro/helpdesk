@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import {
     BUSINESS_WEEKDAYS,
     TECH1_TIMES,
@@ -10,18 +10,18 @@ import { prisma } from "@/database/prisma";
 
 class TechAvailabilityController {
     async create(req: Request, res: Response, next: NextFunction) {
-        const paramsSchema = z.object({
-            techId: z.uuid({ message: "ID de técnico inválido" }),
-        });
-        const bodySchema = z.object({
-            time: z.enum(["1", "2", "3"], {
-                message: "Informe 1, 2 ou 3 para o grupo de horários",
-            }),
-        });
-        const { techId } = paramsSchema.parse(req.params);
-        const { time } = bodySchema.parse(req.body);
-
         try {
+            const paramsSchema = z.object({
+                techId: z.uuid({ message: "ID de técnico inválido" }),
+            });
+            const bodySchema = z.object({
+                time: z.enum(["1", "2", "3"], {
+                    message: "Informe 1, 2 ou 3 para o grupo de horários",
+                }),
+            });
+            const { techId } = paramsSchema.parse(req.params);
+            const { time } = bodySchema.parse(req.body);
+
             const tech = await prisma.user.findUnique({
                 where: { id: techId },
                 select: { id: true, role: true },
@@ -55,7 +55,7 @@ class TechAvailabilityController {
                 selectedTimes.map((t) => ({ techId, weekday, time: t }))
             );
 
-            const result = await prisma.techAvailability.createMany({
+            await prisma.techAvailability.createMany({
                 data: dataToCreate,
                 skipDuplicates: true,
             });
@@ -63,13 +63,9 @@ class TechAvailabilityController {
             return res.status(201).json({
                 message:
                     "Disponibilidades criadas com sucesso para segunda a sexta",
-                group: time,
-                weekdays: BUSINESS_WEEKDAYS,
-                times: selectedTimes,
-                insertedCount: result.count, // pode ser menor que total se já existiam
             });
         } catch (err: any) {
-            if (err instanceof z.ZodError) {
+            if (err instanceof ZodError) {
                 return res.status(400).json({
                     message: "Erro de validação",
                     issues: err.issues.map((i) => ({

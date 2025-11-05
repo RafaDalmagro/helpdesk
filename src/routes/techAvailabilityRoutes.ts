@@ -6,6 +6,6 @@ const techAvailabilityRoutes = Router();
 const techAvailabilityController = new TechAvailabilityController();
 
 techAvailabilityRoutes.use(verifyUserAuthorization(["admin"]));
-techAvailabilityRoutes.post("/", techAvailabilityController.create);
+techAvailabilityRoutes.post("/:techId", techAvailabilityController.create);
 
 export { techAvailabilityRoutes };
