@@ -14,6 +14,7 @@ class UserController {
             password: z
                 .string()
                 .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+            role: z.enum(["admin", "client", "tech"]).optional(),
         });
 
         const { name, email, password } = userSchema.parse(req.body);
