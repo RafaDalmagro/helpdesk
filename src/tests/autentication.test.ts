@@ -7,7 +7,9 @@ describe("Autentication", () => {
         email: "test@example.com",
         password: "test123",
     };
+    
     let response: request.Response;
+
     beforeAll(async () => {
         response = await request(app).post("/users").send(userData);
         return response;
