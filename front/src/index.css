@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+    --default-font-family: "Lato", sans-serif;
+
+    --color-purle-100: #8996eb;
+    --color-purle-400: #5165e1;
+    --color-purple-800: #2e3da3;
+
+    --color-gray-100: #151619;
+    --color-gray-200: #1e2024;
+    --color-gray-300: #535964;
+    --color-gray-400: #858b99;
+    --color-gray-500: #e3e5e8;
+    --color-gray-600: #f9fafa;
+
+    --color-red: #d03e3e;
+    --color-pink: #cc3d6a;
+    --color-blue: #355ec5;
+    --color-green: #508b26;
+
+    --text-xxs: 0.625rem;
+    --text-md: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.5rem;
+}

@@ -1,10 +1,7 @@
-import { Button } from "./components/button";
-
 export function App() {
     return (
         <div>
-            <Button name="Criar" onClick={() => alert("Criar")} />
-            <Button name="Enviar" />
+            <h1 className="text-xl text-green">Test</h1>
         </div>
     );
 }
