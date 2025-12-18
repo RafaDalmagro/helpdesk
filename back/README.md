@@ -50,6 +50,3 @@ Cadastro de usuários e login seguro, com diferentes níveis de acesso: administ
 
 - 📘 Desafio proposto pela: [Rocketseat](https://www.rocketseat.com.br/)
 - 💻 Desenvolvido por: **Rafael Lima Dalmagro**
-
----
-
