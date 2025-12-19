@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@layer base {
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+}
+
 @theme {
     --default-font-family: "Lato", sans-serif;
 
@@ -22,5 +30,5 @@
     --text-xxs: 0.625rem;
     --text-md: 1rem;
     --text-lg: 1.25rem;
-    --text-xl: 1.5rem; 
+    --text-xl: 1.5rem;
 }
