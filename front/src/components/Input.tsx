@@ -2,7 +2,7 @@ type Props = React.ComponentProps<"input"> & {
     legend?: string;
 };
 
-export function Input({ legend, type = "text", ...rest }: Props) {
+export function Input({ legend, ...rest }: Props) {
     return (
         <fieldset className="flex flex-1 border-b border-gray-500">
             {legend && (
@@ -12,7 +12,6 @@ export function Input({ legend, type = "text", ...rest }: Props) {
             )}
 
             <input
-                type="text"
                 {...rest}
                 className="text-gray-400 pb-1 w-full outline-none"
             />
