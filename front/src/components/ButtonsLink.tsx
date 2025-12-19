@@ -2,10 +2,11 @@ import pranchetaIcon from "../assets/clipboard-list.svg";
 import techIcon from "../assets/users.svg";
 import clientIcon from "../assets/briefcase-business.svg";
 import serviceIcon from "../assets/wrench.svg";
+import createIcon from "../assets/plus.svg";
 
 type Props = React.ComponentProps<"button"> & {
     title: string;
-    variant?: "chamados" | "tecnicos" | "clientes" | "servicos";
+    variant?: "chamados" | "tecnicos" | "clientes" | "servicos" | "create";
     iconSvg?: string;
     isActive?: boolean;
 };
@@ -22,6 +23,7 @@ export function ButtonLink({
         tecnicos: techIcon,
         clientes: clientIcon,
         servicos: serviceIcon,
+        create: createIcon,
     };
 
     const iconSrc = variant ? variantClasses[variant] : iconSvg;
