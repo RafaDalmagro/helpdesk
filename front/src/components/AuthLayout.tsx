@@ -10,7 +10,7 @@ export function AuthLayout() {
             style={{ backgroundImage: `url(${loginBackground})` }}>
             <main
                 className="flex w-screen h-screen bg-gray-50 py-8 px-6 rounded-t-xl  overflow-y-auto justify-center
-            sm:justify-self-end sm:w-1/2 lg:py-12 lg:px-35 sm:rounded-tl-xl sm:rounded-t-none">
+            sm:justify-self-end sm:w-1/2 xl:py-12 xl:px-35 sm:rounded-tl-xl sm:rounded-t-none">
                 <div className="flex flex-col gap-6 content-center w-screen">
                     <img src={NavHeader} alt="Logo" className="h-10" />
 
