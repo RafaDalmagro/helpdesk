@@ -1,6 +1,9 @@
 import { Table } from "../components/Table";
+import { useNavigate } from "react-router";
 
 export function Chamados() {
+    const navigate = useNavigate();
+
     const chamadosData: Chamado[] = [
         {
             id: "00003",
@@ -41,7 +44,7 @@ export function Chamados() {
     ];
 
     const handleVisualizar = (id: string | number) => {
-        console.log("Visualizar chamado:", id);
+        navigate(`/chamado/${id}`);
     };
 
     return (

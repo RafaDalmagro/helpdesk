@@ -128,12 +128,10 @@ export function Table({ data, onVisualizar }: TableProps) {
                             </div>
                         </td>
                         <td className="px-3 py-4.5 flex items-center justify-center">
-                            <span className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity">
-                                <img
-                                    src={olhoSvg}
-                                    alt="Visualizar"
-                                    onClick={() => handleVisualizar(chamado.id)}
-                                />
+                            <span
+                                className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
+                                onClick={() => handleVisualizar(chamado.id)}>
+                                <img src={olhoSvg} alt="Visualizar" />
                             </span>
                         </td>
                     </tr>
