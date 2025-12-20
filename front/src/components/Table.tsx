@@ -1,20 +1,7 @@
-import atendendoSvg from "../assets/TagStatusAtendendo.svg";
-import resolvidoSvg from "../assets/TagStatusResolvido.svg";
-import pendenteSvg from "../assets/TagStatusPendente.svg";
+import atendendoSvg from "../assets/clock-2.svg";
+import encerradoSvg from "../assets/circle-check-big.svg";
+import abertoSvg from "../assets/circle-help.svg";
 import olhoSvg from "../assets/eye.svg";
-
-type Chamado = {
-    id: string | number;
-    atualizadoEm: string;
-    titulo: string;
-    servico: string;
-    valorTotal: string;
-    tecnico: {
-        nome: string;
-        iniciais: string;
-    };
-    status: "pendente" | "atendendo" | "resolvido";
-};
 
 type TableProps = {
     data: Chamado[];
@@ -24,14 +11,40 @@ type TableProps = {
 export function Table({ data, onVisualizar }: TableProps) {
     const getStatusIcon = (status: Chamado["status"]) => {
         switch (status) {
-            case "pendente":
-                return pendenteSvg;
+            case "aberto":
+                return abertoSvg;
             case "atendendo":
                 return atendendoSvg;
-            case "resolvido":
-                return resolvidoSvg;
+            case "encerrado":
+                return encerradoSvg;
             default:
-                return pendenteSvg;
+                return abertoSvg;
+        }
+    };
+
+    const getStatusBgColor = (status: Chamado["status"]) => {
+        switch (status) {
+            case "aberto":
+                return "bg-pink/20";
+            case "atendendo":
+                return "bg-blue/20";
+            case "encerrado":
+                return "bg-green/20";
+            default:
+                return "bg-pink/20";
+        }
+    };
+
+    const getStatusTextColor = (status: Chamado["status"]) => {
+        switch (status) {
+            case "aberto":
+                return "text-pink";
+            case "atendendo":
+                return "text-blue";
+            case "encerrado":
+                return "text-green";
+            default:
+                return "text-red";
         }
     };
 
@@ -45,65 +58,74 @@ export function Table({ data, onVisualizar }: TableProps) {
         <table className="w-full border-collapse">
             <thead>
                 <tr className="border-b border-t border-gray-500">
-                    <th className="text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Atualizado em
                     </th>
-                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Id
                     </th>
-                    <th className="text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Título
                     </th>
-                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Serviço
                     </th>
-                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Valor total
                     </th>
-                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="hidden md:table-cell text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Técnico
                     </th>
-                    <th className="text-left text-sm text-gray-400 font-semibold py-3 px-4">
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
                         Status
                     </th>
-                    <th className="text-left text-sm text-gray-400 font-semibold py-3 px-4">
-                        Visualizar
-                    </th>
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3"></th>
                 </tr>
             </thead>
             <tbody>
                 {data.map((chamado) => (
                     <tr key={chamado.id} className="border-b border-gray-500">
-                        <td className="text-xs text-gray-200 py-3 px-4">
+                        <td className="text-xs text-gray-200 py-3 px-3">
                             {chamado.atualizadoEm}
                         </td>
-                        <td className="text-xs font-bold text-gray-200 hidden md:table-cell py-3 px-4">
+                        <td className="text-xs font-bold text-gray-200 hidden md:table-cell py-3 px-3">
                             {chamado.id}
                         </td>
-                        <td className="text-sm font-bold text-gray-200 py-3 px-4">
+                        <td className="text-sm font-bold text-gray-200 py-3 px-3">
                             {chamado.titulo}
                         </td>
-                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-4">
+                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-3">
                             {chamado.servico}
                         </td>
-                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-4">
+                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-3">
                             {chamado.valorTotal}
                         </td>
-                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-4">
+                        <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-3">
                             <div className="flex items-center gap-2">
-                                <span className="flex items-center justify-center bg-purple-800 rounded-full size-10 text-gray-600 text-sm leading-none">
+                                <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xxs leading-none h-5 w-5">
                                     {chamado.tecnico.iniciais}
                                 </span>
                                 <span>{chamado.tecnico.nome}</span>
                             </div>
                         </td>
-                        <td className="py-3 px-4">
-                            <img
-                                src={getStatusIcon(chamado.status)}
-                                alt={`Status ${chamado.status}`}
-                            />
+                        <td className="py-3 px-3">
+                            <div
+                                className={`py-3 px-3 flex items-center gap-2 rounded-4xl w-fit ${getStatusBgColor(
+                                    chamado.status
+                                )}`}>
+                                <img
+                                    src={getStatusIcon(chamado.status)}
+                                    alt={`Status ${chamado.status}`}
+                                />
+                                <span
+                                    className={`text-sm font-semibold capitalize ${getStatusTextColor(
+                                        chamado.status
+                                    )}`}>
+                                    {chamado.status}
+                                </span>
+                            </div>
                         </td>
-                        <td className="py-3 px-4">
+                        <td className="py-3 px-3">
                             <img
                                 src={olhoSvg}
                                 alt="Visualizar"

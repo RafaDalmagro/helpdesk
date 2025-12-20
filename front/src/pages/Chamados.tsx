@@ -1,8 +1,7 @@
 import { Table } from "../components/Table";
 
 export function Chamados() {
-    // Dados de exemplo - substitua por dados reais da API
-    const chamadosData = [
+    const chamadosData: Chamado[] = [
         {
             id: "00003",
             atualizadoEm: "13/04/25 20:56",
@@ -13,10 +12,10 @@ export function Chamados() {
                 nome: "Carlos Silva",
                 iniciais: "CS",
             },
-            status: "pendente" as const,
+            status: "encerrado",
         },
         {
-            id: 12,
+            id: "00002",
             atualizadoEm: "12/10/2025 20:56",
             titulo: "Testando",
             servico: "Cobrança",
@@ -25,14 +24,12 @@ export function Chamados() {
                 nome: "Rafael Lima",
                 iniciais: "RL",
             },
-            status: "pendente" as const,
+            status: "aberto",
         },
-        // Adicione mais chamados aqui
     ];
 
     const handleVisualizar = (id: string | number) => {
         console.log("Visualizar chamado:", id);
-        // Implemente a lógica de visualização aqui
     };
 
     return (
@@ -41,7 +38,7 @@ export function Chamados() {
                 Meus Chamados
             </h2>
 
-            <div className="overflow-x-auto border border-gray-400 rounded-xl">
+            <div className="overflow-x-auto border border-gray-500 rounded-xl">
                 <Table data={chamadosData} onVisualizar={handleVisualizar} />
             </div>
         </section>
