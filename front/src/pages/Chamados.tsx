@@ -26,6 +26,18 @@ export function Chamados() {
             },
             status: "aberto",
         },
+        {
+            id: "00002",
+            atualizadoEm: "12/10/2025 20:56",
+            titulo: "Testando",
+            servico: "Cobrança",
+            valorTotal: "R$ 1.222,00",
+            tecnico: {
+                nome: "Rafael Lima",
+                iniciais: "RL",
+            },
+            status: "em atendimento",
+        },
     ];
 
     const handleVisualizar = (id: string | number) => {

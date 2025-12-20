@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-    type ChamadoStatus = "aberto" | "atendendo" | "encerrado";
+    type ChamadoStatus = "aberto" | "em atendimento" | "encerrado";
 
     interface Chamado {
         id: string | number;

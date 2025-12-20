@@ -13,7 +13,7 @@ export function Table({ data, onVisualizar }: TableProps) {
         switch (status) {
             case "aberto":
                 return abertoSvg;
-            case "atendendo":
+            case "em atendimento":
                 return atendendoSvg;
             case "encerrado":
                 return encerradoSvg;
@@ -26,7 +26,7 @@ export function Table({ data, onVisualizar }: TableProps) {
         switch (status) {
             case "aberto":
                 return "bg-pink/20";
-            case "atendendo":
+            case "em atendimento":
                 return "bg-blue/20";
             case "encerrado":
                 return "bg-green/20";
@@ -39,7 +39,7 @@ export function Table({ data, onVisualizar }: TableProps) {
         switch (status) {
             case "aberto":
                 return "text-pink";
-            case "atendendo":
+            case "em atendimento":
                 return "text-blue";
             case "encerrado":
                 return "text-green";
@@ -85,7 +85,7 @@ export function Table({ data, onVisualizar }: TableProps) {
             <tbody>
                 {data.map((chamado) => (
                     <tr key={chamado.id} className="border-b border-gray-500">
-                        <td className="text-xs text-gray-200 py-3 px-3">
+                        <td className="text-xs font-medium text-gray-200 py-3 px-3">
                             {chamado.atualizadoEm}
                         </td>
                         <td className="text-xs font-bold text-gray-200 hidden md:table-cell py-3 px-3">
@@ -101,11 +101,13 @@ export function Table({ data, onVisualizar }: TableProps) {
                             {chamado.valorTotal}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell py-3 px-3">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-start gap-2">
                                 <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xxs leading-none h-5 w-5">
                                     {chamado.tecnico.iniciais}
                                 </span>
-                                <span>{chamado.tecnico.nome}</span>
+                                <span className="hidden xl:block">
+                                    {chamado.tecnico.nome}
+                                </span>
                             </div>
                         </td>
                         <td className="py-3 px-3">
@@ -118,20 +120,21 @@ export function Table({ data, onVisualizar }: TableProps) {
                                     alt={`Status ${chamado.status}`}
                                 />
                                 <span
-                                    className={`text-sm font-semibold capitalize ${getStatusTextColor(
+                                    className={`text-sm hidden xl:block font-semibold capitalize ${getStatusTextColor(
                                         chamado.status
                                     )}`}>
                                     {chamado.status}
                                 </span>
                             </div>
                         </td>
-                        <td className="py-3 px-3">
-                            <img
-                                src={olhoSvg}
-                                alt="Visualizar"
-                                className="cursor-pointer hover:opacity-70 transition-opacity"
-                                onClick={() => handleVisualizar(chamado.id)}
-                            />
+                        <td className="px-3 py-4.5 flex items-center justify-center">
+                            <span className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity">
+                                <img
+                                    src={olhoSvg}
+                                    alt="Visualizar"
+                                    onClick={() => handleVisualizar(chamado.id)}
+                                />
+                            </span>
                         </td>
                     </tr>
                 ))}
