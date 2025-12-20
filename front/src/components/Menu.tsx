@@ -1,4 +1,4 @@
-import { ButtonLink } from "./ButtonsLink";
+import { ButtonLink } from "./ButtonLink";
 
 export function Menu() {
     return (
@@ -8,7 +8,11 @@ export function Menu() {
                 variant="chamados"
                 to="/chamados"
             />
-            <ButtonLink title="Criar chamado" variant="create" to="/new-ticket" />
+            <ButtonLink
+                title="Criar chamado"
+                variant="create"
+                to="/novo-chamado"
+            />
         </nav>
     );
 }
