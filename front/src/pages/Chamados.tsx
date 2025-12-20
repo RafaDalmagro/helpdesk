@@ -1,47 +1,13 @@
-import { Table } from "../components/Table";
 import { useNavigate } from "react-router";
+
+import { Table } from "../components/Table";
+
+import { useChamados } from "../context/ChamadosContext";
 
 export function Chamados() {
     const navigate = useNavigate();
 
-    const chamadosData: Chamado[] = [
-        {
-            id: "00003",
-            atualizadoEm: "13/04/25 20:56",
-            titulo: "Instalação de Rede",
-            servico: "Rede lenta",
-            valorTotal: "R$ 180,00",
-            tecnico: {
-                nome: "Carlos Silva",
-                iniciais: "CS",
-            },
-            status: "encerrado",
-        },
-        {
-            id: "00002",
-            atualizadoEm: "12/10/2025 20:56",
-            titulo: "Testando",
-            servico: "Cobrança",
-            valorTotal: "R$ 1.222,00",
-            tecnico: {
-                nome: "Rafael Lima",
-                iniciais: "RL",
-            },
-            status: "aberto",
-        },
-        {
-            id: "00002",
-            atualizadoEm: "12/10/2025 20:56",
-            titulo: "Testando",
-            servico: "Cobrança",
-            valorTotal: "R$ 1.222,00",
-            tecnico: {
-                nome: "Rafael Lima",
-                iniciais: "RL",
-            },
-            status: "em atendimento",
-        },
-    ];
+    const { chamados } = useChamados();
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);
@@ -54,7 +20,7 @@ export function Chamados() {
             </h2>
 
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
-                <Table data={chamadosData} onVisualizar={handleVisualizar} />
+                <Table data={chamados} onVisualizar={handleVisualizar} />
             </div>
         </section>
     );

@@ -1,7 +1,6 @@
-import atendendoSvg from "../assets/clock-2.svg";
-import encerradoSvg from "../assets/circle-check-big.svg";
-import abertoSvg from "../assets/circle-help.svg";
 import olhoSvg from "../assets/eye.svg";
+
+import { Status } from "./Status";
 
 type TableProps = {
     data: Chamado[];
@@ -9,45 +8,6 @@ type TableProps = {
 };
 
 export function Table({ data, onVisualizar }: TableProps) {
-    const getStatusIcon = (status: Chamado["status"]) => {
-        switch (status) {
-            case "aberto":
-                return abertoSvg;
-            case "em atendimento":
-                return atendendoSvg;
-            case "encerrado":
-                return encerradoSvg;
-            default:
-                return abertoSvg;
-        }
-    };
-
-    const getStatusBgColor = (status: Chamado["status"]) => {
-        switch (status) {
-            case "aberto":
-                return "bg-pink/20";
-            case "em atendimento":
-                return "bg-blue/20";
-            case "encerrado":
-                return "bg-green/20";
-            default:
-                return "bg-pink/20";
-        }
-    };
-
-    const getStatusTextColor = (status: Chamado["status"]) => {
-        switch (status) {
-            case "aberto":
-                return "text-pink";
-            case "em atendimento":
-                return "text-blue";
-            case "encerrado":
-                return "text-green";
-            default:
-                return "text-red";
-        }
-    };
-
     const handleVisualizar = (id: string | number) => {
         if (onVisualizar) {
             onVisualizar(id);
@@ -111,21 +71,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                             </div>
                         </td>
                         <td className="py-3 px-3">
-                            <div
-                                className={`py-3 px-3 flex items-center gap-2 rounded-4xl w-fit ${getStatusBgColor(
-                                    chamado.status
-                                )}`}>
-                                <img
-                                    src={getStatusIcon(chamado.status)}
-                                    alt={`Status ${chamado.status}`}
-                                />
-                                <span
-                                    className={`text-sm hidden xl:block font-semibold capitalize ${getStatusTextColor(
-                                        chamado.status
-                                    )}`}>
-                                    {chamado.status}
-                                </span>
-                            </div>
+                            <Status status={chamado.status} />
                         </td>
                         <td className="px-3 py-4.5 flex items-center justify-center">
                             <span
