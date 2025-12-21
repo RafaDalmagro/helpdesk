@@ -20,7 +20,7 @@ const chamadosFake: Chamado[] = [
     },
     {
         id: "00002",
-        atualizadoEm: "12/10/2025 20:56",
+        atualizadoEm: "12/10/25 20:56",
         titulo: "Testando",
         servico: "Cobrança",
         valorTotal: "R$ 1.222,00",
@@ -29,7 +29,7 @@ const chamadosFake: Chamado[] = [
     },
     {
         id: "00001",
-        atualizadoEm: "12/10/2025 20:56",
+        atualizadoEm: "12/10/25 20:56",
         titulo: "Outro teste",
         servico: "Cobrança",
         valorTotal: "R$ 1.222,00",
