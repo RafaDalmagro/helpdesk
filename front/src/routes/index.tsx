@@ -6,7 +6,7 @@ import { ClientRoutes } from "./ClientRoutes";
 export function Routes() {
     return (
         <BrowserRouter>
-            <ClientRoutes />
+            <AuthRoutes />
         </BrowserRouter>
     );
 }

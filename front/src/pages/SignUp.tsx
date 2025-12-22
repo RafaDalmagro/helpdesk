@@ -1,8 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+
+import { api } from "../services/api";
+import { AxiosError } from "axios";
+import { z, ZodError } from "zod";
 
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+
+const signUpSchema = z.object({
+    name: z.string().trim().min(1, { message: "Informe o nome" }),
+    email: z.email({ message: "Email inválido" }),
+    password: z
+        .string()
+        .trim()
+        .min(6, { message: "Senha deve ter pelo menos 6 dígitos" }),
+});
 
 export function SignUp() {
     const [name, setName] = useState("");
@@ -10,10 +23,33 @@ export function SignUp() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    function onSubmit(e: React.FormEvent) {
+    const navigate = useNavigate();
+
+    async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        console.log(name, email, password);
+        try {
+            const data = signUpSchema.parse({ name, email, password });
+
+            api.post("/users", data);
+
+            alert(
+                "Usuário cadastrado! Voce será redirecionado para tela de login."
+            );
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+
+            if (error instanceof ZodError) {
+                return alert(error.issues[0].message);
+            }
+
+            if (error instanceof AxiosError) {
+                return alert(error.response?.data.message);
+            }
+
+            alert("Não foi possível cadastrar");
+        }
     }
 
     return (
