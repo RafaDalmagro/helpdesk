@@ -1,18 +1,47 @@
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import { Link } from "react-router";
+
+import { api } from "../services/api";
+import { AxiosError } from "axios";
+import { z, ZodError } from "zod";
 
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+
+const signInSchema = z.object({
+    email: z.email({ message: "Email inválido" }),
+    password: z
+        .string()
+        .trim()
+        .min(6, { message: "Senha deve ter pelo menos 6 dígitos" }),
+});
 
 export function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    function onSubmit(e: React.FormEvent) {
+    async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        console.log(email, password);
+        try {
+            const data = signInSchema.parse({ email, password });
+
+            const response = await api.post("/sessions", data);
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+
+            if (error instanceof ZodError) {
+                return alert(error.issues[0].message);
+            }
+
+            if (error instanceof AxiosError) {
+                return alert(error.response?.data.message);
+            }
+
+            alert("Não foi possível iniciar a sessão");
+        }
     }
 
     return (
