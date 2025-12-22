@@ -2,8 +2,14 @@ import logoSvg from "../assets/logo.svg";
 import toggle from "../assets/toggle.svg";
 
 import { Menu } from "./Menu";
+import { UserInitials } from "./UserInitials";
 
-export function Header() {
+export function Header({
+    userInitials,
+    userEmail,
+    userRole,
+    userName,
+}: UserInitialsProps) {
     return (
         <header>
             <nav className="flex md:flex-col justify-between items-center box-border p-6 md:p-0 md:h-full">
@@ -28,18 +34,12 @@ export function Header() {
 
                 <Menu />
 
-                <div className="flex md:flex-1 gap-3 md:py-5 md:px-5">
-                    <span className="flex items-center justify-center bg-purple-800 rounded-4xl size-10 py-2 px-1.5 text-gray-600 text-sm leading-5">
-                        RD
-                    </span>
-                    <div className="hidden md:flex md:flex-col md:justify-center">
-                        <span className="text-sm text-gray-600">
-                            Usuário Técnico
-                        </span>
-                        <span className="text-xs text-gray-400">
-                            user.tech@test.com
-                        </span>
-                    </div>
+                <div className="flex md:py-5 md:px-5">
+                    <UserInitials
+                        userInitials={userInitials}
+                        userRole={userRole}
+                        userEmail={userEmail}
+                    />
                 </div>
             </nav>
         </header>

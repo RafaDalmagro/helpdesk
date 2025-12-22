@@ -15,7 +15,12 @@ const chamadosFake: Chamado[] = [
         titulo: "Instalação de Rede",
         servico: "Rede lenta",
         valorTotal: "R$ 180,00",
-        tecnico: { nome: "Carlos Silva", iniciais: "CS" },
+        user: {
+            nome: "Carlos Silva",
+            iniciais: "CS",
+            role: "cliente",
+            email: "client@email.com",
+        },
         status: "encerrado",
     },
     {
@@ -24,7 +29,12 @@ const chamadosFake: Chamado[] = [
         titulo: "Testando",
         servico: "Cobrança",
         valorTotal: "R$ 1.222,00",
-        tecnico: { nome: "Rafael Lima", iniciais: "RL" },
+        user: {
+            nome: "Rafael Lima",
+            iniciais: "RL",
+            role: "tecnico",
+            email: "tech@email.com",
+        },
         status: "aberto",
     },
     {
@@ -33,7 +43,12 @@ const chamadosFake: Chamado[] = [
         titulo: "Outro teste",
         servico: "Cobrança",
         valorTotal: "R$ 1.222,00",
-        tecnico: { nome: "Rafael Lima", iniciais: "RL" },
+        user: {
+            nome: "Rafael Lima",
+            iniciais: "RL",
+            role: "administrador",
+            email: "admin@email.com",
+        },
         status: "em atendimento",
     },
 ];

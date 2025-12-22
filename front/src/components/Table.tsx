@@ -1,6 +1,7 @@
 import olhoSvg from "../assets/eye.svg";
 
 import { Status } from "./Status";
+import { UserInitials } from "./UserInitials";
 
 type TableProps = {
     data: Chamado[];
@@ -62,12 +63,10 @@ export function Table({ data, onVisualizar }: TableProps) {
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                             <div className="flex items-center justify-start gap-2">
-                                <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xxs leading-none h-5 w-5">
-                                    {chamado.tecnico.iniciais}
-                                </span>
-                                <span className="hidden xl:block">
-                                    {chamado.tecnico.nome}
-                                </span>
+                                <UserInitials
+                                    userInitials={chamado.user.iniciais}
+                                    userName={chamado.user.nome}
+                                />
                             </div>
                         </td>
                         <td className="md:p-3 p-2">

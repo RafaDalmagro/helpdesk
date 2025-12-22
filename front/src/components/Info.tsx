@@ -56,14 +56,14 @@ export function Info({ chamado }: InfoProps) {
                     </h4>
                     <div className="flex items-center justify-start gap-2">
                         <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xs leading-none size-8">
-                            {chamado.tecnico.iniciais}
+                            {chamado.user.iniciais}
                         </span>
                         <div className="flex flex-col">
                             <span className="text-sm text-gray-200">
-                                {chamado.tecnico.nome}
+                                {chamado.user.nome}
                             </span>
                             <span className="text-gray-300 text-xs">
-                                email@test.com
+                                {chamado.user.email}
                             </span>
                         </div>
                     </div>
