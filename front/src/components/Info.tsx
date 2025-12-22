@@ -6,14 +6,14 @@ type InfoProps = {
 
 export function Info({ chamado }: InfoProps) {
     return (
-        <section className="h-full flex flex-col gap-4">
-            <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5">
+        <section className=" h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
+            <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
                 <div className="flex flex-1 flex-col gap-0.5">
                     <div className="flex items-center justify-between gap-4">
                         <span className="text-xs text-gray-300 font-bold">
                             {chamado.id}
                         </span>
-                        <Status status={chamado.status} />
+                        <Status status={chamado.status} className="max-[500px]:hidden block"/>
                     </div>
                     <h3 className="font-md font-bold">{chamado.titulo}</h3>
                 </div>

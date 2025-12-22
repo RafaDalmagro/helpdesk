@@ -69,8 +69,8 @@ export function Table({ data, onVisualizar }: TableProps) {
                                 />
                             </div>
                         </td>
-                        <td className="md:p-3 p-2">
-                            <Status status={chamado.status} />
+                        <td className="md:p-3 p-2 ">
+                            <Status status={chamado.status} className="max-[500px]:hidden sm:block md:hidden lg:block" />
                         </td>
                         <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex items-center justify-center">
                             <span

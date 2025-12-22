@@ -33,11 +33,11 @@ export function Status({ status, className = "" }: StatusProps) {
 
     return (
         <div
-            className={`p-1.5 md:p-3 flex items-center gap-2 rounded-4xl w-fit ${variant.bg} ${className}`}>
+            className={`p-1.5 flex items-center gap-2 rounded-4xl w-fit ${variant.bg}`}>
             <img src={variant.icon} alt={`Status ${status}`} />
 
             <span
-                className={`text-xs md:text-sm hidden sm:block md:hidden lg:block capitalize ${variant.text}`}>
+                className={`text-xs max-[500px]:hidden block capitalize ${variant.text} ${className}`}>
                 {status}
             </span>
         </div>

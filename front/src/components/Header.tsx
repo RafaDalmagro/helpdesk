@@ -26,7 +26,7 @@ export function Header({
                                 HelpDesk
                             </h1>
                             <span className="text-xxs text-purple-100 uppercase font-bold">
-                                Técnico
+                                {userRole}
                             </span>
                         </div>
                     </div>
