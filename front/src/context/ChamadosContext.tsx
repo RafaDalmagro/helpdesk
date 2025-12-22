@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, use, useMemo, useState } from "react";
 
 type ChamadosContextType = {
     chamados: Chamado[];
@@ -78,7 +78,7 @@ export function ChamadosProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useChamados() {
-    const contexto = useContext(ChamadosContext);
+    const contexto = use(ChamadosContext);
     if (!contexto)
         throw new Error(
             "useChamados deve ser usado dentro de ChamadosProvider"
