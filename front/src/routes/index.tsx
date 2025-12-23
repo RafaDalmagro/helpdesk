@@ -6,9 +6,10 @@ import { AuthRoutes } from "./AuthRoutes";
 import { ClientRoutes } from "./ClientRoutes";
 import { TechRoutes } from "./TechRoutes";
 import { AdminRoutes } from "./AdminRoutes";
+import { Loading } from "../components/Loading";
 
 export function Routes() {
-    const { session } = useAuth();
+    const { session, isLoading } = useAuth();
     function Route() {
         if (!session?.userWithoutPassword?.role) {
             return <AuthRoutes />;
@@ -23,6 +24,10 @@ export function Routes() {
             default:
                 return <AuthRoutes />;
         }
+    }
+
+    if (isLoading) {
+        return <Loading />;
     }
 
     return (
