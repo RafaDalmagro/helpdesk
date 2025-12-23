@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router";
 
+import { TechLayout } from "../components/layouts/TechLayout";
+
 export function TechRoutes() {
     return (
         <Routes>
-            {/* <Route path="/" element={}>
-                <Route path="/" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
-            </Route> */}
+            <Route path="/" element={<TechLayout />} />
         </Routes>
     );
 }

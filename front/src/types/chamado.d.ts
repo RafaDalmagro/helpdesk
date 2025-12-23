@@ -2,12 +2,12 @@ export {};
 
 declare global {
     type ChamadoStatus = "aberto" | "em atendimento" | "encerrado";
-    type UserRole = "tecnico" | "cliente" | "administrador";
+    type UserRoles = "tecnico" | "cliente" | "administrador";
 
     interface User {
         nome: string;
         iniciais: string;
-        role: UserRole;
+        role: UserRoles;
         email: string;
     }
 
