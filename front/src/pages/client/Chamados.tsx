@@ -9,9 +9,9 @@ export function Chamados() {
     const navigate = useNavigate();
 
     const { chamados } = useChamados();
-    const { chamados: chamadosData, loading, error } = useChamado();
+    // const { chamados: chamadosData, loading, error } = useChamado();
 
-    console.log(chamadosData);
+    // console.log(chamadosData);
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);

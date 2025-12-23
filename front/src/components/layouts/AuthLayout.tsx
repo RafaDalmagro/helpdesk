@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 
-import NavHeader from "../assets/NavHeader.svg";
-import loginBackground from "../assets/Login_Background.svg";
+import NavHeader from "../../assets/NavHeader.svg";
+import loginBackground from "../../assets/Login_Background.svg";
 
 export function AuthLayout() {
     return (

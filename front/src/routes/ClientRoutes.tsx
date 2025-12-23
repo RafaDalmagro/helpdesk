@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from "react-router";
 
-import { DefaultLayout } from "../components/DefaultLayout";
+import { DefaultLayout } from "../components/layouts/DefaultLayout";
 
 import { ChamadosProvider } from "../context/ChamadosContext";
 

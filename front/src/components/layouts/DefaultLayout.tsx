@@ -1,8 +1,8 @@
 import { Outlet } from "react-router";
-import { Header } from "./Header";
+import { Header } from "../Header";
 
 import { useParams } from "react-router";
-import { useChamados } from "../context/ChamadosContext";
+import { useChamados } from "../../context/ChamadosContext";
 
 export function DefaultLayout() {
     const { id } = useParams();
