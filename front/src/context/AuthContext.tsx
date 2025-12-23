@@ -4,6 +4,7 @@ type AuthContext = {
     isLoading: boolean;
     session: UserAPIResponse | null;
     save: (data: UserAPIResponse) => void;
+    removeSession: () => void;
 };
 
 const LOCAL_STORAGE_KEY = "@HelpDesk:session";
@@ -41,12 +42,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
     }
 
+    function removeSession() {
+        setSession(null);
+        localStorage.removeItem(`${LOCAL_STORAGE_KEY}:user`);
+        localStorage.removeItem(`${LOCAL_STORAGE_KEY}:token`);
+
+        window.location.assign("/");
+    }
+
     useEffect(() => {
         loadSession();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ session, save, isLoading }}>
+        <AuthContext.Provider
+            value={{ session, save, isLoading, removeSession }}>
             {children}
         </AuthContext.Provider>
     );
