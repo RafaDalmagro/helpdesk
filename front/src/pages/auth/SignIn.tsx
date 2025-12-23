@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router";
-
-import { api } from "../../services/api";
 import { AxiosError } from "axios";
 import { z, ZodError } from "zod";
 
+import { api } from "../../services/api";
+
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
+
+import { useAuth } from "../../hooks/useAuth";
 
 const signInSchema = z.object({
     email: z.email({ message: "Email inválido" }),
@@ -22,6 +24,8 @@ export function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
+    const auth = useAuth();
+
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
@@ -31,6 +35,8 @@ export function SignIn() {
             const data = signInSchema.parse({ email, password });
 
             const response = await api.post("/sessions", data);
+
+            auth.save(response.data);
             console.log(response.data);
         } catch (err) {
             let errorMessage = "Não foi possível iniciar a sessão";

@@ -2,7 +2,7 @@ type UserAPIRole = "admin" | "tech" | "client";
 
 type UserAPIResponse = {
     token: string;
-    user: {
+    userWithoutPassword: {
         id: string;
         name: string;
         email: string;
