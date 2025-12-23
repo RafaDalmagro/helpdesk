@@ -1,18 +1,11 @@
-export enum UserRole {
-    ADMIN = "admin",
-    TECH = "tech",
-    CLIENT = "client",
-}
+type UserAPIRole = "admin" | "tech" | "client";
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    role?: UserRole;
-    filename?: string | null;
-    firstLogin?: boolean;
-    isActive?: boolean;
-    createdAt?: Date;
-    updatedAt?: Date;
+type UserAPIResponse = {
+    token: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        role: UserAPIRole;
+    };
 };
