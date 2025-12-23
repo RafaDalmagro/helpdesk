@@ -13,7 +13,7 @@ const session: Session = {
         id: "c7d736f6-37ab-4d18-9a92-c28da30d75e9",
         name: "Admin User",
         email: "admin@email.com",
-        role: "cliente",
+        role: "223",
         filename: null,
         firstLogin: true,
         isActive: true,

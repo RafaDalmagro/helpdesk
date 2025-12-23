@@ -20,27 +20,30 @@ export function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setError("");
+        setIsLoading(true);
 
         try {
             const data = signInSchema.parse({ email, password });
 
             const response = await api.post("/sessions", data);
             console.log(response.data);
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            let errorMessage = "Não foi possível iniciar a sessão";
 
-            if (error instanceof ZodError) {
-                return alert(error.issues[0].message);
+            if (err instanceof ZodError) {
+                errorMessage = err.issues[0].message;
+            } else if (err instanceof AxiosError) {
+                errorMessage = err.response?.data.message || errorMessage;
             }
 
-            if (error instanceof AxiosError) {
-                return alert(error.response?.data.message);
-            }
-
-            alert("Não foi possível iniciar a sessão");
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -71,7 +74,7 @@ export function SignIn() {
                     placeholder="Digite sua senha"
                     onChange={(e) => setPassword(e.target.value)}
                 />
-
+                {error && <p className="text-xs text-red font-bold">{error}</p>}
                 <Button type="submit" isLoading={isLoading}>
                     Entrar
                 </Button>
