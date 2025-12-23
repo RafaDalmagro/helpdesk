@@ -3,11 +3,15 @@ import { useNavigate } from "react-router";
 import { Table } from "../components/Table";
 
 import { useChamados } from "../context/ChamadosContext";
+import { useChamado } from "../hooks/useChamado";
 
 export function Chamados() {
     const navigate = useNavigate();
 
     const { chamados } = useChamados();
+    const { chamados: chamadosData, loading, error } = useChamado();
+
+    console.log(chamadosData);
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);
