@@ -1,8 +1,8 @@
-import { Voltar } from "../components/VoltarLink";
-import { Info } from "../components/Info";
+import { Voltar } from "../../components/VoltarLink";
+import { Info } from "../../components/Info";
 
 import { useParams } from "react-router";
-import { useChamados } from "../context/ChamadosContext";
+import { useChamados } from "../../context/ChamadosContext";
 
 export function Chamado() {
     const { id } = useParams();

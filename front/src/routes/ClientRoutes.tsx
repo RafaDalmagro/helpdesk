@@ -4,9 +4,9 @@ import { DefaultLayout } from "../components/DefaultLayout";
 
 import { ChamadosProvider } from "../context/ChamadosContext";
 
-import { Chamados } from "../pages/Chamados";
-import { Chamado } from "../pages/Chamado";
-import { NovoChamado } from "../pages/NovoChamado";
+import { Chamados } from "../pages/client/Chamados";
+import { Chamado } from "../pages/client/Chamado";
+import { NovoChamado } from "../pages/client/NovoChamado";
 
 export function ClientRoutes() {
     return (

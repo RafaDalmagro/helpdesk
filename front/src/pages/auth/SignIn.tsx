@@ -1,15 +1,14 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useState, useActionState } from "react";
+import { Link } from "react-router";
 
-import { api } from "../services/api";
+import { api } from "../../services/api";
 import { AxiosError } from "axios";
 import { z, ZodError } from "zod";
 
-import { Input } from "../components/Input";
-import { Button } from "../components/Button";
+import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
 
-const signUpSchema = z.object({
-    name: z.string().trim().min(1, { message: "Informe o nome" }),
+const signInSchema = z.object({
     email: z.email({ message: "Email inválido" }),
     password: z
         .string()
@@ -17,26 +16,19 @@ const signUpSchema = z.object({
         .min(6, { message: "Senha deve ter pelo menos 6 dígitos" }),
 });
 
-export function SignUp() {
-    const [name, setName] = useState("");
+export function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-
-    const navigate = useNavigate();
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         try {
-            const data = signUpSchema.parse({ name, email, password });
+            const data = signInSchema.parse({ email, password });
 
-            api.post("/users", data);
-
-            alert(
-                "Usuário cadastrado! Voce será redirecionado para tela de login."
-            );
-            navigate("/");
+            const response = await api.post("/sessions", data);
+            console.log(response.data);
         } catch (error) {
             console.log(error);
 
@@ -48,7 +40,7 @@ export function SignUp() {
                 return alert(error.response?.data.message);
             }
 
-            alert("Não foi possível cadastrar");
+            alert("Não foi possível iniciar a sessão");
         }
     }
 
@@ -59,19 +51,12 @@ export function SignUp() {
                 className="flex w-full flex-col gap-8 p-6 border-gray-500 border rounded-xl">
                 <div className="">
                     <h1 className="text-lg text-gray-200 font-bold">
-                        Crie sua conta
+                        Acesse o portal
                     </h1>
                     <p className="text-xs text-gray-300">
-                        Informe seu nome, e-mail e senha
+                        Entre usando seu e-mail e senha cadastrados
                     </p>
                 </div>
-                <Input
-                    legend="Nome"
-                    required
-                    type="text"
-                    placeholder="Digite o nome completo"
-                    onChange={(e) => setName(e.target.value)}
-                />
                 <Input
                     legend="E-mail"
                     required
@@ -85,22 +70,23 @@ export function SignUp() {
                     type="password"
                     placeholder="Digite sua senha"
                     onChange={(e) => setPassword(e.target.value)}
-                    span="Mínimo de 6 dígitos"
                 />
 
                 <Button type="submit" isLoading={isLoading}>
-                    Cadastrar
+                    Entrar
                 </Button>
             </form>
             <div className="flex w-full flex-col gap-8 p-6 border-gray-500 border rounded-xl">
                 <div>
                     <h2 className="text-md text-gray-200 font-bold">
-                        Já tem uma conta?
+                        Ainda não tem uma conta?
                     </h2>
-                    <p className="text-xs text-gray-300">Entre agora mesmo</p>
+                    <p className="text-xs text-gray-300">
+                        Cadastre agora mesmo
+                    </p>
                 </div>
-                <Link to="/">
-                    <Button variant="primary">Acessar conta</Button>
+                <Link to="/signup">
+                    <Button variant="primary">Criar conta</Button>
                 </Link>
             </div>
         </div>

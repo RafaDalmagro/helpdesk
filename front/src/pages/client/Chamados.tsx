@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router";
 
-import { Table } from "../components/Table";
+import { Table } from "../../components/Table";
 
-import { useChamados } from "../context/ChamadosContext";
-import { useChamado } from "../hooks/useChamado";
+import { useChamados } from "../../context/ChamadosContext";
+import { useChamado } from "../../hooks/useChamado";
 
 export function Chamados() {
     const navigate = useNavigate();
