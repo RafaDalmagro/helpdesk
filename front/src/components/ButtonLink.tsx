@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router";
+import { useAuth } from "../hooks/useAuth";
 
 import pranchetaIcon from "../assets/clipboard-list.svg";
 import techIcon from "../assets/users.svg";
@@ -20,11 +21,14 @@ type Props = {
         | "sair";
     iconSvg?: string;
     to: string;
+    onClick?: () => void;
 };
 
-export function ButtonLink({ title, iconSvg, variant, to }: Props) {
+export function ButtonLink({ title, iconSvg, variant, to, onClick }: Props) {
     const location = useLocation();
     const isActive = location.pathname === to;
+
+    const auth = useAuth();
 
     const variantClasses = {
         chamados: pranchetaIcon,
@@ -42,12 +46,19 @@ export function ButtonLink({ title, iconSvg, variant, to }: Props) {
     return (
         <Link
             to={to}
+            onClick={
+                onClick
+                    ? onClick
+                    : variant === "sair"
+                    ? auth.removeSession
+                    : undefined
+            }
             className={
                 variant !== "sair" && variant !== "perfil"
                     ? `flex gap-3 p-3 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear w-full ${
                           isActive ? "bg-purple-800" : "bg-inherit"
                       }`
-                    : `flex gap-2 p-0 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear w-full ${
+                    : `flex gap-2 w-20 p-0 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear ${
                           isActive ? "bg-purple-800" : "bg-inherit"
                       }`
             }>
@@ -55,9 +66,9 @@ export function ButtonLink({ title, iconSvg, variant, to }: Props) {
             <span
                 className={
                     variant === "sair"
-                        ? "text-md text-red"
+                        ? "text-sm md:text-md text-red"
                         : variant === "perfil"
-                        ? "text-md text-gray-500"
+                        ? "text-sm md:text-md text-gray-500"
                         : "text-sm text-gray-600"
                 }>
                 {title}

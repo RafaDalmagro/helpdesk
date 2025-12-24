@@ -27,8 +27,6 @@ export function Chamados() {
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
                 <Table data={chamados} onVisualizar={handleVisualizar} />
             </div>
-
-            <CardPerfil />
         </section>
     );
 }

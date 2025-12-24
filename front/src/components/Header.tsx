@@ -39,6 +39,7 @@ export function Header({
                         userInitials={userInitials}
                         userRole={userRole}
                         userEmail={userEmail}
+                        enablePerfilCard={true}
                     />
                 </div>
             </nav>

@@ -19,8 +19,6 @@ export function DefaultLayout() {
                 />
 
                 <Outlet />
-
-
             </main>
         </div>
     );
