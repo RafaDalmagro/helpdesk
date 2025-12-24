@@ -1,8 +1,4 @@
 import { Outlet } from "react-router";
-import { Header } from "../Header";
-
-import { useParams } from "react-router";
-import { useChamados } from "../../context/ChamadosContext";
 
 export function AdminLayout() {
     return (
