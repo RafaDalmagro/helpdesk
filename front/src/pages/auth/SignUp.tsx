@@ -22,12 +22,14 @@ export function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
-
+        setError("");
+        setIsLoading(true);
         try {
             const data = signUpSchema.parse({ name, email, password });
 
@@ -38,17 +40,19 @@ export function SignUp() {
             );
             navigate("/");
         } catch (error) {
-            console.log(error);
+            let errorMessage = "Não foi possível iniciar a sessão";
 
             if (error instanceof ZodError) {
-                return alert(error.issues[0].message);
+                errorMessage = error.issues[0].message;
             }
 
             if (error instanceof AxiosError) {
-                return alert(error.response?.data.message);
+                errorMessage = error.response?.data.message || errorMessage;
             }
 
-            alert("Não foi possível cadastrar");
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -87,7 +91,7 @@ export function SignUp() {
                     onChange={(e) => setPassword(e.target.value)}
                     span="Mínimo de 6 dígitos"
                 />
-
+                {error && <p className="text-xs text-red font-bold">{error}</p>}
                 <Button type="submit" isLoading={isLoading}>
                     Cadastrar
                 </Button>

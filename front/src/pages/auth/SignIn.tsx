@@ -43,7 +43,9 @@ export function SignIn() {
 
             if (err instanceof ZodError) {
                 errorMessage = err.issues[0].message;
-            } else if (err instanceof AxiosError) {
+            }
+            
+            if (err instanceof AxiosError) {
                 errorMessage = err.response?.data.message || errorMessage;
             }
 
