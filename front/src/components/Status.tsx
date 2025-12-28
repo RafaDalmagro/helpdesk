@@ -3,25 +3,25 @@ import encerradoSvg from "../assets/circle-check-big.svg";
 import abertoSvg from "../assets/circle-help.svg";
 
 type StatusProps = {
-    status: ChamadoStatus;
+    status: TicketStatus;
     className?: string;
 };
 
 const STATUS_UI: Record<
-    ChamadoStatus,
+    TicketStatus,
     { icon: string; bg: string; text: string }
 > = {
-    aberto: {
+    open: {
         icon: abertoSvg,
         bg: "bg-pink/20",
         text: "text-pink",
     },
-    "em atendimento": {
+    in_progress: {
         icon: atendendoSvg,
         bg: "bg-blue/20",
         text: "text-blue",
     },
-    encerrado: {
+    closed: {
         icon: encerradoSvg,
         bg: "bg-green/20",
         text: "text-green",
@@ -38,7 +38,11 @@ export function Status({ status, className = "" }: StatusProps) {
 
             <span
                 className={`text-xs max-[500px]:hidden block capitalize ${variant.text} ${className}`}>
-                {status}
+                {status === "open"
+                    ? "Aberto"
+                    : status === "in_progress"
+                    ? "Em Andamento"
+                    : "Encerrado"}
             </span>
         </div>
     );

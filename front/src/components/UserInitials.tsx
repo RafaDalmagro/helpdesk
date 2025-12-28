@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { CardPerfil } from "./CardPerfil";
+import { getInitials } from "../utils/getInitials";
 
-type UserInitialsPropsWithPerfil = UserInitialsProps & {
+type Props = {
+    name?: string;
+    email?: string;
+    role?: string;
     enablePerfilCard?: boolean;
 };
 
-export function UserInitials({
-    userInitials,
-    userEmail,
-    userRole,
-    userName,
-    enablePerfilCard = false,
-}: UserInitialsPropsWithPerfil) {
+export function UserInitials({ name, email, role, enablePerfilCard }: Props) {
     const [showPerfil, setShowPerfil] = useState(false);
+
+    const userInitials = getInitials(name || "Usuário Sem Nome");
 
     const handleTogglePerfil = () => {
         setShowPerfil((prev) => !prev);
@@ -48,19 +48,19 @@ export function UserInitials({
                     <span className="flex items-center justify-center bg-purple-800 rounded-4xl size-10 py-2 px-1.5 text-gray-600 text-sm leading-5">
                         {userInitials}
                     </span>
-                    {userName && (
+                    {name && !userInitials && (
                         <span className="hidden xl:flex items-center">
-                            {userName}
+                            {name}
                         </span>
                     )}
-                    {userRole && (
+                    {email && (
                         <div className="hidden md:flex md:flex-col md:justify-center items-center">
                             <span className="text-sm text-gray-600 capitalize">
-                                {`Usuário ${userRole}`}
+                                {`Usuário ${role}`}
                             </span>
-                            {userEmail && (
+                            {email && (
                                 <span className="text-xs text-gray-400">
-                                    {userEmail}
+                                    {email}
                                 </span>
                             )}
                         </div>
@@ -76,18 +76,16 @@ export function UserInitials({
             <span className="flex items-center justify-center bg-purple-800 rounded-4xl size-10 py-2 px-1.5 text-gray-600 text-sm leading-5">
                 {userInitials}
             </span>
-            {userName && (
-                <span className="hidden xl:flex items-center">{userName}</span>
+            {name && (
+                <span className="hidden xl:flex items-center">{name}</span>
             )}
-            {userRole && (
+            {role && (
                 <div className="hidden md:flex md:flex-col md:justify-center items-center">
                     <span className="text-sm text-gray-600 capitalize">
-                        {`Usuário ${userRole}`}
+                        {`Usuário ${role}`}
                     </span>
-                    {userEmail && (
-                        <span className="text-xs text-gray-400">
-                            {userEmail}
-                        </span>
+                    {email && (
+                        <span className="text-xs text-gray-400">{email}</span>
                     )}
                 </div>
             )}

@@ -2,7 +2,7 @@ import { Route, Routes, Navigate } from "react-router";
 
 import { DefaultLayout } from "../components/layouts/DefaultLayout";
 
-import { ChamadosProvider } from "../context/ChamadosContext";
+import { TicketsProvider } from "../context/TicketContext";
 
 import { Chamados } from "../pages/client/Chamados";
 import { Chamado } from "../pages/client/Chamado";
@@ -14,9 +14,9 @@ export function ClientRoutes() {
             <Route
                 path="/"
                 element={
-                    <ChamadosProvider>
+                    <TicketsProvider>
                         <DefaultLayout />
-                    </ChamadosProvider>
+                    </TicketsProvider>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
                 <Route path="chamados" element={<Chamados />} />

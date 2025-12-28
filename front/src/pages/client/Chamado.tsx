@@ -2,15 +2,14 @@ import { Voltar } from "../../components/VoltarLink";
 import { Info } from "../../components/Info";
 
 import { useParams } from "react-router";
-import { useChamados } from "../../context/ChamadosContext";
+import { useTickets } from "../../context/TicketContext";
 
 export function Chamado() {
     const { id } = useParams();
-    const { getChamadoById } = useChamados();
+    const { getTicketById } = useTickets();
+    const ticket = id ? getTicketById(id) : undefined;
 
-    const chamado = id ? getChamadoById(id) : undefined;
-
-    if (!chamado) return <div>Chamado não encontrado</div>;
+    if (!ticket) return <div>Chamado não encontrado</div>;
 
     return (
         <article className="bg-gray-600 flex flex-1 flex-col rounded-t-xl md:rounded-t-none md:rounded-tl-xl overflow-y-auto box-border px-6 pb-6 pt-7 md:px-12 md:pb-12 md:pt-13 md:items-stretch lg:items-center">
@@ -23,7 +22,7 @@ export function Chamado() {
                     </h2>
                 </header>
 
-                <Info chamado={chamado} />
+                <Info {...ticket} />
             </div>
         </article>
     );

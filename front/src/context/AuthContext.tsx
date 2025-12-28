@@ -21,10 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             JSON.stringify(data.userWithoutPassword)
         );
 
-        localStorage.setItem(
-            `${LOCAL_STORAGE_KEY}:token`,
-            JSON.stringify(data.token)
-        );
+        localStorage.setItem(`${LOCAL_STORAGE_KEY}:token`, data.token);
         setSession(data);
     }
 

@@ -1,18 +1,10 @@
 import { useNavigate } from "react-router";
-
 import { Table } from "../../components/Table";
-
-import { useChamados } from "../../context/ChamadosContext";
-import { useChamado } from "../../hooks/useChamado";
-import { CardPerfil } from "../../components/CardPerfil";
+import { useTickets } from "../../context/TicketContext";
 
 export function Chamados() {
     const navigate = useNavigate();
-
-    const { chamados } = useChamados();
-    // const { chamados: chamadosData, loading, error } = useChamado();
-
-    // console.log(chamadosData);
+    const { tickets, loading, error } = useTickets();
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);
@@ -25,7 +17,19 @@ export function Chamados() {
             </h2>
 
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
-                <Table data={chamados} onVisualizar={handleVisualizar} />
+                {loading ? (
+                    <div className="p-4 text-center text-gray-400">
+                        Carregando chamados...
+                    </div>
+                ) : error ? (
+                    <div className="p-4 text-center text-red-400">{error}</div>
+                ) : tickets.length === 0 ? (
+                    <div className="p-4 text-center text-gray-400">
+                        Nenhum chamado encontrado.
+                    </div>
+                ) : (
+                    <Table data={tickets} onVisualizar={handleVisualizar} />
+                )}
             </div>
         </section>
     );

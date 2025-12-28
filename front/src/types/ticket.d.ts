@@ -11,9 +11,16 @@ type Ticket = {
     status: TicketStatus;
     totalValue: number;
     isActive: boolean;
-    deletedAt: Date | null;
+    deletedAt?: Date;
     createdAt: Date;
-    updatedAt: Date | null;
-    techId: string;
-    clientId: string;
+    updatedAt?: Date;
+    tech: {
+        id: string;
+        name: string;
+    };
+    client: {
+        id: string;
+        name: string;
+    };
+    serviceId: string;
 };

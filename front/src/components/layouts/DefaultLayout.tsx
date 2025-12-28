@@ -1,21 +1,29 @@
 import { Outlet } from "react-router";
 import { Header } from "../Header";
+import { useAuth } from "../../hooks/useAuth";
 
-import { useParams } from "react-router";
-import { useChamados } from "../../context/ChamadosContext";
 export function DefaultLayout() {
-    const { id } = useParams();
-    const { getChamadoById } = useChamados();
+    const { session: user } = useAuth();
 
-    const chamado = id ? getChamadoById(id) : undefined;
+    let role = null;
+
+    if (user?.userWithoutPassword.role === "admin") {
+        role = "Administrador";
+    }
+    if (user?.userWithoutPassword.role === "tech") {
+        role = "Técnico";
+    }
+    if (user?.userWithoutPassword.role === "client") {
+        role = "Cliente";
+    }
 
     return (
         <div className="w-screen h-screen bg-gray-100 overflow-hidden box-border">
             <main className="flex flex-col h-full w-full md:flex-row md:pt-3 box-border relative">
                 <Header
-                    userInitials={chamado?.user.iniciais ?? "US"}
-                    userRole={chamado?.user.role ?? "cliente"}
-                    userEmail={chamado?.user.email ?? "teste@teste.com"}
+                    role={role ?? "Sem função"}
+                    email={user?.userWithoutPassword.email}
+                    name={user?.userWithoutPassword.name}
                 />
 
                 <Outlet />

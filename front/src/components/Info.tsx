@@ -1,10 +1,6 @@
 import { Status } from "./Status";
 
-type InfoProps = {
-    chamado: Chamado;
-};
-
-export function Info({ chamado }: InfoProps) {
+export function Info(chamado: Ticket) {
     return (
         <section className=" h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
             <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
@@ -13,21 +9,24 @@ export function Info({ chamado }: InfoProps) {
                         <span className="text-xs text-gray-300 font-bold">
                             {chamado.id}
                         </span>
-                        <Status status={chamado.status} className="max-[500px]:hidden block"/>
+                        <Status
+                            status={chamado.status}
+                            className="max-[500px]:hidden block"
+                        />
                     </div>
-                    <h3 className="font-md font-bold">{chamado.titulo}</h3>
+                    <h3 className="font-md font-bold">{chamado.title}</h3>
                 </div>
                 <div className="flex flex-1 flex-col gap-0.5">
                     <h4 className="text-xs text-gray-400 font-bold">
                         Descrição
                     </h4>
-                    <p className="text-sm text-gray-200">{chamado.servico}</p>
+                    <p className="text-sm text-gray-200">{chamado.serviceId}</p>
                 </div>
                 <div className="flex flex-1 flex-col gap-0.5">
                     <h4 className="text-xs text-gray-400 font-bold">
                         Categoria
                     </h4>
-                    <p className="text-sm text-gray-200">{chamado.servico}</p>
+                    <p className="text-sm text-gray-200">{chamado.serviceId}</p>
                 </div>
                 <div className="flex flex-1 gap-8">
                     <div className="flex flex-1 flex-col gap-0.5">
@@ -35,7 +34,11 @@ export function Info({ chamado }: InfoProps) {
                             Criado em
                         </h4>
                         <p className="text-sm text-gray-200">
-                            {chamado.atualizadoEm}
+                            {chamado.createdAt.toLocaleDateString("pt-BR", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "2-digit",
+                            })}
                         </p>
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
@@ -43,7 +46,11 @@ export function Info({ chamado }: InfoProps) {
                             Atualizado em
                         </h4>
                         <p className="text-sm text-gray-200">
-                            {chamado.atualizadoEm}
+                            {chamado.updatedAt?.toLocaleDateString("pt-BR", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "2-digit",
+                            })}
                         </p>
                     </div>
                 </div>
@@ -56,14 +63,14 @@ export function Info({ chamado }: InfoProps) {
                     </h4>
                     <div className="flex items-center justify-start gap-2">
                         <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xs leading-none size-8">
-                            {chamado.user.iniciais}
+                            {chamado.client.name}
                         </span>
                         <div className="flex flex-col">
                             <span className="text-sm text-gray-200">
-                                {chamado.user.nome}
+                                {chamado.client.name}
                             </span>
                             <span className="text-gray-300 text-xs">
-                                {chamado.user.email}
+                                {chamado.client.name}
                             </span>
                         </div>
                     </div>
@@ -75,7 +82,7 @@ export function Info({ chamado }: InfoProps) {
                         </h4>
                         <div className="flex justify-between text-xs text-gray-200">
                             <span>Preço base</span>
-                            <span>{chamado.valorTotal}</span>
+                            <span>{chamado.totalValue}</span>
                         </div>
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
@@ -85,11 +92,11 @@ export function Info({ chamado }: InfoProps) {
                         <div className="text-xs text-gray-200">
                             <div className="flex justify-between ">
                                 <span>Assinatura de backup</span>
-                                <span>{chamado.valorTotal}</span>
+                                <span>{chamado.totalValue}</span>
                             </div>
                             <div className="flex justify-between ">
                                 <span>Formatação do PC</span>
-                                <span>{chamado.valorTotal}</span>
+                                <span>{chamado.totalValue}</span>
                             </div>
                         </div>
                     </div>
@@ -99,7 +106,7 @@ export function Info({ chamado }: InfoProps) {
                                 Total
                             </span>
                             <span className="text-gray-200 font-bold text-sm">
-                                {chamado.valorTotal}
+                                {chamado.totalValue}
                             </span>
                         </div>
                     </div>

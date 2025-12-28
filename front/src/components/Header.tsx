@@ -5,11 +5,14 @@ import { Menu } from "./Menu";
 import { UserInitials } from "./UserInitials";
 
 export function Header({
-    userInitials,
-    userEmail,
-    userRole,
-    userName,
-}: UserInitialsProps) {
+    role,
+    email,
+    name,
+}: {
+    role?: string;
+    email?: string;
+    name?: string;
+}) {
     return (
         <header>
             <nav className="flex md:flex-col justify-between items-center box-border p-6 md:p-0 md:h-full">
@@ -26,7 +29,7 @@ export function Header({
                                 HelpDesk
                             </h1>
                             <span className="text-xxs text-purple-100 uppercase font-bold">
-                                {userRole}
+                                {role}
                             </span>
                         </div>
                     </div>
@@ -36,10 +39,10 @@ export function Header({
 
                 <div className="flex md:py-5 md:px-5">
                     <UserInitials
-                        userInitials={userInitials}
-                        userRole={userRole}
-                        userEmail={userEmail}
                         enablePerfilCard={true}
+                        role={role}
+                        name={name}
+                        email={email}
                     />
                 </div>
             </nav>

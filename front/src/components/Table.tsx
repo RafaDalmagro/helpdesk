@@ -4,7 +4,7 @@ import { Status } from "./Status";
 import { UserInitials } from "./UserInitials";
 
 type TableProps = {
-    data: Chamado[];
+    data: Ticket[];
     onVisualizar?: (id: string | number) => void;
 };
 
@@ -47,30 +47,30 @@ export function Table({ data, onVisualizar }: TableProps) {
                 {data.map((chamado) => (
                     <tr key={chamado.id} className="border-b border-gray-500">
                         <td className="text-xs font-medium text-gray-200 md:p-3 p-2">
-                            {chamado.atualizadoEm}
+                            Sim
                         </td>
                         <td className="text-xs font-bold text-gray-200 hidden md:table-cell md:p-3 p-2">
                             {chamado.id}
                         </td>
                         <td className="text-sm font-bold text-gray-200 md:p-3 p-2">
-                            {chamado.titulo}
+                            {chamado.title}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
-                            {chamado.servico}
+                            {chamado.serviceId}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
-                            {chamado.valorTotal}
+                            {chamado.totalValue}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                             <div className="flex items-center justify-start gap-2">
-                                <UserInitials
-                                    userInitials={chamado.user.iniciais}
-                                    userName={chamado.user.nome}
-                                />
+                                <UserInitials enablePerfilCard={false} />
                             </div>
                         </td>
                         <td className="md:p-3 p-2 ">
-                            <Status status={chamado.status} className="max-[500px]:hidden sm:block md:hidden lg:block" />
+                            <Status
+                                status={chamado.status}
+                                className="max-[500px]:hidden sm:block md:hidden lg:block"
+                            />
                         </td>
                         <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex items-center justify-center">
                             <span
