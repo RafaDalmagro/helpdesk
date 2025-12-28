@@ -43,6 +43,7 @@ export function Header({
                         role={role}
                         name={name}
                         email={email}
+                        variant="with-details"
                     />
                 </div>
             </nav>

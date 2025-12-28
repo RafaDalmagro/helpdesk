@@ -14,13 +14,30 @@ type Ticket = {
     deletedAt?: string;
     createdAt: string;
     updatedAt?: string;
-    tech: {
-        id: string;
-        name: string;
-    };
     client: {
         id: string;
         name: string;
+        email: string;
+        role: string;
     };
-    serviceId: string;
+    tech: {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+    };
+    ticketServices: TicketService[];
+};
+
+type TicketService = {
+    service: {
+        id: string;
+        name: string;
+        description: string;
+        price: number;
+    };
+    addedBy: {
+        id: string;
+        name: string;
+    };
 };

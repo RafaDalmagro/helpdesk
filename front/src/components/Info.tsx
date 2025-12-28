@@ -1,6 +1,12 @@
 import { Status } from "./Status";
+import { UserInitials } from "./UserInitials";
+import { formatDate } from "../utils/formatDate";
 
-export function Info(chamado: Ticket) {
+type Props = {
+    chamado: Ticket;
+};
+
+export function Info({ chamado }: Props) {
     return (
         <section className=" h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
             <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
@@ -20,13 +26,15 @@ export function Info(chamado: Ticket) {
                     <h4 className="text-xs text-gray-400 font-bold">
                         Descrição
                     </h4>
-                    <p className="text-sm text-gray-200">{chamado.serviceId}</p>
+                    <p className="text-sm text-gray-200">
+                        {chamado.description}
+                    </p>
                 </div>
                 <div className="flex flex-1 flex-col gap-0.5">
                     <h4 className="text-xs text-gray-400 font-bold">
                         Categoria
                     </h4>
-                    <p className="text-sm text-gray-200">{chamado.serviceId}</p>
+                    <p className="text-sm text-gray-200">Não tem</p>
                 </div>
                 <div className="flex flex-1 gap-8">
                     <div className="flex flex-1 flex-col gap-0.5">
@@ -34,11 +42,7 @@ export function Info(chamado: Ticket) {
                             Criado em
                         </h4>
                         <p className="text-sm text-gray-200">
-                            {chamado.createdAt.toLocaleDateString("pt-BR", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "2-digit",
-                            })}
+                            {formatDate(chamado.createdAt)}
                         </p>
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
@@ -46,11 +50,7 @@ export function Info(chamado: Ticket) {
                             Atualizado em
                         </h4>
                         <p className="text-sm text-gray-200">
-                            {chamado.updatedAt?.toLocaleDateString("pt-BR", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "2-digit",
-                            })}
+                            {formatDate(chamado.updatedAt)}
                         </p>
                     </div>
                 </div>
@@ -62,17 +62,7 @@ export function Info(chamado: Ticket) {
                         Técnico responsável
                     </h4>
                     <div className="flex items-center justify-start gap-2">
-                        <span className="flex items-center justify-center bg-purple-800 rounded-full text-gray-600 text-xs leading-none size-8">
-                            {chamado.client.name}
-                        </span>
-                        <div className="flex flex-col">
-                            <span className="text-sm text-gray-200">
-                                {chamado.client.name}
-                            </span>
-                            <span className="text-gray-300 text-xs">
-                                {chamado.client.name}
-                            </span>
-                        </div>
+                        <UserInitials name={chamado.tech.name} email={chamado.tech.email} variant="with-details" />
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">

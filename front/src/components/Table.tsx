@@ -58,7 +58,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                             {chamado.title}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
-                            {chamado.serviceId}
+                            {chamado.ticketServices[0]?.service.name}
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                             {chamado.totalValue}
@@ -68,6 +68,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                                 <UserInitials
                                     enablePerfilCard={false}
                                     name={chamado.tech.name}
+                                    variant="with-name"
                                 />
                             </div>
                         </td>
@@ -77,7 +78,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                                 className="max-[500px]:hidden sm:block md:hidden lg:block"
                             />
                         </td>
-                        <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex items-center justify-center">
+                        <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex h-full">
                             <span
                                 className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
                                 onClick={() => handleVisualizar(chamado.id)}>

@@ -24,8 +24,24 @@ class TicketController {
                 totalValue: true,
                 createdAt: true,
                 updatedAt: true,
-                client: { select: { id: true, name: true } },
-                tech: { select: { id: true, name: true } },
+                client: {
+                    select: { id: true, name: true, email: true, role: true },
+                },
+                tech: {
+                    select: { id: true, name: true, email: true, role: true },
+                },
+                ticketServices: {
+                    select: {
+                        service: {
+                            select: {
+                                id: true,
+                                name: true,
+                                price: true,
+                            },
+                        },
+                        addedBy: { select: { id: true, name: true } },
+                    },
+                },
             },
             where,
             orderBy: { createdAt: "desc" },
@@ -193,19 +209,26 @@ class TicketController {
         const ticket = await prisma.ticket.findUnique({
             where: { id },
             select: {
+                id: true,
                 title: true,
                 description: true,
                 createdAt: true,
                 updatedAt: true,
                 status: true,
-                client: { select: { id: true, name: true } },
-                tech: { select: { id: true, name: true } },
+                totalValue: true,
+                client: {
+                    select: { id: true, name: true, email: true, role: true },
+                },
+                tech: {
+                    select: { id: true, name: true, email: true, role: true },
+                },
                 ticketServices: {
                     select: {
                         service: {
                             select: {
                                 name: true,
                                 description: true,
+                                price: true,
                             },
                         },
                         addedBy: { select: { id: true, name: true } },

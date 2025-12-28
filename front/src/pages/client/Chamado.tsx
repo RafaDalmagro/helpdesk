@@ -8,6 +8,7 @@ export function Chamado() {
     const { id } = useParams();
     const { getTicketById } = useTickets();
     const ticket = id ? getTicketById(id) : undefined;
+    console.log(ticket);
 
     if (!ticket) return <div>Chamado não encontrado</div>;
 
@@ -22,7 +23,7 @@ export function Chamado() {
                     </h2>
                 </header>
 
-                <Info {...ticket} />
+                <Info chamado={ticket} />
             </div>
         </article>
     );
