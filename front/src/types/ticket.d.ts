@@ -11,9 +11,9 @@ type Ticket = {
     status: TicketStatus;
     totalValue: number;
     isActive: boolean;
-    deletedAt?: Date;
-    createdAt: Date;
-    updatedAt?: Date;
+    deletedAt?: string;
+    createdAt: string;
+    updatedAt?: string;
     tech: {
         id: string;
         name: string;

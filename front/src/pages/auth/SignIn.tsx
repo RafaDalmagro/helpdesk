@@ -37,14 +37,13 @@ export function SignIn() {
             const response = await api.post("/sessions", data);
 
             auth.save(response.data);
-            console.log(response.data);
         } catch (err) {
             let errorMessage = "Não foi possível iniciar a sessão";
 
             if (err instanceof ZodError) {
                 errorMessage = err.issues[0].message;
             }
-            
+
             if (err instanceof AxiosError) {
                 errorMessage = err.response?.data.message || errorMessage;
             }

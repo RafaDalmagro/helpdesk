@@ -1,5 +1,7 @@
 import olhoSvg from "../assets/eye.svg";
 
+import { formatDate } from "../utils/formatDate";
+
 import { Status } from "./Status";
 import { UserInitials } from "./UserInitials";
 
@@ -47,7 +49,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                 {data.map((chamado) => (
                     <tr key={chamado.id} className="border-b border-gray-500">
                         <td className="text-xs font-medium text-gray-200 md:p-3 p-2">
-                            Sim
+                            {formatDate(chamado.updatedAt)}
                         </td>
                         <td className="text-xs font-bold text-gray-200 hidden md:table-cell md:p-3 p-2">
                             {chamado.id}
@@ -63,7 +65,10 @@ export function Table({ data, onVisualizar }: TableProps) {
                         </td>
                         <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                             <div className="flex items-center justify-start gap-2">
-                                <UserInitials enablePerfilCard={false} />
+                                <UserInitials
+                                    enablePerfilCard={false}
+                                    name={chamado.client.name}
+                                />
                             </div>
                         </td>
                         <td className="md:p-3 p-2 ">
