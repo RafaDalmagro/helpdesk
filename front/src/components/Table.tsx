@@ -67,7 +67,7 @@ export function Table({ data, onVisualizar }: TableProps) {
                             <div className="flex items-center justify-start gap-2">
                                 <UserInitials
                                     enablePerfilCard={false}
-                                    name={chamado.client.name}
+                                    name={chamado.tech.name}
                                 />
                             </div>
                         </td>

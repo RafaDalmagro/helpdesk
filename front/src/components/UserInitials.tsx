@@ -56,7 +56,7 @@ export function UserInitials({ name, email, role, enablePerfilCard }: Props) {
                     {email && (
                         <div className="hidden md:flex md:flex-col md:justify-center items-center">
                             <span className="text-sm text-gray-600 capitalize">
-                                {`Usuário ${role}`}
+                                {name}
                             </span>
                             {email && (
                                 <span className="text-xs text-gray-400">
@@ -76,13 +76,13 @@ export function UserInitials({ name, email, role, enablePerfilCard }: Props) {
             <span className="flex items-center justify-center bg-purple-800 rounded-4xl size-10 py-2 px-1.5 text-gray-600 text-sm leading-5">
                 {userInitials}
             </span>
-            {name && !userInitials && (
+            {name && (
                 <span className="hidden xl:flex items-center">{name}</span>
             )}
             {role && (
                 <div className="hidden md:flex md:flex-col md:justify-center items-center">
                     <span className="text-sm text-gray-600 capitalize">
-                        {`Usuário ${role}`}
+                        {name}
                     </span>
                     {email && (
                         <span className="text-xs text-gray-400">{email}</span>
