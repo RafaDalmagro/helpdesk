@@ -62,7 +62,11 @@ export function Info({ chamado }: Props) {
                         Técnico responsável
                     </h4>
                     <div className="flex items-center justify-start gap-2">
-                        <UserInitials name={chamado.tech.name} email={chamado.tech.email} variant="with-details" />
+                        <UserInitials
+                            name={chamado.tech.name}
+                            email={chamado.tech.email}
+                            variant="with-details"
+                        />
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -80,14 +84,14 @@ export function Info({ chamado }: Props) {
                             Adicionais
                         </h4>
                         <div className="text-xs text-gray-200">
-                            <div className="flex justify-between ">
-                                <span>Assinatura de backup</span>
-                                <span>{chamado.totalValue}</span>
-                            </div>
-                            <div className="flex justify-between ">
-                                <span>Formatação do PC</span>
-                                <span>{chamado.totalValue}</span>
-                            </div>
+                            {chamado.ticketServices.map((servico) => (
+                                <div
+                                    key={servico.service.id}
+                                    className="flex justify-between">
+                                    <span>{servico.service.name}</span>
+                                    <span>{servico.service.price}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="pt-3 border-t border-gray-500">
