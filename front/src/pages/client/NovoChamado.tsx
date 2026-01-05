@@ -1,6 +1,6 @@
 import { Input } from "../../components/Input";
 import { Select } from "../../components/Select";
-
+import { TextArea } from "../../components/TextArea";
 export function NovoChamado() {
     return (
         <section className="bg-gray-600 flex flex-1 flex-col gap-4 rounded-t-xl md:rounded-t-none md:rounded-tl-xl overflow-y-auto box-border px-6 pb-6 pt-7">
@@ -19,17 +19,23 @@ export function NovoChamado() {
                             <Input
                                 label="Título"
                                 placeholder="Digite um título para o chamado"
+                                className="py-2"
                             />
                         </div>
                         <div>
-                            <Input
+                            <TextArea
                                 label="Descrição"
                                 placeholder="Digite um título para o chamado"
+                                rows={5}
                             />
                         </div>
                         <div>
-                            <Select label="Categoria de serviço">
-                            </Select>
+                            <Select
+                                label="Categoria de serviço"
+                                options={[
+                                    { value: "Teste", label: "Opa fiote" },
+                                ]}
+                            />
                         </div>
                     </form>
                 </div>

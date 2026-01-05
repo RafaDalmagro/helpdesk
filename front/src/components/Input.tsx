@@ -1,9 +1,10 @@
 type Props = React.ComponentProps<"input"> & {
     label?: string;
     span?: string;
+    className?: string;
 };
 
-export function Input({ label, span, ...rest }: Props) {
+export function Input({ label, span, className, ...rest }: Props) {
     return (
         <fieldset className="flex flex-1 flex-col  ">
             {label && (
@@ -14,7 +15,7 @@ export function Input({ label, span, ...rest }: Props) {
 
             <input
                 {...rest}
-                className="text-gray-400 pb-0.5 w-full outline-none border-b border-gray-500"
+                className={`text-gray-400 w-full outline-none border-b border-gray-500 placeholder-gray-400 ${className}`}
             />
 
             {span && (
