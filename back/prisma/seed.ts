@@ -7,6 +7,7 @@ import {
     TECH3_TIMES,
 } from "@/utils/availability";
 import { SERVICES_CATALOG } from "@/utils/services";
+import { CATEGORIES_IT } from "@/utils/categories";
 
 function buildSlots(techId: string, times: readonly string[]) {
     return BUSINESS_WEEKDAYS.flatMap((weekday) =>
@@ -96,10 +97,27 @@ async function seed() {
             await tx.service.createMany({ data: toCreate });
         }
 
+        const existingCategories = await tx.category.findMany({
+            select: { name: true },
+        });
+        const existingCategoryNames = new Set(
+            existingCategories.map((c) => c.name)
+        );
+
+        const categoriesToCreate = CATEGORIES_IT.filter(
+            (c) => !existingCategoryNames.has(c.name)
+        );
+
+        if (categoriesToCreate.length > 0) {
+            await tx.category.createMany({ data: categoriesToCreate });
+        }
+
         console.log("Seed concluída:", {
             admin: admin.email,
             techs: [tech1.email, tech2.email, tech3.email],
             slots: "Tec1 (08-12/14-18), Tec2 (10-14/16-20), Tec3 (12-16/18-22)",
+            services: `${SERVICES_CATALOG.length} serviços`,
+            categories: `${CATEGORIES_IT.length} categorias`,
         });
     });
 }

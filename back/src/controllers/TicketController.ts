@@ -62,28 +62,57 @@ class TicketController {
             description: z.string().min(10, {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
-            techId: z.uuid({ message: "ID de técnico inválido" }),
-            clientId: z.uuid({ message: "ID de cliente inválido" }),
+            techId: z.string().uuid({ message: "ID de técnico inválido" }),
+            clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
             serviceId: z.uuid({ message: "ID de serviço inválido" }),
+            categoryId: z.uuid({ message: "ID da categoria inválido" }),
         });
 
-        const { title, description, techId, clientId, serviceId } =
+        const { title, description, techId, clientId, serviceId, categoryId } =
             bodySchema.parse(req.body);
 
         try {
             const newTicket = await prisma.$transaction(async (tx) => {
+                const category = await tx.category.findFirst({
+                    where: { id: categoryId, isActive: true },
+                });
+                if (!category) {
+                    throw new AppError(
+                        "Categoria não encontrada ou inativa",
+                        404
+                    );
+                }
+
+                const tech = await tx.user.findFirst({
+                    where: { id: techId, role: "tech", isActive: true },
+                });
+                if (!tech) {
+                    throw new AppError(
+                        "Técnico não encontrado ou inativo",
+                        404
+                    );
+                }
+
                 const ticket = await tx.ticket.create({
                     data: {
                         title,
                         description,
                         techId,
-                        clientId: clientId ? clientId : req.user!.id,
+                        clientId: clientId ?? req.user!.id,
+                        categoryId,
+                    },
+                    include: {
+                        category: true,
+                        tech: { select: { id: true, name: true, email: true } },
+                        client: {
+                            select: { id: true, name: true, email: true },
+                        },
                     },
                 });
 
                 const service = await tx.service.findFirst({
                     where: { id: serviceId, isActive: true },
-                    select: { id: true, price: true },
+                    select: { id: true, price: true, name: true },
                 });
                 if (!service) {
                     throw new AppError(
@@ -107,20 +136,35 @@ class TicketController {
                     _sum: { totalPrice: true },
                 });
 
-                await tx.ticket.update({
+                const updatedTicket = await tx.ticket.update({
                     where: { id: ticket.id },
                     data: {
                         totalValue: sum._sum.totalPrice ?? 0,
                     },
+                    include: {
+                        category: true,
+                        tech: { select: { id: true, name: true, email: true } },
+                        client: {
+                            select: { id: true, name: true, email: true },
+                        },
+                        ticketServices: {
+                            include: {
+                                service: true,
+                            },
+                        },
+                    },
                 });
 
-                return ticket;
+                return updatedTicket;
             });
+
+            return res.status(201).json(newTicket);
         } catch (error) {
+            if (error instanceof AppError) {
+                throw error;
+            }
             throw new AppError("Não foi possível criar o Ticket", 400);
         }
-
-        return res.status(201).json();
     }
 
     async update(req: Request, res: Response, next: NextFunction) {
