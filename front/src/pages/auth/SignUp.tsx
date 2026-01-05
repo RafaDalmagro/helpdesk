@@ -70,21 +70,21 @@ export function SignUp() {
                     </p>
                 </div>
                 <Input
-                    legend="Nome"
+                    label="Nome"
                     required
                     type="text"
                     placeholder="Digite o nome completo"
                     onChange={(e) => setName(e.target.value)}
                 />
                 <Input
-                    legend="E-mail"
+                    label="E-mail"
                     required
                     type="email"
                     placeholder="exemplo@mail.com"
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
-                    legend="Senha"
+                    label="Senha"
                     required
                     type="password"
                     placeholder="Digite sua senha"

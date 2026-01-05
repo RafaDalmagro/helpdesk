@@ -8,7 +8,6 @@ export function Chamado() {
     const { id } = useParams();
     const { getTicketById } = useTickets();
     const ticket = id ? getTicketById(id) : undefined;
-    console.log(ticket);
 
     if (!ticket) return <div>Chamado não encontrado</div>;
 

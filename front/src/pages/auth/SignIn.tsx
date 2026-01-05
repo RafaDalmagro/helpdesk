@@ -68,14 +68,14 @@ export function SignIn() {
                     </p>
                 </div>
                 <Input
-                    legend="E-mail"
+                    label="E-mail"
                     required
                     type="email"
                     placeholder="exemplo@mail.com"
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
-                    legend="Senha"
+                    label="Senha"
                     required
                     type="password"
                     placeholder="Digite sua senha"
