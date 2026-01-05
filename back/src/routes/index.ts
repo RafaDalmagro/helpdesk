@@ -7,6 +7,7 @@ import { ticketServicesRoutes } from "./ticketServicesRoutes";
 import { sessionRoutes } from "./sessionRoutes";
 import { uploadRoutes } from "./uploadRoutes";
 import { techAvailabilityRoutes } from "./techAvailabilityRoutes";
+import { categoryRoutes } from "./categoriesRoutes";
 
 import { ensureAuthenticated } from "@/middlewares/ensureAuthenticated";
 
@@ -16,6 +17,7 @@ routes.use("/users", userRoutes);
 routes.use("/sessions", sessionRoutes);
 
 routes.use(ensureAuthenticated);
+routes.use("/categories", categoryRoutes);
 routes.use("/tickets", ticketRoutes);
 routes.use("/tech-availability", techAvailabilityRoutes);
 routes.use("/services", serviceRoutes);
