@@ -73,6 +73,9 @@ model Ticket {
   techId String @map("tech_id")
   tech   User   @relation("TechTickets", fields: [techId], references: [id])
 
+  categoryId String   @map("category_id")
+  category   Category @relation(fields: [categoryId], references: [id])
+
   ticketServices TicketService[]
 
   @@map("tickets")
@@ -113,4 +116,19 @@ model TicketService {
 
   @@unique([ticketId, serviceId])
   @@map("ticket_services")
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  tickets Ticket[]
+
+  @@map("categories")
 }
