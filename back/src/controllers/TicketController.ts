@@ -62,7 +62,7 @@ class TicketController {
             description: z.string().min(10, {
                 message: "A descrição deve ter no mínimo 10 caracteres",
             }),
-            techId: z.string().uuid({ message: "ID de técnico inválido" }),
+            techId: z.uuid({ message: "ID de técnico inválido" }),
             clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
             serviceId: z.uuid({ message: "ID de serviço inválido" }),
             categoryId: z.uuid({ message: "ID da categoria inválido" }),

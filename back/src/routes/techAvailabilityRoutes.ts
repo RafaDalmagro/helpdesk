@@ -5,8 +5,15 @@ import { verifyUserAuthorization } from "@/middlewares/verifyUserAuthorization";
 const techAvailabilityRoutes = Router();
 const techAvailabilityController = new TechAvailabilityController();
 
-techAvailabilityRoutes.use(verifyUserAuthorization(["admin"]));
-techAvailabilityRoutes.post("/:techId/availability", techAvailabilityController.create);
-techAvailabilityRoutes.put("/:techId/availability", techAvailabilityController.update);
+techAvailabilityRoutes.use(verifyUserAuthorization(["admin", "client", "tech"]));
+techAvailabilityRoutes.get("/availability", techAvailabilityController.index);
+techAvailabilityRoutes.post(
+    "/:techId/availability",
+    techAvailabilityController.create
+);
+techAvailabilityRoutes.put(
+    "/:techId/availability",
+    techAvailabilityController.update
+);
 
 export { techAvailabilityRoutes };

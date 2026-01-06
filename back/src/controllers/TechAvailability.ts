@@ -9,6 +9,33 @@ import {
 import { prisma } from "@/database/prisma";
 
 class TechAvailabilityController {
+    async index(req: Request, res: Response, next: NextFunction) {
+        const now = new Date();
+        const weekday = now.getDay();
+        const hour = now.getHours();
+        const time = `${now.getHours().toString().padStart(2, "0")}:00`;
+
+        if (weekday === 0 || weekday === 6) {
+            return res.status(200).json({ techs: [], weekday, time });
+        }
+
+        const techs = await prisma.user.findMany({
+            select: { id: true, name: true },
+            where: {
+                role: "tech",
+                isActive: true,
+                TechAvailability: {
+                    some: {
+                        weekday,
+                        time,
+                    },
+                },
+            },
+        });
+
+        return res.status(200).json({ techs, time });
+    }
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const paramsSchema = z.object({
@@ -59,7 +86,8 @@ class TechAvailabilityController {
 
             const existingMap = new Map<number, Set<string>>();
             for (const r of existing) {
-                if (!existingMap.has(r.weekday)) existingMap.set(r.weekday, new Set());
+                if (!existingMap.has(r.weekday))
+                    existingMap.set(r.weekday, new Set());
                 existingMap.get(r.weekday)!.add(r.time);
             }
 
@@ -143,7 +171,9 @@ class TechAvailabilityController {
             });
 
             if (!tech)
-                return res.status(404).json({ message: "Técnico não encontrado" });
+                return res
+                    .status(404)
+                    .json({ message: "Técnico não encontrado" });
             if (tech.role !== "tech")
                 return res
                     .status(400)
@@ -173,7 +203,8 @@ class TechAvailabilityController {
 
             const existingMap = new Map<number, Set<string>>();
             for (const r of existing) {
-                if (!existingMap.has(r.weekday)) existingMap.set(r.weekday, new Set());
+                if (!existingMap.has(r.weekday))
+                    existingMap.set(r.weekday, new Set());
                 existingMap.get(r.weekday)!.add(r.time);
             }
 

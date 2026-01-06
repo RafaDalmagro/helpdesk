@@ -14,6 +14,6 @@ type Ticket = {
     deletedAt: Date | null;
     createdAt: Date;
     updatedAt: Date | null;
-    techId: string;
+    techId: string | null;
     clientId: string;
 };
