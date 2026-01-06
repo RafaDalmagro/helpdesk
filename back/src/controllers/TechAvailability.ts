@@ -33,7 +33,7 @@ class TechAvailabilityController {
             },
         });
 
-        return res.status(200).json({ techs, time });
+        return res.status(200).json({ techs });
     }
 
     async create(req: Request, res: Response, next: NextFunction) {

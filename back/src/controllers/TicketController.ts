@@ -64,7 +64,7 @@ class TicketController {
             }),
             techId: z.uuid({ message: "ID de técnico inválido" }),
             clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
-            serviceId: z.uuid({ message: "ID de serviço inválido" }),
+            serviceId: z.uuid({ message: "ID de serviço inválido" }).optional(),
             categoryId: z.uuid({ message: "ID da categoria inválido" }),
         });
 
