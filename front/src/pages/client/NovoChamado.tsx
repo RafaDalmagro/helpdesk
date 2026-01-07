@@ -27,15 +27,15 @@ const ticketSchema = z.object({
     }),
     techId: z.uuid({ message: "ID de técnico inválido" }),
     clientId: z.uuid({ message: "ID de cliente inválido" }).optional(),
-    serviceId: z.uuid({ message: "ID de serviço inválido" }),
+    serviceId: z.uuid({ message: "ID de serviço inválido" }).optional(),
     categoryId: z.uuid({ message: "ID da categoria inválido" }),
 });
 
 export function NovoChamado() {
-    const [categorias, setCategorias] = useState<Category[]>([]);
-    const [categoriaId, setCategoriaId] = useState("");
-    const [descricao, setDescricao] = useState("");
-    const [titulo, setTitulo] = useState("");
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [categoryId, setCategoryId] = useState("");
+    const [description, setDescription] = useState("");
+    const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -45,7 +45,7 @@ export function NovoChamado() {
         async function fetchCategories() {
             try {
                 const data = await getCategories();
-                setCategorias(data);
+                setCategories(data);
             } catch (error) {
                 console.error("Erro ao buscar categorias:", error);
             } finally {
@@ -56,28 +56,40 @@ export function NovoChamado() {
         fetchCategories();
     }, []);
 
-    const categoryOptions = Array.isArray(categorias)
-        ? categorias.map((categoria) => ({
-              value: categoria.id,
-              label: categoria.name,
+    const categoryOptions = Array.isArray(categories)
+        ? categories.map((category) => ({
+              value: category.id,
+              label: category.name,
           }))
         : [];
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        console.log(categoriaId, titulo, descricao, clientId);
 
         try {
+            const responseAvailability = await api.get("/tech-availability");
+
+            const techs: { id: string; name: string }[] =
+                responseAvailability.data.techs;
+
+            if (!techs.length) {
+                throw new Error("Nenhum técnico disponível no momento");
+            }
+
+            const randomIndex = Math.floor(Math.random() * techs.length);
+            const randomTechId = techs[randomIndex].id;
+
             const data = ticketSchema.parse({
-                titulo,
-                descricao,
-                categoriaId,
+                title,
+                description,
+                categoryId,
                 clientId,
+                techId: randomTechId,
             });
 
-            // const response = await api.post("/tickets", data);
-            console.log(data);
+            const responseTickets = await api.post("/tickets", data);
+            console.log(responseTickets.data);
         } catch (err) {
             let errorMessage = "Não foi possível iniciar a sessão";
 
@@ -88,6 +100,7 @@ export function NovoChamado() {
             if (err instanceof AxiosError) {
                 errorMessage = err.response?.data.message || errorMessage;
             }
+            console.log(err);
 
             setError(errorMessage);
         } finally {
@@ -100,8 +113,8 @@ export function NovoChamado() {
     }
 
     return (
-        <div className="flex w-full h-full bg-gray-600">
-            <section className="bg-gray-600 flex flex-1 flex-col gap-4 rounded-t-xl md:rounded-t-none md:rounded-tl-xl overflow-y-auto box-border px-6 pb-6 pt-7 md:px-12 md:pb-12 md:pt-13 mx-auto max-w-4xl">
+        <div className="flex w-full h-full bg-gray-600 rounded-t-xl md:rounded-t-none md:rounded-tl-xl">
+            <section className=" flex flex-1 flex-col gap-4 overflow-y-auto box-border px-6 pb-6 pt-7 md:px-12 md:pb-12 md:pt-13 mx-auto max-w-4xl">
                 <h2 className="text-2xl text-purple-800 font-bold">
                     Novo Chamado
                 </h2>
@@ -125,7 +138,7 @@ export function NovoChamado() {
                                     label="Título"
                                     placeholder="Digite um título para o chamado"
                                     className="py-2"
-                                    onChange={(e) => setTitulo(e.target.value)}
+                                    onChange={(e) => setTitle(e.target.value)}
                                 />
                             </div>
                             <div>
@@ -135,7 +148,7 @@ export function NovoChamado() {
                                     placeholder="Digite um título para o chamado"
                                     rows={5}
                                     onChange={(e) =>
-                                        setDescricao(e.target.value)
+                                        setDescription(e.target.value)
                                     }
                                 />
                             </div>
@@ -145,7 +158,7 @@ export function NovoChamado() {
                                     label="Categoria de serviço"
                                     options={categoryOptions}
                                     onChange={(e) =>
-                                        setCategoriaId(e.target.value)
+                                        setCategoryId(e.target.value)
                                     }
                                 />
                             </div>
