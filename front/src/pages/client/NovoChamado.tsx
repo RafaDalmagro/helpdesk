@@ -89,7 +89,7 @@ export function NovoChamado() {
             });
 
             const responseTickets = await api.post("/tickets", data);
-            console.log(responseTickets.data);
+            alert(`Chamado criado com sucesso! ID: ${responseTickets.data.id}`);
         } catch (err) {
             let errorMessage = "Não foi possível iniciar a sessão";
 
