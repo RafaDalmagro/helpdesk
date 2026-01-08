@@ -153,9 +153,14 @@ class UserController {
         const userSchema = z.object({
             name: z
                 .string()
-                .min(2, { message: "O nome deve ter no mínimo 2 caracteres" }),
-            email: z.email({ message: "Formato de email inválido" }),
-            role: z.enum(["admin", "client", "tech"]),
+                .min(2, { message: "O nome deve ter no mínimo 2 caracteres" })
+                .optional(),
+            email: z.email({ message: "Formato de email inválido" }).optional(),
+            role: z.enum(["admin", "client", "tech"]).optional(),
+            password: z
+                .string()
+                .min(6, { message: "A senha deve ter no mínimo 6 caracteres" })
+                .optional(),
         });
 
         const paramsSchema = z.object({
@@ -163,8 +168,7 @@ class UserController {
         });
 
         const { id } = paramsSchema.parse(req.params);
-
-        const { name, email, role } = userSchema.parse(req.body);
+        const { name, email, role, password } = userSchema.parse(req.body);
 
         if (req.user?.id !== id && req.user?.role !== "admin") {
             throw new AppError(
@@ -190,15 +194,18 @@ class UserController {
             throw new AppError("Usuário não encontrado", 404);
         }
 
+        let dataToUpdate: any = {};
+        if (name) dataToUpdate.name = name;
+        if (email) dataToUpdate.email = email;
+        if (role) dataToUpdate.role = role;
+        if (password) {
+            const hashedPassword = await hash(password, 8);
+            dataToUpdate.password = hashedPassword;
+        }
+
         const updatedUser = await prisma.user.update({
-            where: {
-                id,
-            },
-            data: {
-                name,
-                email,
-                role,
-            },
+            where: { id },
+            data: dataToUpdate,
         });
 
         const { password: _, ...updatedUserWithoutPassword } = updatedUser;

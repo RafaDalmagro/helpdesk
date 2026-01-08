@@ -6,7 +6,7 @@ type Props = React.ComponentProps<"input"> & {
 
 export function Input({ label, span, className, ...rest }: Props) {
     return (
-        <fieldset className="flex flex-1 flex-col  ">
+        <fieldset className="flex flex-1 flex-col">
             {label && (
                 <legend className="text-xxs uppercase font-bold text-gray-300">
                     {label}
