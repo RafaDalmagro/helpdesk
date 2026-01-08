@@ -14,14 +14,42 @@ type Props = {
 
 export function Perfil({ name, email }: Props) {
     const [isOpen, setIsOpen] = useState(true);
+
+    const [showUpdatePassword, setShowUpdatePassword] = useState(false);
+
+    function handleOpenUpdatePassword() {
+        setShowUpdatePassword(true);
+    }
+
+    function onsubmit(event: React.FormEvent) {
+        event.preventDefault();
+    }
+
+    function handleClose() {
+        setIsOpen(false);
+    }
+
+    if (!isOpen) return null;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-400/50">
-            <div className="flex flex-col rounded-md bg-gray-600 w-screen h-fit mx-4">
+        <div
+            id="background"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gray-400/50"
+            onClick={handleClose}>
+            <div
+                className="flex flex-col rounded-md bg-gray-600 w-screen h-fit mx-4"
+                onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between px-7 py-5 w-full">
                     <h2 className="text-gray-200">Perfil</h2>
-                    <img src={x} alt="X" />
+                    <button
+                        className="hover:cursor-pointer opacity-80"
+                        onClick={handleClose}>
+                        <img src={x} alt="X" />
+                    </button>
                 </div>
-                <div className="flex flex-col justify-between px-7 pt-7 pb-8 w-full gap-5">
+                <form
+                    onSubmit={onsubmit}
+                    className="flex flex-col justify-between px-7 pt-7 pb-8 w-full gap-5">
                     <div className="flex items-center gap-3">
                         <img className="rounded-full w-12 h-12" src="" alt="" />
                         <div className="flex items-center gap-1">
@@ -60,15 +88,23 @@ export function Perfil({ name, email }: Props) {
                                 disabled
                                 className=""
                             />
-                            <Button variant="primary" className="w-fit px-2">
+                            <Button
+                                variant="primary"
+                                className="w-fit px-2"
+                                onClick={handleOpenUpdatePassword}>
                                 Alterar
                             </Button>
                         </div>
+                        {/*
+                        {showUpdatePassword && <UpdatePassword />}
+                        */}
                     </div>
                     <div>
-                        <Button variant="default">Salvar</Button>
+                        <Button type="submit" variant="default">
+                            Salvar
+                        </Button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     );

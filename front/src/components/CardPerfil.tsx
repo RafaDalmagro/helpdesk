@@ -16,7 +16,7 @@ export function getUserNameEmail(): { name: string; email: string } | null {
 }
 
 export function CardPerfil() {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     const user = getUserNameEmail();
 
