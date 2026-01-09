@@ -264,6 +264,12 @@ class UserController {
                 .string()
                 .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
             confirmPassword: z.string().min(6).optional(),
+            oldPassword: z
+                .string()
+                .min(6, {
+                    message:
+                        "A senha antiga é obrigatória e deve ter no mínimo 6 caracteres",
+                }),
         });
 
         const userLoged = req.user as { id: string; role: string };
@@ -274,7 +280,9 @@ class UserController {
                 403
             );
         }
-        const { password, confirmPassword } = bodySchema.parse(req.body);
+        const { password, confirmPassword, oldPassword } = bodySchema.parse(
+            req.body
+        );
 
         if (confirmPassword && password !== confirmPassword) {
             throw new AppError("As senhas não conferem", 400);
@@ -293,6 +301,12 @@ class UserController {
                 "A senha só pode ser alterada após o primeiro acesso",
                 403
             );
+        }
+
+        const bcrypt = await import("bcrypt");
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            throw new AppError("A senha antiga está incorreta", 400);
         }
 
         const hashedPassword = await hash(password, 8);

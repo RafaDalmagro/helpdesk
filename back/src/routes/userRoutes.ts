@@ -26,7 +26,7 @@ userRoutes.delete(
 userRoutes.patch(
     "/password/:id",
     ensureAuthenticated,
-    verifyUserAuthorization(["admin", "tech"]),
+    verifyUserAuthorization(["admin", "tech", "client"]),
     userController.updatePassword
 );
 

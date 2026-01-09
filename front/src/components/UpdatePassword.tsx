@@ -1,7 +1,10 @@
 import { useState } from "react";
-
+import { api } from "../services/api";
 import { Button } from "./Button";
 import { Input } from "./Input";
+import { AxiosError } from "axios";
+import { ZodError } from "zod";
+import { getUserId } from "../utils/getUserId";
 
 import arrowLeft from "../assets/arrow-left.svg";
 import x from "../assets/x.svg";
@@ -16,9 +19,36 @@ export function UpdatePassword({ onBack, onClose }: Props) {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const userId = getUserId();
 
-    function onSubmit(event: React.FormEvent) {
+    async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
+
+        try {
+            setIsLoading(true);
+            console.log({ prevPassword, password });
+
+            const response = await api.patch(`/users/password/${userId}`, {
+                password,
+                oldPassword: prevPassword,
+            });
+
+            console.log(response.data);
+            return onClose && onClose();
+        } catch (error) {
+            setError("Erro ao atualizar a senha. Verifique os dados.");
+            if (error instanceof Error) {
+                console.error("Error updating password:", error.message);
+            }
+            if (error instanceof AxiosError && error.response) {
+                console.error("Response data:", error.response.data);
+            }
+            if (error instanceof ZodError) {
+                console.error("Validation errors:", error.message);
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
