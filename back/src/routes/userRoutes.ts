@@ -12,7 +12,6 @@ userRoutes.post("/", userController.create);
 userRoutes.put(
     "/:id",
     ensureAuthenticated,
-    // verifyUserAuthorization(["admin", "tech", "client"]),
     verifyUserSelf(),
     userController.update
 );
@@ -28,6 +27,12 @@ userRoutes.patch(
     ensureAuthenticated,
     verifyUserAuthorization(["admin", "tech", "client"]),
     userController.updatePassword
+);
+userRoutes.patch(
+    "/upload/:id",
+    ensureAuthenticated,
+    verifyUserAuthorization(["admin", "tech", "client"]),
+    userController.updateFileName
 );
 
 export { userRoutes };

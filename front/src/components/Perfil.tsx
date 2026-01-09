@@ -3,10 +3,17 @@ import { useState } from "react";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { UpdatePassword } from "./UpdatePassword";
+import { Upload } from "./Upload";
+
+import { ZodError } from "zod";
+import { AxiosError } from "axios";
+
+import { api } from "../services/api";
 
 import x from "../assets/x.svg";
-import uploadIcon from "../assets/uploadIcon.svg";
 import trashIcon from "../assets/trash.svg";
+
+import { getUserId } from "../utils/getUserId";
 
 type Props = {
     name?: string;
@@ -17,13 +24,38 @@ type Props = {
 export function Perfil({ name, email, onClose }: Props) {
     const [isOpen, setIsOpen] = useState(true);
     const [showUpdatePassword, setShowUpdatePassword] = useState(false);
-
+    const [file, setFile] = useState<File | null>(null);
+    const userId = getUserId();
     function handleOpenUpdatePassword() {
         setShowUpdatePassword(true);
     }
 
-    function onsubmit(event: React.FormEvent) {
+    async function onsubmit(event: React.FormEvent) {
         event.preventDefault();
+
+        try {
+            if (!file) return alert("Selecione um arquivo");
+            if (!userId) return alert("ID de usuário não encontrado");
+            const fileUploadForm = new FormData();
+            fileUploadForm.append("file", file);
+
+            await api.post("/uploads", fileUploadForm);
+
+            const response = await api.patch(`/users/upload/${userId}`, {
+                filename: file.name.trim(),
+            });
+
+            console.log(response);
+        } catch (error) {
+            if (error instanceof ZodError) {
+                return console.log(error.issues[0].message);
+            }
+
+            if (error instanceof AxiosError) {
+                return console.log(error.response?.data.message);
+            }
+            console.log(error);
+        }
     }
 
     function handleClose() {
@@ -67,12 +99,12 @@ export function Perfil({ name, email, onClose }: Props) {
                                 alt=""
                             />
                             <div className="flex items-center gap-1">
-                                <button className="rounded-md bg-gray-500 flex items-center p-2 h-full gap-2 hover:bg-gray-400 transition ease-linear hover:cursor-pointer">
-                                    <img src={uploadIcon} alt="Upload" />
-                                    <span className="text-xs text-gray-200 font-bold">
-                                        Nova imagem
-                                    </span>
-                                </button>
+                                <Upload
+                                    onChange={(e) => {
+                                        e.target.files &&
+                                            setFile(e.target.files[0]);
+                                    }}
+                                />
                                 <button
                                     onClick={() => {}}
                                     className="flex p-2 bg-gray-500 rounded-md hover:bg-gray-400 transition ease-linear hover:cursor-pointer">

@@ -10,8 +10,6 @@ api.interceptors.request.use((config) => {
     if (token) {
         const cleanToken = token.replace(/^"|"$/g, "").trim();
         config.headers.Authorization = `Bearer ${cleanToken}`;
-    } else {
-        console.log("Token não encontrado!");
     }
 
     return config;

@@ -5,6 +5,41 @@ import { prisma } from "@/database/prisma";
 import { hash } from "bcrypt";
 
 class UserController {
+    async updateFileName(req: Request, res: Response, next: NextFunction) {
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+        const bodySchema = z.object({
+            filename: z.string().min(1, "Nome do arquivo é obrigatório"),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+        const { filename } = bodySchema.parse(req.body);
+
+        const userLoged = req.user as { id: string; role: string };
+
+        if (userLoged.id !== id && userLoged.role !== "admin") {
+            throw new AppError(
+                "Você não tem permissão para essa alteração.",
+                403
+            );
+        }
+
+        const user = await prisma.user.findUnique({ where: { id } });
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        await prisma.user.update({
+            where: { id },
+            data: { filename },
+        });
+
+        return res.status(200).json({
+            message: "Imagem de perfil atualizada com sucesso",
+            filename,
+        });
+    }
     async create(req: Request, res: Response, next: NextFunction) {
         const userSchema = z.object({
             name: z
@@ -264,12 +299,10 @@ class UserController {
                 .string()
                 .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
             confirmPassword: z.string().min(6).optional(),
-            oldPassword: z
-                .string()
-                .min(6, {
-                    message:
-                        "A senha antiga é obrigatória e deve ter no mínimo 6 caracteres",
-                }),
+            oldPassword: z.string().min(6, {
+                message:
+                    "A senha antiga é obrigatória e deve ter no mínimo 6 caracteres",
+            }),
         });
 
         const userLoged = req.user as { id: string; role: string };
