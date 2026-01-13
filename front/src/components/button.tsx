@@ -1,15 +1,21 @@
+import encerrarSvg from "../assets/circle-check-big-black.svg";
+import iniciarSvg from "../assets/clock-2-white.svg";
+
 type Props = React.ComponentProps<"button"> & {
     isLoading?: boolean;
     variant?: "default" | "primary";
+    svg?: "encerrar" | "iniciar";
+    buttonName?: string;
     className?: string;
 };
 
 export function Button({
-    children,
     isLoading,
     className,
     type = "button",
     variant = "default",
+    buttonName,
+    svg,
     ...rest
 }: Props) {
     const variantClasses = {
@@ -21,13 +27,26 @@ export function Button({
 
     return (
         <button
-            className={`flex justify-center ${widthClass} py-2.5 rounded-md text-sm font-bold cursor-pointer transition ease-linear disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`flex gap-2 justify-center items-center ${widthClass} py-2.5 text-nowrap rounded-md text-sm font-bold cursor-pointer transition ease-linear disabled:opacity-50 disabled:cursor-not-allowed ${
                 variantClasses[variant]
             } ${className || ""}`}
             type={type}
             disabled={isLoading}
             {...rest}>
-            {children}
+            {svg === "encerrar" ? (
+                <img
+                    src={encerrarSvg}
+                    alt="Ícone de encerrar chamado"
+                    className="size-4"
+                />
+            ) : svg === "iniciar" ? (
+                <img
+                    src={iniciarSvg}
+                    alt="Ícone de iniciar atendimento"
+                    className="size-4"
+                />
+            ) : null}
+            {buttonName}
         </button>
     );
 }

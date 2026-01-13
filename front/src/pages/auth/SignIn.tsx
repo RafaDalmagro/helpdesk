@@ -82,9 +82,11 @@ export function SignIn() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {error && <p className="text-xs text-red font-bold">{error}</p>}
-                <Button type="submit" isLoading={isLoading}>
-                    Entrar
-                </Button>
+                <Button
+                    type="submit"
+                    isLoading={isLoading}
+                    buttonName="Entrar"
+                />
             </form>
             <div className="flex w-full flex-col gap-8 p-6 border-gray-500 border rounded-xl">
                 <div>
@@ -96,7 +98,7 @@ export function SignIn() {
                     </p>
                 </div>
                 <Link to="/signup">
-                    <Button variant="primary">Criar conta</Button>
+                    <Button variant="primary" buttonName="Criar conta" />
                 </Link>
             </div>
         </div>

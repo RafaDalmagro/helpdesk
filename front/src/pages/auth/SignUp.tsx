@@ -92,9 +92,11 @@ export function SignUp() {
                     span="Mínimo de 6 dígitos"
                 />
                 {error && <p className="text-xs text-red font-bold">{error}</p>}
-                <Button type="submit" isLoading={isLoading}>
-                    Cadastrar
-                </Button>
+                <Button
+                    type="submit"
+                    isLoading={isLoading}
+                    buttonName="Cadastrar"
+                />
             </form>
             <div className="flex w-full flex-col gap-8 p-6 border-gray-500 border rounded-xl">
                 <div>
@@ -104,7 +106,7 @@ export function SignUp() {
                     <p className="text-xs text-gray-300">Entre agora mesmo</p>
                 </div>
                 <Link to="/">
-                    <Button variant="primary">Acessar conta</Button>
+                    <Button variant="primary" buttonName="Acessar conta" />
                 </Link>
             </div>
         </div>

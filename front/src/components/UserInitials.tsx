@@ -41,7 +41,7 @@ export function UserInitials({
 
     const avatarClass = `flex items-center justify-center bg-purple-800 rounded-full text-gray-600  shrink-0 ${className} ${
         className.includes("text-sm") ? "text-sm" : "text-xxxs"
-    }`;
+    } ${className.includes("size-8") ? "size-8" : "size-5"}`;
 
     return (
         <div

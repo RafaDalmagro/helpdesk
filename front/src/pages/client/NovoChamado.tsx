@@ -190,7 +190,7 @@ export function NovoChamado() {
                             técnico disponível
                         </p>
                     </div>
-                    <Button type="submit">Criar chamado</Button>
+                    <Button type="submit" buttonName="Criar chamado" />
                 </div>
             </form>
         </section>

@@ -212,16 +212,13 @@ export function Perfil({ name, email, onClose }: Props) {
                                 <Button
                                     variant="primary"
                                     className="w-fit h-fit px-2 text-xs"
-                                    onClick={handleOpenUpdatePassword}>
-                                    Alterar
-                                </Button>
+                                    onClick={handleOpenUpdatePassword} buttonName="Alterar"/>
+
                             </div>
                         </div>
                     </div>
                     <div className="px-7 py-6 border-t border-gray-500 flex justify-end">
-                        <Button type="submit" variant="default">
-                            Salvar
-                        </Button>
+                        <Button type="submit" variant="default" buttonName="Salvar"/>
                     </div>
                 </form>
             </div>

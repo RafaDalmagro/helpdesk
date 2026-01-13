@@ -95,9 +95,11 @@ export function UpdatePassword({ onBack, onClose }: Props) {
                     )}
                 </div>
                 <div className="px-7 py-6 border-t border-gray-500">
-                    <Button type="submit" isLoading={isLoading}>
-                        Salvar
-                    </Button>
+                    <Button
+                        type="submit"
+                        isLoading={isLoading}
+                        buttonName="Salvar"
+                    />
                 </div>
             </form>
         </div>

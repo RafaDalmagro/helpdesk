@@ -10,6 +10,7 @@ import { Loading } from "../components/Loading";
 
 export function Routes() {
     const { session, isLoading } = useAuth();
+    
     function Route() {
         if (!session?.userWithoutPassword?.role) {
             return <AuthRoutes />;
