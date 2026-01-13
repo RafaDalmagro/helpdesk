@@ -4,6 +4,7 @@ import { z, ZodError } from "zod";
 import UploadConfig from "@/configs/UploadConfig";
 import { DiskStorage } from "@/utils/diskStorage";
 import { AppError } from "@/utils/AppError";
+import { prisma } from "@/database/prisma";
 
 class UploadController {
     async create(req: Request, res: Response, next: NextFunction) {
@@ -33,10 +34,22 @@ class UploadController {
                 })
                 .loose();
 
+            const paramsSchema = z.object({
+                id: z.uuid("ID de usuário inválido"),
+            });
+
+            const params = paramsSchema.parse(req.params);
+            const userId = params.id;
+
             const file = fileSchema.parse(req.file);
             const filename = await diskStorage.saveFile(file.filename);
 
-            return res.status(201).json();
+            await prisma.user.update({
+                where: { id: userId },
+                data: { filename },
+            });
+
+            return res.status(201).json({ filename });
         } catch (error) {
             if (error instanceof ZodError) {
                 if (req.file) {

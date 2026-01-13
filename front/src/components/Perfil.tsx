@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button } from "./Button";
 import { Input } from "./Input";
@@ -25,10 +25,36 @@ export function Perfil({ name, email, onClose }: Props) {
     const [isOpen, setIsOpen] = useState(true);
     const [showUpdatePassword, setShowUpdatePassword] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+
     const userId = getUserId();
+
     function handleOpenUpdatePassword() {
         setShowUpdatePassword(true);
     }
+
+    function getImageUrl(filename: string) {
+        const baseUrl = api.defaults.baseURL;
+
+        return `${baseUrl}/uploads/${encodeURIComponent(filename)}`;
+    }
+
+    useEffect(() => {
+        const session = localStorage.getItem("@HelpDesk:session:user");
+        let filenameFromStorage: string | undefined = undefined;
+        if (session) {
+            try {
+                const userObj = JSON.parse(session);
+                filenameFromStorage = userObj.filename;
+            } catch {}
+        }
+        // Após submit, sempre pega do storage
+        if (filenameFromStorage) {
+            setImageUrl(getImageUrl(filenameFromStorage));
+        } else {
+            setImageUrl(undefined);
+        }
+    }, [file === null]);
 
     async function onsubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -39,13 +65,22 @@ export function Perfil({ name, email, onClose }: Props) {
             const fileUploadForm = new FormData();
             fileUploadForm.append("file", file);
 
-            await api.post("/uploads", fileUploadForm);
+            const response = await api.post(
+                `/uploads/${userId}`,
+                fileUploadForm
+            );
 
-            const response = await api.patch(`/users/upload/${userId}`, {
-                filename: file.name.trim(),
-            });
-
-            console.log(response);
+            if (response.data && response.data.filename) {
+                const userObj = JSON.parse(
+                    localStorage.getItem("@HelpDesk:session:user") || "{}"
+                );
+                userObj.filename = response.data.filename;
+                localStorage.setItem(
+                    "@HelpDesk:session:user",
+                    JSON.stringify(userObj)
+                );
+                setFile(null);
+            }
         } catch (error) {
             if (error instanceof ZodError) {
                 return console.log(error.issues[0].message);
@@ -92,21 +127,28 @@ export function Perfil({ name, email, onClose }: Props) {
                 </div>
                 <form onSubmit={onsubmit} className="flex flex-col">
                     <div className="flex flex-col gap-5 px-7 pt-7 pb-8">
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-3">
                             <img
                                 className="rounded-full w-12 h-12"
-                                src=""
-                                alt=""
+                                src={
+                                    file
+                                        ? URL.createObjectURL(file)
+                                        : imageUrl ?? undefined
+                                }
+                                alt="Foto do perfil"
                             />
                             <div className="flex items-center gap-1">
                                 <Upload
                                     onChange={(e) => {
-                                        e.target.files &&
+                                        if (e.target.files) {
                                             setFile(e.target.files[0]);
+                                        }
                                     }}
                                 />
                                 <button
-                                    onClick={() => {}}
+                                    onClick={() => {
+                                        setFile(null);
+                                    }}
                                     className="flex p-2 bg-gray-500 rounded-md hover:bg-gray-400 transition ease-linear hover:cursor-pointer">
                                     <img src={trashIcon} alt="Trash" />
                                 </button>
