@@ -39,7 +39,9 @@ export function UserInitials({
             document.removeEventListener("mousedown", handleClickOutside);
     }, [showPerfil]);
 
-    const avatarClass = `flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium shrink-0 ${className}`;
+    const avatarClass = `flex items-center justify-center bg-purple-800 rounded-full text-gray-600  shrink-0 ${className} ${
+        className.includes("text-sm") ? "text-sm" : "text-xxxs"
+    }`;
 
     return (
         <div

@@ -80,6 +80,7 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                         enablePerfilCard={false}
                                         name={chamado.client.name}
                                         variant="with-name"
+                                        className="size-5"
                                     />
                                 </div>
                             </td>
@@ -89,6 +90,7 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                         enablePerfilCard={false}
                                         name={chamado.tech.name}
                                         variant="with-name"
+                                        className="size-5"
                                     />
                                 </div>
                             </td>
@@ -171,6 +173,7 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                         enablePerfilCard={false}
                                         name={chamado.tech.name}
                                         variant="with-name"
+                                        className="size-5"
                                     />
                                 </div>
                             </td>

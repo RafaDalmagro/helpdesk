@@ -153,7 +153,7 @@ export function Perfil({ name, email, onClose }: Props) {
                                     <UserInitials
                                         name={name}
                                         variant="simple"
-                                        className="h-full w-full"
+                                        className=""
                                     />
                                 </div>
                             ) : (

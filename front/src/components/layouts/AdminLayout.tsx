@@ -7,9 +7,10 @@ export function AdminLayout() {
 
     let role = null;
 
-    if (user?.userWithoutPassword.role === "client") {
-        role = "Cliente";
+    if (user?.userWithoutPassword.role === "admin") {
+        role = "Admin";
     }
+
     return (
         <div className="w-screen h-screen bg-gray-100 overflow-hidden box-border">
             <main className="flex flex-col h-full w-full md:flex-row md:pt-3 box-border">

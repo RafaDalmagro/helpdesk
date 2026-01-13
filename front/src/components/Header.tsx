@@ -44,6 +44,7 @@ export function Header({
                         name={name}
                         email={email}
                         variant="with-details"
+                        className="size-8 text-sm"
                     />
                 </div>
             </nav>
