@@ -52,7 +52,7 @@ export function UserInitials({
                     className="flex items-center gap-3 hover:opacity-80 transition cursor-pointer outline-none">
                     <span className={avatarClass}>{initials}</span>
                     <div className="hidden md:flex flex-col text-left">
-                        <span className="text-sm text-gray-700 font-medium capitalize">
+                        <span className="text-sm text-gray-600 font-medium capitalize">
                             {name}
                         </span>
                         {email && (
@@ -88,7 +88,7 @@ export function UserInitials({
             )}
 
             {showPerfil && effectiveVariant === "with-profile-card" && (
-                <div className="absolute top-full mt-2 z-50">
+                <div className="absolute -bottom-3 -right-42 mt-2 z-50">
                     <CardPerfil />
                 </div>
             )}

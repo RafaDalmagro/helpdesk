@@ -98,14 +98,16 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                     className="max-[500px]:hidden sm:block md:hidden lg:block"
                                 />
                             </td>
-                            <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex h-full items-center">
-                                <span
-                                    className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
-                                    onClick={() =>
-                                        handleVisualizar(chamado.id)
-                                    }>
-                                    <img src={pencilSvg} alt="Visualizar" />
-                                </span>
+                            <td className="md:px-3 md:py-4.5 px-2 py-3.5">
+                                <div className="flex h-full items-center">
+                                    <span
+                                        className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity"
+                                        onClick={() =>
+                                            handleVisualizar(chamado.id)
+                                        }>
+                                        <img src={pencilSvg} alt="Visualizar" />
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     ))}
@@ -178,14 +180,16 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                     className="max-[500px]:hidden sm:block md:hidden lg:block"
                                 />
                             </td>
-                            <td className="md:px-3 md:py-4.5 px-2 py-3.5 flex h-full">
-                                <span
-                                    className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
-                                    onClick={() =>
-                                        handleVisualizar(chamado.id)
-                                    }>
-                                    <img src={olhoSvg} alt="Visualizar" />
-                                </span>
+                            <td className="md:px-3 md:py-4.5 px-2 py-3.5">
+                                <div className="flex h-full items-center">
+                                    <span
+                                        className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
+                                        onClick={() =>
+                                            handleVisualizar(chamado.id)
+                                        }>
+                                        <img src={olhoSvg} alt="Visualizar" />
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     ))}
