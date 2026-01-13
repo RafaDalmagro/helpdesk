@@ -10,7 +10,7 @@ class UserController {
             id: z.uuid({ message: "Formato de ID de usuário inválido" }),
         });
         const bodySchema = z.object({
-            filename: z.string().min(1, "Nome do arquivo é obrigatório"),
+            filename: z.string().nullable(),
         });
 
         const { id } = paramsSchema.parse(req.params);

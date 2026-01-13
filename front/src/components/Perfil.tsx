@@ -14,6 +14,7 @@ import x from "../assets/x.svg";
 import trashIcon from "../assets/trash.svg";
 
 import { getUserId } from "../utils/getUserId";
+import { UserInitials } from "./UserInitials";
 
 type Props = {
     name?: string;
@@ -60,8 +61,25 @@ export function Perfil({ name, email, onClose }: Props) {
         event.preventDefault();
 
         try {
-            if (!file) return alert("Selecione um arquivo");
+            if (!file) {
+                const response = await api.patch(`/users/upload/${userId}`, {
+                    filename: null,
+                });
+                const userObj = JSON.parse(
+                    localStorage.getItem("@HelpDesk:session:user") || "{}"
+                );
+                userObj.filename = response.data.filename;
+                localStorage.setItem(
+                    "@HelpDesk:session:user",
+
+                    JSON.stringify(userObj)
+                );
+                setImageUrl(undefined);
+                return console.log("Dados salvos com sucesso!");
+            }
+
             if (!userId) return alert("ID de usuário não encontrado");
+
             const fileUploadForm = new FormData();
             fileUploadForm.append("file", file);
 
@@ -80,14 +98,16 @@ export function Perfil({ name, email, onClose }: Props) {
                     JSON.stringify(userObj)
                 );
                 setFile(null);
+                console.log("Nova imagem alterada com sucesso!");
             }
+            return;
         } catch (error) {
             if (error instanceof ZodError) {
-                return console.log(error.issues[0].message);
+                return console.log("Zod Error: " + error.issues[0].message);
             }
 
             if (error instanceof AxiosError) {
-                return console.log(error.response?.data.message);
+                return console.log("Axios Error: " + error.message);
             }
             console.log(error);
         }
@@ -128,15 +148,26 @@ export function Perfil({ name, email, onClose }: Props) {
                 <form onSubmit={onsubmit} className="flex flex-col">
                     <div className="flex flex-col gap-5 px-7 pt-7 pb-8">
                         <div className="flex items-center gap-3">
-                            <img
-                                className="rounded-full w-12 h-12"
-                                src={
-                                    file
-                                        ? URL.createObjectURL(file)
-                                        : imageUrl ?? undefined
-                                }
-                                alt="Foto do perfil"
-                            />
+                            {!imageUrl && !file ? (
+                                <div className="rounded-full w-12 h-12">
+                                    <UserInitials
+                                        name={name}
+                                        variant="simple"
+                                        className="h-full w-full"
+                                    />
+                                </div>
+                            ) : (
+                                <img
+                                    className="rounded-full w-12 h-12"
+                                    src={
+                                        file
+                                            ? URL.createObjectURL(file)
+                                            : imageUrl ?? undefined
+                                    }
+                                    alt="Foto do perfil"
+                                />
+                            )}
+
                             <div className="flex items-center gap-1">
                                 <Upload
                                     onChange={(e) => {
@@ -148,7 +179,9 @@ export function Perfil({ name, email, onClose }: Props) {
                                 <button
                                     onClick={() => {
                                         setFile(null);
+                                        setImageUrl(undefined);
                                     }}
+                                    type="button"
                                     className="flex p-2 bg-gray-500 rounded-md hover:bg-gray-400 transition ease-linear hover:cursor-pointer">
                                     <img src={trashIcon} alt="Trash" />
                                 </button>

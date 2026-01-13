@@ -8,6 +8,7 @@ type Props = {
     role?: string;
     enablePerfilCard?: boolean;
     variant?: "simple" | "with-name" | "with-details" | "with-profile-card";
+    className?: string;
 };
 
 export function UserInitials({
@@ -16,6 +17,7 @@ export function UserInitials({
     role,
     variant,
     enablePerfilCard,
+    className = "",
 }: Props) {
     const effectiveVariant = enablePerfilCard
         ? "with-profile-card"
@@ -48,8 +50,12 @@ export function UserInitials({
 
     if (effectiveVariant === "simple") {
         return (
-            <div className="flex gap-3 items-center h-fit">
-                <span className="flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium">
+            <div
+                className={`flex items-center ${
+                    className.includes("h-full") ? "h-full" : "h-fit"
+                }`}>
+                <span
+                    className={`flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium ${className}`}>
                     {userInitials}
                 </span>
             </div>
