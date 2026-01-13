@@ -33,7 +33,13 @@ export function CardPerfil() {
                     setIsOpen(true);
                 }}
             />
-            {isOpen && <Perfil name={user?.name} email={user?.email} />}
+            {isOpen && (
+                <Perfil
+                    name={user?.name}
+                    email={user?.email}
+                    onClose={() => setIsOpen(false)}
+                />
+            )}
             <ButtonLink title="Sair" variant="sair" to="/login" />
         </div>
     );
