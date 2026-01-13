@@ -38,7 +38,11 @@ export function Chamados({ role }: Props) {
                         Nenhum chamado encontrado.
                     </div>
                 ) : (
-                    <Table data={tickets} onVisualizar={handleVisualizar} />
+                    <Table
+                        role={role}
+                        data={tickets}
+                        onVisualizar={handleVisualizar}
+                    />
                 )}
             </div>
         </section>

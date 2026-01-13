@@ -14,100 +14,67 @@ type Props = {
 export function UserInitials({
     name = "Usuário Sem Nome",
     email,
-    role,
-    variant,
+    variant = "simple",
     enablePerfilCard,
     className = "",
 }: Props) {
-    const effectiveVariant = enablePerfilCard
-        ? "with-profile-card"
-        : variant || "simple";
     const [showPerfil, setShowPerfil] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const userInitials = getInitials(name);
+    const effectiveVariant = enablePerfilCard ? "with-profile-card" : variant;
+    const initials = getInitials(name);
 
     useEffect(() => {
-        if (!showPerfil || effectiveVariant !== "with-profile-card") return;
-
-        function handleClickOutside(event: MouseEvent) {
+        if (!showPerfil) return;
+        const handleClickOutside = (e: MouseEvent) => {
             if (
                 wrapperRef.current &&
-                !wrapperRef.current.contains(event.target as Node)
+                !wrapperRef.current.contains(e.target as Node)
             ) {
                 setShowPerfil(false);
             }
-        }
-
+        };
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, [showPerfil, effectiveVariant]);
+    }, [showPerfil]);
 
-    const handleTogglePerfil = () => {
-        setShowPerfil((prev) => !prev);
-    };
+    const avatarClass = `flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium shrink-0 ${className}`;
 
-    if (effectiveVariant === "simple") {
-        return (
-            <div
-                className={`flex items-center ${
-                    className.includes("h-full") ? "h-full" : "h-fit"
-                }`}>
-                <span
-                    className={`flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium ${className}`}>
-                    {userInitials}
-                </span>
-            </div>
-        );
-    }
-
-    if (effectiveVariant === "with-name") {
-        return (
-            <div className="flex md:flex-1 gap-3 items-center h-fit">
-                <span className="flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium">
-                    {userInitials}
-                </span>
-                <span className="hidden xl:flex items-center text-gray-700">
-                    {name}
-                </span>
-            </div>
-        );
-    }
-
-    if (effectiveVariant === "with-details") {
-        return (
-            <div className="flex md:flex-1 gap-3 items-center h-fit">
-                <span className="flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium">
-                    {userInitials}
-                </span>
-                <div className="flex flex-col justify-center">
-                    <span className="text-sm text-gray-700 capitalize font-medium">
-                        {name}
-                    </span>
-                    {email && (
-                        <span className="text-xs text-gray-400">{email}</span>
-                    )}
-                </div>
-            </div>
-        );
-    }
-
-    if (effectiveVariant === "with-profile-card") {
-        return (
-            <div
-                ref={wrapperRef}
-                className="relative flex md:flex-1 gap-3 items-center h-fit">
+    return (
+        <div
+            ref={wrapperRef}
+            className="relative flex items-center gap-3 h-fit w-fit">
+            {effectiveVariant === "with-profile-card" ? (
                 <button
                     type="button"
-                    className="flex items-center gap-3 focus:outline-none hover:cursor-pointer hover:opacity-70 transition ease-linear"
-                    onClick={handleTogglePerfil}>
-                    <span className="flex items-center justify-center bg-purple-800 rounded-full size-10 text-white text-sm font-medium">
-                        {userInitials}
-                    </span>
-                    {(name || email) && (
-                        <div className="hidden md:flex md:flex-col md:justify-center">
-                            <span className="text-sm text-gray-600 capitalize font-medium">
+                    onClick={() => setShowPerfil(!showPerfil)}
+                    className="flex items-center gap-3 hover:opacity-80 transition cursor-pointer outline-none">
+                    <span className={avatarClass}>{initials}</span>
+                    <div className="hidden md:flex flex-col text-left">
+                        <span className="text-sm text-gray-700 font-medium capitalize">
+                            {name}
+                        </span>
+                        {email && (
+                            <span className="text-xs text-gray-400">
+                                {email}
+                            </span>
+                        )}
+                    </div>
+                </button>
+            ) : (
+                <div className="flex items-center gap-3">
+                    <span className={avatarClass}>{initials}</span>
+
+                    {effectiveVariant === "with-name" && (
+                        <span className="hidden xl:block text-gray-700">
+                            {name}
+                        </span>
+                    )}
+
+                    {effectiveVariant === "with-details" && (
+                        <div className="flex flex-col">
+                            <span className="text-sm text-gray-700 font-medium capitalize">
                                 {name}
                             </span>
                             {email && (
@@ -117,11 +84,14 @@ export function UserInitials({
                             )}
                         </div>
                     )}
-                </button>
-                {showPerfil && <CardPerfil />}
-            </div>
-        );
-    }
+                </div>
+            )}
 
-    return null;
+            {showPerfil && effectiveVariant === "with-profile-card" && (
+                <div className="absolute top-full mt-2 z-50">
+                    <CardPerfil />
+                </div>
+            )}
+        </div>
+    );
 }

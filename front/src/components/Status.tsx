@@ -33,11 +33,15 @@ export function Status({ status, className = "" }: StatusProps) {
 
     return (
         <div
-            className={`p-1.5 flex items-center gap-2 rounded-4xl w-fit ${variant.bg}`}>
-            <img src={variant.icon} alt={`Status ${status}`} />
+            className={`p-1.5 px-3 flex items-center gap-2 rounded-full w-fit shrink-0 ${variant.bg}`}>
+            <img
+                src={variant.icon}
+                alt={`Status ${status}`}
+                className="size-4 shrink-0"
+            />
 
             <span
-                className={`text-xs max-[500px]:hidden block capitalize ${variant.text} ${className}`}>
+                className={`text-xs font-semibold whitespace-nowrap max-[500px]:hidden block capitalize ${variant.text} ${className}`}>
                 {status === "open"
                     ? "Aberto"
                     : status === "in_progress"
