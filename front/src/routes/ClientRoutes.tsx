@@ -7,6 +7,7 @@ import { TicketsProvider } from "../context/TicketContext";
 import { Chamados } from "../pages/client/Chamados";
 import { Chamado } from "../pages/client/Chamado";
 import { NovoChamado } from "../pages/client/NovoChamado";
+import { getUserRole } from "../utils/getUserRole";
 
 export function ClientRoutes() {
     return (
@@ -19,7 +20,10 @@ export function ClientRoutes() {
                     </TicketsProvider>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
-                <Route path="chamados" element={<Chamados />} />
+                <Route
+                    path="chamados"
+                    element={<Chamados role={getUserRole()} />}
+                />
                 <Route path="chamado/:id" element={<Chamado />} />
                 <Route path="novo-chamado" element={<NovoChamado />} />
             </Route>

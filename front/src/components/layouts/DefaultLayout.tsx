@@ -7,12 +7,6 @@ export function DefaultLayout() {
 
     let role = null;
 
-    if (user?.userWithoutPassword.role === "admin") {
-        role = "Administrador";
-    }
-    if (user?.userWithoutPassword.role === "tech") {
-        role = "Técnico";
-    }
     if (user?.userWithoutPassword.role === "client") {
         role = "Cliente";
     }

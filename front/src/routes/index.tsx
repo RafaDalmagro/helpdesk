@@ -3,9 +3,9 @@ import { BrowserRouter } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 
 import { AuthRoutes } from "./AuthRoutes";
-import { ClientRoutes } from "./ClientRoutes";
-import { TechRoutes } from "./TechRoutes";
 import { AdminRoutes } from "./AdminRoutes";
+import { TechRoutes } from "./TechRoutes";
+import { ClientRoutes } from "./ClientRoutes";
 import { Loading } from "../components/Loading";
 
 export function Routes() {
