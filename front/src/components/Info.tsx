@@ -12,7 +12,7 @@ export function Info({ chamado }: Props) {
 
     if (session?.userWithoutPassword.role === "admin") {
         return (
-            <section className=" h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
+            <section className="h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
                 <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
                     <div className="flex flex-1 flex-col gap-0.5">
                         <div className="flex items-center justify-between gap-4">
@@ -58,6 +58,15 @@ export function Info({ chamado }: Props) {
                             </p>
                         </div>
                     </div>
+                    <div className="flex flex-col flex-1 gap-2">
+                        <h4 className="text-xs text-gray-400 font-bold">
+                            Cliente
+                        </h4>
+                        <UserInitials
+                            variant="with-name"
+                            name={chamado.client.name}
+                        />
+                    </div>
                 </div>
 
                 <div className="flex flex-col border border-gray-500 rounded-md p-5 gap-8">
@@ -94,7 +103,7 @@ export function Info({ chamado }: Props) {
                                         key={servico.service.id}
                                         className="flex justify-between">
                                         <span>{servico.service.name}</span>
-                                        <span>{servico.service.price}</span>
+                                        <span>R$ {servico.service.price}</span>
                                     </div>
                                 ))}
                             </div>

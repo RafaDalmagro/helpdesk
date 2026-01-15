@@ -11,9 +11,15 @@ class TicketServiceController {
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
-        if (req.user?.role !== "admin") {
+        if (!req.user) {
+            throw new AppError("Usuário não autenticado", 401);
+        }
+
+        const userId = req.user.id;
+
+        if (req.user.role === "client") {
             throw new AppError(
-                "Apenas administradores podem adicionar serviços ao ticket",
+                "Apenas administradores e técnicos podem adicionar serviços ao ticket",
                 401
             );
         }
@@ -26,10 +32,7 @@ class TicketServiceController {
         const { ticketId, serviceId } = bodySchema.parse(req.body);
 
         const ticket = await prisma.ticket.findUnique({
-            where: {
-                id: ticketId,
-                isActive: true,
-            },
+            where: { id: ticketId, isActive: true },
         });
 
         if (!ticket) {
@@ -37,39 +40,96 @@ class TicketServiceController {
         }
 
         const service = await prisma.service.findUnique({
-            where: {
-                id: serviceId,
-                isActive: true,
-            },
+            where: { id: serviceId, isActive: true },
         });
 
         if (!service) {
             throw new AppError("Serviço não encontrado", 404);
         }
 
-        const data: CreateTicketServiceData = {
-            ticketId: ticket.id,
-            serviceId: service.id,
-            addedById: req.user.id,
-            unitPrice: service.price,
-            totalPrice: service.price,
-        };
-
-        if (!data.unitPrice || !data.totalPrice) {
-            throw new AppError("Preços inválidos", 400);
+        if (service.price == null) {
+            throw new AppError("Preço do serviço inválido", 400);
         }
 
-        const ticketServices = await prisma.ticketService.create({
-            data: {
-                ticketId: data.ticketId,
-                serviceId: data.serviceId,
-                addedById: data.addedById,
-                unitPrice: data.unitPrice,
-                totalPrice: data.totalPrice,
+        const result = await prisma.$transaction(async (tx) => {
+            const ticketService = await tx.ticketService.create({
+                data: {
+                    ticketId: ticket.id,
+                    serviceId: service.id,
+                    addedById: userId,
+                    unitPrice: service.price,
+                    totalPrice: service.price,
+                    type: "additional",
+                },
+                include: {
+                    service: true,
+                    addedBy: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+
+            const updatedTicket = await tx.ticket.update({
+                where: { id: ticket.id },
+                data: {
+                    totalValue: {
+                        increment: service.price,
+                    },
+                },
+                select: {
+                    id: true,
+                    totalValue: true,
+                },
+            });
+
+            return { ticketService, updatedTicket };
+        });
+
+        return res.status(201).json(result);
+    }
+
+    async showAdditionalServices(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID de Ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const additionalServices = await prisma.ticketService.findMany({
+            where: {
+                ticketId: id,
+                type: "additional",
+            },
+            include: {
+                service: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        price: true,
+                    },
+                },
+            },
+            orderBy: {
+                addedAt: "asc",
             },
         });
 
-        return res.status(201).json({ ticketServices });
+        if (additionalServices.length === 0) {
+            res.status(404).json({
+                message: "Chamado não possui serviços adicionais",
+            });
+        }
+
+        return res.status(200).json({ additionalServices });
     }
 }
 

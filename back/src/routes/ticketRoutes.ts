@@ -6,6 +6,9 @@ const ticketRoutes = Router();
 const ticketController = new TicketController();
 
 ticketRoutes.get("/", ticketController.index);
+ticketRoutes.get("/:id", ticketController.show);
+ticketRoutes.get("/user/:userId", ticketController.showTicketsByUser);
+
 ticketRoutes.post(
     "/",
     verifyUserAuthorization(["admin", "client"]),
@@ -21,12 +24,10 @@ ticketRoutes.patch(
     verifyUserAuthorization(["admin", "tech"]),
     ticketController.updateStatus
 );
-ticketRoutes.get("/:id", ticketController.show);
 ticketRoutes.delete(
     "/:id",
     verifyUserAuthorization(["admin", "tech", "client"]),
     ticketController.delete
 );
-ticketRoutes.get("/user/:userId", ticketController.showTicketsByUser);
 
 export { ticketRoutes };
