@@ -3,7 +3,7 @@ import { ButtonLink } from "./ButtonLink";
 import { useAuth } from "../hooks/useAuth";
 
 export function Menu() {
-    const { session, isLoading } = useAuth();
+    const { session } = useAuth();
 
     if (!session?.userWithoutPassword?.role) {
         return;
