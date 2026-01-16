@@ -4,6 +4,8 @@ import { formatDate } from "../utils/formatDate";
 import { useAuth } from "../hooks/useAuth";
 import { useTickets } from "../context/TicketContext";
 
+import { formatCurrency } from "../utils/formatCurrency";
+
 import { useEffect } from "react";
 
 type Props = {
@@ -24,7 +26,7 @@ export function Info({ chamado }: Props) {
 
     if (session?.userWithoutPassword.role === "admin") {
         return (
-            <section className="h-full grid grid-cols-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:h-fit">
+            <section className="h-full grid grid-cols-1 grid-rows-[2fr_1fr] gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:grid-rows-1 lg:h-fit">
                 <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
                     <div className="flex flex-1 flex-col gap-0.5">
                         <div className="flex items-center justify-between gap-4">
@@ -50,7 +52,9 @@ export function Info({ chamado }: Props) {
                         <h4 className="text-xs text-gray-400 font-bold">
                             Categoria
                         </h4>
-                        <p className="text-sm text-gray-200">Não tem</p>
+                        <p className="text-sm text-gray-200">
+                            {chamado.category.name}
+                        </p>
                     </div>
                     <div className="flex flex-1 gap-8">
                         <div className="flex flex-1 flex-col gap-0.5">
@@ -81,8 +85,8 @@ export function Info({ chamado }: Props) {
                     </div>
                 </div>
 
-                <div className="flex flex-col border border-gray-500 rounded-md p-5 gap-8">
-                    <div className="flex flex-1 flex-col gap-2">
+                <div className="flex flex-col border border-gray-500 rounded-md p-5 gap-8 h-fit">
+                    <div className="flex flex-col gap-2">
                         <h4 className="text-xs text-gray-400 font-bold">
                             Técnico responsável
                         </h4>
@@ -102,23 +106,34 @@ export function Info({ chamado }: Props) {
                             </h4>
                             <div className="flex justify-between text-xs text-gray-200">
                                 <span>Preço base</span>
-                                <span>{chamado.totalValue}</span>
+                                <span>
+                                    {formatCurrency(chamado.totalValue)}
+                                </span>
                             </div>
                         </div>
                         <div className="flex flex-1 flex-col gap-2">
                             <h4 className="text-xs text-gray-400 font-bold">
                                 Adicionais
                             </h4>
-                            <div className="text-xs text-gray-200">
-                                {services.map((servico) => (
-                                    <div
-                                        key={servico.service.id}
-                                        className="flex justify-between">
-                                        <span>{servico.service.name}</span>
-                                        <span>R$ {servico.service.price}</span>
-                                    </div>
-                                ))}
-                            </div>
+
+                            <table className="w-full text-xs text-gray-200">
+                                <tbody>
+                                    {services.map((servico) => (
+                                        <tr
+                                            key={servico.service.id}
+                                            className="flex justify-between gap-1">
+                                            <td className="text-left py-1">
+                                                {servico.service.name}
+                                            </td>
+                                            <td className="align-text-top py-1 whitespace-nowrap">
+                                                {formatCurrency(
+                                                    servico.service.price
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                         <div className="pt-3 border-t border-gray-500">
                             <div className="flex justify-between">
@@ -126,7 +141,7 @@ export function Info({ chamado }: Props) {
                                     Total
                                 </span>
                                 <span className="text-gray-200 font-bold text-sm">
-                                    {chamado.totalValue}
+                                    {formatCurrency(chamado.totalValue)}
                                 </span>
                             </div>
                         </div>

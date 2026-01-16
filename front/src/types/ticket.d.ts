@@ -27,6 +27,10 @@ type Ticket = {
         role: string;
     };
     ticketServices: TicketService[];
+    category: {
+        id: string;
+        name: string;
+    };
 };
 
 type TicketService = {

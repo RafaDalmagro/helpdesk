@@ -42,6 +42,9 @@ class TicketController {
                         addedBy: { select: { id: true, name: true } },
                     },
                 },
+                category: {
+                    select: { id: true, name: true },
+                },
             },
             where,
             orderBy: { createdAt: "desc" },
@@ -277,6 +280,9 @@ class TicketController {
                         },
                         addedBy: { select: { id: true, name: true } },
                     },
+                },
+                category: {
+                    select: { id: true, name: true },
                 },
             },
         });
