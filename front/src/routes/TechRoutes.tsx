@@ -2,7 +2,7 @@ import { Route, Routes, Navigate } from "react-router";
 
 import { TechLayout } from "../components/layouts/TechLayout";
 
-import { TicketsProvider } from "../context/TicketContext";
+import { TechProvider } from "../context/TechContext";
 
 import { Chamados } from "../pages/client/Chamados";
 import { getUserRole } from "../utils/getUserRole";
@@ -13,9 +13,9 @@ export function TechRoutes() {
             <Route
                 path="/"
                 element={
-                    <TicketsProvider>
+                    <TechProvider>
                         <TechLayout />
-                    </TicketsProvider>
+                    </TechProvider>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
                 <Route

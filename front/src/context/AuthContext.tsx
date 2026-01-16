@@ -2,8 +2,8 @@ import { createContext, useState, useEffect } from "react";
 
 type AuthContext = {
     isLoading: boolean;
-    session: UserAPIResponse | null;
-    save: (data: UserAPIResponse) => void;
+    session: LoginAPIResponse | null;
+    save: (data: LoginAPIResponse) => void;
     removeSession: () => void;
 };
 
@@ -12,10 +12,10 @@ const LOCAL_STORAGE_KEY = "@HelpDesk:session";
 export const AuthContext = createContext({} as AuthContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [session, setSession] = useState<UserAPIResponse | null>(null);
+    const [session, setSession] = useState<LoginAPIResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    function save(data: UserAPIResponse) {
+    function save(data: LoginAPIResponse) {
         localStorage.setItem(
             `${LOCAL_STORAGE_KEY}:user`,
             JSON.stringify(data.userWithoutPassword)

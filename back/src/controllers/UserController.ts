@@ -5,41 +5,40 @@ import { prisma } from "@/database/prisma";
 import { hash } from "bcrypt";
 
 class UserController {
-    async updateFileName(req: Request, res: Response, next: NextFunction) {
-        const paramsSchema = z.object({
-            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+    async index(req: Request, res: Response, next: NextFunction) {
+        const { role } = req.query;
+
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                filename: true,
+                createdAt: true,
+                ticketsAsClient: {
+                    select: { id: true, title: true },
+                },
+                ticketsAsTech: {
+                    select: { id: true, title: true },
+                },
+            },
+            where: {
+                isActive: true,
+                ...(role &&
+                (role === "admin" || role === "client" || role === "tech")
+                    ? { role: role as "admin" | "client" | "tech" }
+                    : {}),
+            },
         });
-        const bodySchema = z.object({
-            filename: z.string().nullable(),
-        });
 
-        const { id } = paramsSchema.parse(req.params);
-        const { filename } = bodySchema.parse(req.body);
-
-        const userLoged = req.user as { id: string; role: string };
-
-        if (userLoged.id !== id && userLoged.role !== "admin") {
-            throw new AppError(
-                "Você não tem permissão para essa alteração.",
-                403
-            );
+        if (!users) {
+            throw new AppError("Usuários não encontrados", 404);
         }
 
-        const user = await prisma.user.findUnique({ where: { id } });
-        if (!user) {
-            throw new AppError("Usuário não encontrado", 404);
-        }
-
-        await prisma.user.update({
-            where: { id },
-            data: { filename },
-        });
-
-        return res.status(200).json({
-            message: "Imagem de perfil atualizada com sucesso",
-            filename,
-        });
+        return res.status(200).json({ users });
     }
+
     async create(req: Request, res: Response, next: NextFunction) {
         const userSchema = z.object({
             name: z
@@ -77,40 +76,6 @@ class UserController {
         const { password: _, ...userWithoutPassword } = user;
 
         return res.status(201).json({ user: userWithoutPassword });
-    }
-
-    async index(req: Request, res: Response, next: NextFunction) {
-        const { role } = req.query;
-
-        const users = await prisma.user.findMany({
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                filename: true,
-                createdAt: true,
-                ticketsAsClient: {
-                    select: { id: true, title: true },
-                },
-                ticketsAsTech: {
-                    select: { id: true, title: true },
-                },
-            },
-            where: {
-                isActive: true,
-                ...(role &&
-                (role === "admin" || role === "client" || role === "tech")
-                    ? { role: role as "admin" | "client" | "tech" }
-                    : {}),
-            },
-        });
-
-        if (!users) {
-            throw new AppError("Usuários não encontrados", 404);
-        }
-
-        return res.status(200).json({ users });
     }
 
     async show(req: Request, res: Response, next: NextFunction) {
@@ -352,6 +317,42 @@ class UserController {
         return res
             .status(200)
             .json({ message: "Senha atualizada com sucesso" });
+    }
+
+    async updateFileName(req: Request, res: Response, next: NextFunction) {
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "Formato de ID de usuário inválido" }),
+        });
+        const bodySchema = z.object({
+            filename: z.string().nullable(),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+        const { filename } = bodySchema.parse(req.body);
+
+        const userLoged = req.user as { id: string; role: string };
+
+        if (userLoged.id !== id && userLoged.role !== "admin") {
+            throw new AppError(
+                "Você não tem permissão para essa alteração.",
+                403
+            );
+        }
+
+        const user = await prisma.user.findUnique({ where: { id } });
+        if (!user) {
+            throw new AppError("Usuário não encontrado", 404);
+        }
+
+        await prisma.user.update({
+            where: { id },
+            data: { filename },
+        });
+
+        return res.status(200).json({
+            message: "Imagem de perfil atualizada com sucesso",
+            filename,
+        });
     }
 }
 

@@ -1,6 +1,6 @@
 type UserAPIRole = "admin" | "tech" | "client";
 
-type UserAPIResponse = {
+type LoginAPIResponse = {
     token: string;
     userWithoutPassword: {
         id: string;
@@ -8,4 +8,15 @@ type UserAPIResponse = {
         email: string;
         role: UserAPIRole;
     };
+};
+
+type UserResponse = {
+    id: string;
+    name: string;
+    email: string;
+    role: UserAPIRole;
+};
+
+type UsersAPIResponse = {
+    users: UserResponse[];
 };

@@ -104,7 +104,7 @@ export function Chamado() {
                                 svg="iniciar"
                                 variant="primary"
                                 buttonName="Reabrir chamado"
-                                className="h-fit px-4 w-full w-fit"
+                                className="h-fit px-4 w-fit"
                                 onClick={handleIniciarAtendimento}
                             />
                         )}
