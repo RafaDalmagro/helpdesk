@@ -69,9 +69,7 @@ export function UserInitials({
                     <span className={avatarClass}>{initials}</span>
 
                     {effectiveVariant === "with-name" && (
-                        <span className="hidden xl:block text-gray-700">
-                            {name}
-                        </span>
+                        <span className="text-gray-700">{name}</span>
                     )}
 
                     {effectiveVariant === "with-details" && (

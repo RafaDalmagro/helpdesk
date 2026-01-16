@@ -2,7 +2,11 @@ import { ButtonLink } from "./ButtonLink";
 
 import { useAuth } from "../hooks/useAuth";
 
-export function Menu() {
+type MenuProps = {
+    className?: string;
+};
+
+export function Menu({ className = "hidden" }: MenuProps) {
     const { session } = useAuth();
 
     if (!session?.userWithoutPassword?.role) {
@@ -11,7 +15,8 @@ export function Menu() {
     switch (session.userWithoutPassword.role) {
         case "admin":
             return (
-                <nav className="hidden md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10">
+                <nav
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
                     <ButtonLink
                         title="Meus Chamados"
                         variant="chamados"

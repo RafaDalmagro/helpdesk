@@ -26,9 +26,9 @@ export function Info({ chamado }: Props) {
 
     if (session?.userWithoutPassword.role === "admin") {
         return (
-            <section className="h-full grid grid-cols-1 grid-rows-[2fr_1fr] gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:grid-rows-1 lg:h-fit">
-                <div className="flex flex-col gap-5 border border-gray-500 rounded-md p-5 md:p-6">
-                    <div className="flex flex-1 flex-col gap-0.5">
+            <section className="h-full grid grid-cols-1 lg:grid-rows-1 gap-4 lg:gap-6 lg:grid-cols-[60%_1fr]  lg:h-fit">
+                <div className="flex flex-col h-fit gap-5 border border-gray-500 rounded-md p-5 md:p-6 md:flex-2">
+                    <div className="flex md:flex-1 flex-col gap-0.5">
                         <div className="flex items-center justify-between gap-4">
                             <span className="text-xs text-gray-300 font-bold">
                                 {chamado.id}
@@ -40,7 +40,7 @@ export function Info({ chamado }: Props) {
                         </div>
                         <h3 className="font-md font-bold">{chamado.title}</h3>
                     </div>
-                    <div className="flex flex-1 flex-col gap-0.5">
+                    <div className="flex md:flex-1 flex-col gap-0.5">
                         <h4 className="text-xs text-gray-400 font-bold">
                             Descrição
                         </h4>
@@ -48,7 +48,7 @@ export function Info({ chamado }: Props) {
                             {chamado.description}
                         </p>
                     </div>
-                    <div className="flex flex-1 flex-col gap-0.5">
+                    <div className="flex md:flex-1 flex-col gap-0.5">
                         <h4 className="text-xs text-gray-400 font-bold">
                             Categoria
                         </h4>
@@ -56,7 +56,7 @@ export function Info({ chamado }: Props) {
                             {chamado.category.name}
                         </p>
                     </div>
-                    <div className="flex flex-1 gap-8">
+                    <div className="flex md:flex-1 gap-8">
                         <div className="flex flex-1 flex-col gap-0.5">
                             <h4 className="text-xs text-gray-400 font-bold">
                                 Criado em
@@ -74,7 +74,7 @@ export function Info({ chamado }: Props) {
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-col flex-1 gap-2">
+                    <div className="flex flex-col md:flex-1 gap-2">
                         <h4 className="text-xs text-gray-400 font-bold">
                             Cliente
                         </h4>
@@ -85,7 +85,7 @@ export function Info({ chamado }: Props) {
                     </div>
                 </div>
 
-                <div className="flex flex-col border border-gray-500 rounded-md p-5 gap-8 h-fit">
+                <div className="flex flex-col border border-gray-500 rounded-md p-5 gap-8 h-fit md-flex-1">
                     <div className="flex flex-col gap-2">
                         <h4 className="text-xs text-gray-400 font-bold">
                             Técnico responsável

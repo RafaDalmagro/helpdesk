@@ -33,7 +33,7 @@ export function Status({ status, className = "" }: StatusProps) {
 
     return (
         <div
-            className={`p-1.5 px-3 flex items-center gap-2 rounded-full w-fit shrink-0 ${variant.bg}`}>
+            className={`p-1.5 lg:px-3 flex items-center gap-2 rounded-full w-fit shrink-0 ${variant.bg}`}>
             <img
                 src={variant.icon}
                 alt={`Status ${status}`}
