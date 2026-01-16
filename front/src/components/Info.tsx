@@ -2,6 +2,9 @@ import { Status } from "./Status";
 import { UserInitials } from "./UserInitials";
 import { formatDate } from "../utils/formatDate";
 import { useAuth } from "../hooks/useAuth";
+import { useTickets } from "../context/TicketContext";
+
+import { useEffect } from "react";
 
 type Props = {
     chamado: Ticket;
@@ -9,6 +12,15 @@ type Props = {
 
 export function Info({ chamado }: Props) {
     const { session } = useAuth();
+
+    const { getAdditionalServicesByTicketId, additionalServicesByTicketId } =
+        useTickets();
+
+    useEffect(() => {
+        getAdditionalServicesByTicketId(chamado.id);
+    }, [chamado.id]);
+
+    const services = additionalServicesByTicketId[chamado.id] ?? [];
 
     if (session?.userWithoutPassword.role === "admin") {
         return (
@@ -98,7 +110,7 @@ export function Info({ chamado }: Props) {
                                 Adicionais
                             </h4>
                             <div className="text-xs text-gray-200">
-                                {chamado.ticketServices.map((servico) => (
+                                {services.map((servico) => (
                                     <div
                                         key={servico.service.id}
                                         className="flex justify-between">

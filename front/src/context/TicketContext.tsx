@@ -1,5 +1,6 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { useTicket } from "../hooks/useTicket";
+import { api } from "../services/api";
 
 type TicketsContextType = {
     tickets: Ticket[];
@@ -9,12 +10,28 @@ type TicketsContextType = {
     setStatusById: (id: Ticket["id"], status: TicketStatus) => void;
     getTicketById: (id: Ticket["id"]) => Ticket | undefined;
     refetch: () => Promise<void>;
+
+    additionalServicesByTicketId: Record<string, AdditionalService[]>;
+    loadingAdditionalServicesByTicketId: Record<string, boolean>;
+
+    getAdditionalServicesByTicketId: (
+        ticketId: Ticket["id"]
+    ) => Promise<AdditionalService[]>;
+    clearAdditionalServicesCache: (ticketId?: Ticket["id"]) => void;
 };
 
 const TicketsContext = createContext<TicketsContextType | null>(null);
 
 export function TicketsProvider({ children }: { children: React.ReactNode }) {
     const { tickets, setTickets, loading, error } = useTicket();
+
+    const [additionalServicesByTicketId, setAdditionalServicesByTicketId] =
+        useState<Record<string, AdditionalService[]>>({});
+
+    const [
+        loadingAdditionalServicesByTicketId,
+        setLoadingAdditionalServicesByTicketId,
+    ] = useState<Record<string, boolean>>({});
 
     const setStatusById = (id: Ticket["id"], status: TicketStatus) => {
         setTickets((prev) =>
@@ -31,6 +48,47 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
         window.location.reload();
     };
 
+    const getAdditionalServicesByTicketId = async (ticketId: Ticket["id"]) => {
+        const cached = additionalServicesByTicketId[ticketId];
+        if (cached) return cached;
+
+        setLoadingAdditionalServicesByTicketId((prev) => ({
+            ...prev,
+            [ticketId]: true,
+        }));
+
+        try {
+            const { data } = await api.get(
+                `/ticket-services/${ticketId}/additional-services`
+            );
+
+            const services = data.additionalServices as AdditionalService[];
+
+            setAdditionalServicesByTicketId((prev) => ({
+                ...prev,
+                [ticketId]: services,
+            }));
+            return services;
+        } finally {
+            setLoadingAdditionalServicesByTicketId((prev) => ({
+                ...prev,
+                [ticketId]: false,
+            }));
+        }
+    };
+
+    const clearAdditionalServicesCache = (ticketId?: Ticket["id"]) => {
+        if (!ticketId) {
+            setAdditionalServicesByTicketId({});
+            return;
+        }
+        setAdditionalServicesByTicketId((prev) => {
+            const copy = { ...prev };
+            delete copy[ticketId];
+            return copy;
+        });
+    };
+
     const value = useMemo(
         () => ({
             tickets,
@@ -39,8 +97,19 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
             setStatusById,
             getTicketById,
             refetch,
+
+            additionalServicesByTicketId,
+            loadingAdditionalServicesByTicketId,
+            getAdditionalServicesByTicketId,
+            clearAdditionalServicesCache,
         }),
-        [tickets, loading, error]
+        [
+            tickets,
+            loading,
+            error,
+            additionalServicesByTicketId,
+            loadingAdditionalServicesByTicketId,
+        ]
     );
 
     return (
@@ -52,10 +121,7 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
 
 export function useTickets() {
     const context = useContext(TicketsContext);
-
-    if (!context) {
+    if (!context)
         throw new Error("useTickets deve ser usado dentro de TicketsProvider");
-    }
-
     return context;
 }
