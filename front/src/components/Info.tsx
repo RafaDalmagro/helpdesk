@@ -24,7 +24,6 @@ export function Info({ chamado }: Props) {
 
     const services = additionalServicesByTicketId[chamado.id] ?? [];
 
-    console.log(chamado);
     if (session?.userWithoutPassword.role === "admin") {
         return (
             <section className="h-full grid grid-cols-1 grid-rows-[2fr_1fr] gap-4 lg:gap-6 lg:grid-cols-[60%_1fr] lg:grid-rows-1 lg:h-fit">

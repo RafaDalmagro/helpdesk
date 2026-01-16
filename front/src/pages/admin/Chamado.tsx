@@ -27,6 +27,9 @@ export function Chamado() {
 
     async function handleEncerrarChamado() {
         try {
+            if (!confirm("Tem certeza que deseja encerrar este chamado?")) {
+                return;
+            }
             await api.patch(`/tickets/${ticketAtual?.id}/status`, {
                 status: "closed",
             });
@@ -34,8 +37,6 @@ export function Chamado() {
             setTicketAtual((prev) =>
                 prev ? { ...prev, status: "closed" as TicketStatus } : prev
             );
-
-            console.log("Chamado encerrado com sucesso");
         } catch (error) {
             tratarErro(error, "encerrar chamado");
         }
@@ -43,6 +44,9 @@ export function Chamado() {
 
     async function handleIniciarAtendimento() {
         try {
+            if (!confirm("Deseja iniciar o atendimento deste chamado?")) {
+                return;
+            }
             await api.patch(`/tickets/${ticketAtual?.id}/status`, {
                 status: "in_progress",
             });
@@ -50,8 +54,6 @@ export function Chamado() {
             setTicketAtual((prev) =>
                 prev ? { ...prev, status: "in_progress" as TicketStatus } : prev
             );
-
-            console.log("Chamado iniciado com sucesso");
         } catch (error) {
             tratarErro(error, "iniciar atendimento");
         }
@@ -78,22 +80,31 @@ export function Chamado() {
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        {ticketAtual.status !== "closed" && (
-                            <Button
-                                svg="encerrar"
-                                variant="primary"
-                                buttonName="Encerrar"
-                                className="h-fit flex-1 px-4"
-                                onClick={handleEncerrarChamado}
-                            />
-                        )}
-
                         {ticketAtual.status === "open" && (
                             <Button
                                 svg="iniciar"
                                 variant="primary"
                                 buttonName="Iniciar atendimento"
-                                className="h-fit flex-2 px-4"
+                                className="h-fit px-4 w-fit"
+                                onClick={handleIniciarAtendimento}
+                            />
+                        )}
+                        {ticketAtual.status !== "closed" && (
+                            <Button
+                                svg="encerrar"
+                                variant="primary"
+                                buttonName="Encerrar"
+                                className="h-fit px-4 w-fit"
+                                onClick={handleEncerrarChamado}
+                            />
+                        )}
+
+                        {ticketAtual.status === "closed" && (
+                            <Button
+                                svg="iniciar"
+                                variant="primary"
+                                buttonName="Reabrir chamado"
+                                className="h-fit px-4 w-full w-fit"
                                 onClick={handleIniciarAtendimento}
                             />
                         )}

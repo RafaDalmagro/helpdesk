@@ -153,7 +153,7 @@ export function Perfil({ name, email, onClose }: Props) {
                                     <UserInitials
                                         name={name}
                                         variant="simple"
-                                        className=""
+                                        className="size-12 text-sm"
                                     />
                                 </div>
                             ) : (
@@ -212,13 +212,18 @@ export function Perfil({ name, email, onClose }: Props) {
                                 <Button
                                     variant="primary"
                                     className="w-fit h-fit px-2 text-xs"
-                                    onClick={handleOpenUpdatePassword} buttonName="Alterar"/>
-
+                                    onClick={handleOpenUpdatePassword}
+                                    buttonName="Alterar"
+                                />
                             </div>
                         </div>
                     </div>
                     <div className="px-7 py-6 border-t border-gray-500 flex justify-end">
-                        <Button type="submit" variant="default" buttonName="Salvar"/>
+                        <Button
+                            type="submit"
+                            variant="default"
+                            buttonName="Salvar"
+                        />
                     </div>
                 </form>
             </div>
