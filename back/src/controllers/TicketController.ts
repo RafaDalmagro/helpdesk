@@ -333,14 +333,12 @@ class TicketController {
             throw new AppError("Ticket não encontrado", 404);
         }
 
-        const updatedTicket = await prisma.ticket.update({
+        await prisma.ticket.update({
             where: { id },
             data: { status },
         });
 
-        return res
-            .status(200)
-            .json({ previous: ticket, updated: updatedTicket });
+        return res.status(200).json();
     }
 
     async delete(req: Request, res: Response, next: NextFunction) {

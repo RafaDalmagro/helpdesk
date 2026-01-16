@@ -1,16 +1,70 @@
 import { Voltar } from "../../components/VoltarLink";
 import { Info } from "../../components/Info";
 import { Button } from "../../components/Button";
-
+import { api } from "../../services/api";
+import { AxiosError } from "axios";
 import { useParams } from "react-router";
+import { useState, useEffect } from "react";
 import { useTickets } from "../../context/TicketContext";
 
 export function Chamado() {
     const { id } = useParams();
     const { getTicketById } = useTickets();
-    const ticket = id ? getTicketById(id) : undefined;
 
-    if (!ticket) return <div>Chamado não encontrado</div>;
+    const ticketDoContexto = id ? getTicketById(id) : undefined;
+
+    const [ticketAtual, setTicketAtual] = useState<Ticket | undefined>(
+        ticketDoContexto
+    );
+
+    useEffect(() => {
+        if (ticketDoContexto) {
+            setTicketAtual(ticketDoContexto);
+        }
+    }, [ticketDoContexto]);
+
+    if (!ticketAtual) return <div>Chamado não encontrado</div>;
+
+    async function handleEncerrarChamado() {
+        try {
+            await api.patch(`/tickets/${ticketAtual?.id}/status`, {
+                status: "closed",
+            });
+
+            setTicketAtual((prev) =>
+                prev ? { ...prev, status: "closed" as TicketStatus } : prev
+            );
+
+            console.log("Chamado encerrado com sucesso");
+        } catch (error) {
+            tratarErro(error, "encerrar chamado");
+        }
+    }
+
+    async function handleIniciarAtendimento() {
+        try {
+            await api.patch(`/tickets/${ticketAtual?.id}/status`, {
+                status: "in_progress",
+            });
+
+            setTicketAtual((prev) =>
+                prev ? { ...prev, status: "in_progress" as TicketStatus } : prev
+            );
+
+            console.log("Chamado iniciado com sucesso");
+        } catch (error) {
+            tratarErro(error, "iniciar atendimento");
+        }
+    }
+    function tratarErro(error: unknown, contexto: string) {
+        if (error instanceof AxiosError) {
+            const errorMessage =
+                error.response?.data?.message || `Axios Error ao ${contexto}`;
+            console.log(errorMessage);
+        } else {
+            console.error(`Erro ao ${contexto}:`, error);
+        }
+    }
 
     return (
         <article className="bg-gray-600 flex flex-1 flex-col rounded-t-xl md:rounded-t-none md:rounded-tl-xl overflow-y-auto box-border px-6 pb-6 pt-7 md:px-12 md:pb-12 md:pt-13 md:items-stretch lg:items-center">
@@ -24,21 +78,29 @@ export function Chamado() {
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        <Button
-                            svg="encerrar"
-                            variant="primary"
-                            buttonName="Encerrar"
-                            className="h-fit flex-1 px-4"
-                        />
-                        <Button
-                            svg="iniciar"
-                            buttonName="Iniciar atendimento"
-                            className="h-fit flex-2 px-4"
-                        />
+                        {ticketAtual.status !== "closed" && (
+                            <Button
+                                svg="encerrar"
+                                variant="primary"
+                                buttonName="Encerrar"
+                                className="h-fit flex-1 px-4"
+                                onClick={handleEncerrarChamado}
+                            />
+                        )}
+
+                        {ticketAtual.status === "open" && (
+                            <Button
+                                svg="iniciar"
+                                variant="primary"
+                                buttonName="Iniciar atendimento"
+                                className="h-fit flex-2 px-4"
+                                onClick={handleIniciarAtendimento}
+                            />
+                        )}
                     </div>
                 </header>
 
-                <Info chamado={ticket} />
+                <Info chamado={ticketAtual} />
             </div>
         </article>
     );
