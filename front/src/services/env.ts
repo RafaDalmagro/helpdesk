@@ -1,9 +1,3 @@
-import { z } from "zod";
+const BASE_URL = import.meta.env.BASE_URL;
 
-const envSchema = z.object({
-    BASE_URL: z.url(),
-});
-
-const env = envSchema.parse(import.meta.env);
-
-export const BASE_URL = env.BASE_URL;
+export { BASE_URL };
