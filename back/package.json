@@ -12,7 +12,8 @@
         "prisma": "npx prisma studio",
         "test": "jest",
         "test:watch": "jest --watch",
-        "build": "tsup src --out-dir build"
+        "build": "tsup src --out-dir build",
+        "start": "node build/server.js"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
