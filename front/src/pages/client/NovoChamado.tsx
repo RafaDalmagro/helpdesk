@@ -36,7 +36,6 @@ export function NovoChamado() {
     const [categoryId, setCategoryId] = useState("");
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
 
     const clientId = getUserId();
@@ -101,8 +100,6 @@ export function NovoChamado() {
                 errorMessage = err.response?.data.message || errorMessage;
             }
             console.log(err);
-
-            setError(errorMessage);
         } finally {
             setLoading(false);
         }
