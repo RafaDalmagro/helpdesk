@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router";
-import { Table } from "../../components/Table";
+// import { useNavigate } from "react-router";
+// import { Table } from "../../components/Table";
 
 export function Servicos() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const handleVisualizar = (id: string | number) => {
-        navigate(`/users/${id}`);
-    };
+    // const handleVisualizar = (id: string | number) => {
+    //     navigate(`/users/${id}`);
+    // };
 
     return (
         <section className="bg-gray-600 flex flex-1 flex-col rounded-t-xl md:rounded-t-none md:rounded-tl-xl overflow-y-auto box-border gap-4 md:gap-6 px-6 pb-6 pt-7 md:px-12 md:pb-12 md:pt-13 relative">
