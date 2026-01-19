@@ -8,7 +8,7 @@ type Props = {
 
 export function Chamados({ role }: Props) {
     const navigate = useNavigate();
-    const { tickets, loading, error } = useTickets();
+    const { tickets = [], loading, error } = useTickets();
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);
