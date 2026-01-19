@@ -1,7 +1,8 @@
 import axios from "axios";
+const baseURL = import.meta.env.BASE_URL;
 
 export const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL,
 });
 
 api.interceptors.request.use((config) => {
@@ -23,5 +24,5 @@ api.interceptors.response.use(
         console.error("Data:", error.response?.data);
         console.error("Headers enviados:", error.config?.headers);
         return Promise.reject(error);
-    }
+    },
 );
