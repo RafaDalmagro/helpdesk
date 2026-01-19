@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-    BASE_URL: z.string().url(),
+    BASE_URL: z.url(),
 });
 
 const env = envSchema.parse(import.meta.env);
