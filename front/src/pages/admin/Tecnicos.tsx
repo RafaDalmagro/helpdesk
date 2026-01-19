@@ -5,7 +5,7 @@ import { useTechs } from "../../hooks/useTechs";
 export function Tecnicos() {
     const navigate = useNavigate();
 
-    const { users, loading, error } = useTechs();
+    const { users = [], loading, error } = useTechs();
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/users/${id}`);
