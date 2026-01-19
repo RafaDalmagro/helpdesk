@@ -1,8 +1,8 @@
 import axios from "axios";
-const baseURL = import.meta.env.BASE_URL;
+import { BASE_URL } from "./env";
 
 export const api = axios.create({
-    baseURL,
+    baseURL: BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
