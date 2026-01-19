@@ -25,7 +25,7 @@ export function SignIn() {
     const [error, setError] = useState("");
 
     const auth = useAuth();
-
+    console.log("URL" + import.meta.env.BASE_URL);
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
