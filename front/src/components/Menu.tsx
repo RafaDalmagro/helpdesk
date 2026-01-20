@@ -41,7 +41,8 @@ export function Menu({ className = "hidden" }: MenuProps) {
             );
         case "tech":
             return (
-                <nav className="hidden md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10">
+                <nav
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
                     <ButtonLink
                         title="Meus Chamados"
                         variant="chamados"
@@ -51,7 +52,8 @@ export function Menu({ className = "hidden" }: MenuProps) {
             );
         case "client":
             return (
-                <nav className="hidden md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10">
+                <nav
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
                     <ButtonLink
                         title="Meus Chamados"
                         variant="chamados"
