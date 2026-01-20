@@ -20,7 +20,7 @@ class TicketServiceController {
         if (req.user.role === "client") {
             throw new AppError(
                 "Apenas administradores e técnicos podem adicionar serviços ao ticket",
-                401
+                401,
             );
         }
 
@@ -95,7 +95,7 @@ class TicketServiceController {
     async showAdditionalServices(
         req: Request,
         res: Response,
-        next: NextFunction
+        next: NextFunction,
     ) {
         const paramSchema = z.object({
             id: z.uuid({ message: "ID de Ticket inválido" }),
@@ -124,8 +124,9 @@ class TicketServiceController {
         });
 
         if (additionalServices.length === 0) {
-            res.status(404).json({
+            return res.status(200).json({
                 message: "Chamado não possui serviços adicionais",
+                data: [],
             });
         }
 

@@ -3,6 +3,8 @@ import toggle from "../assets/toggle.svg";
 
 import { Menu } from "./Menu";
 import { UserInitials } from "./UserInitials";
+import { Toggle } from "./Toggle";
+
 import { useState } from "react";
 
 export function Header({
@@ -20,17 +22,12 @@ export function Header({
         <header>
             <nav className="relative flex md:flex-col justify-between items-center box-border p-6 md:p-0 md:h-full">
                 <div className="flex md:flex-1 gap-4 items-center md:py-6 w-full md:justify-center md:px-5">
-                    <button
-                        className="hover:cursor-pointer hover:opacity-60 transition ease-linear md:hidden"
-                        type="button"
-                        onClick={() => setIsToggleOpen((prev) => !prev)}>
-                        <img
-                            src={toggle}
-                            alt="Icone toggle"
-                            className="size-12"
-                        />
-                    </button>
-
+                    <Toggle
+                        icon={toggle}
+                        onClick={() => {
+                            setIsToggleOpen((prev) => !prev);
+                        }}
+                    />
                     <div className="flex gap-3 items-center">
                         <img src={logoSvg} alt="Logo" className="h-11" />
                         <div className="flex flex-col">
