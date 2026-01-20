@@ -7,7 +7,7 @@ import { api } from "../../services/api";
 
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { BASE_URL } from "../../services/env";
+
 import { useAuth } from "../../hooks/useAuth";
 
 const signInSchema = z.object({
