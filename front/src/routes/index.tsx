@@ -10,7 +10,7 @@ import { Loading } from "../components/Loading";
 
 export function Routes() {
     const { session, isLoading } = useAuth();
-    
+
     function Route() {
         if (!session?.userWithoutPassword?.role) {
             return <AuthRoutes />;
@@ -28,7 +28,11 @@ export function Routes() {
     }
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <div className="h-screen w-screen flex">
+                <Loading />
+            </div>
+        );
     }
 
     return (
