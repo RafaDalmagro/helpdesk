@@ -7,7 +7,7 @@ import { api } from "../../services/api";
 
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-
+import { BASE_URL } from "../../services/env";
 import { useAuth } from "../../hooks/useAuth";
 
 const signInSchema = z.object({
@@ -25,7 +25,7 @@ export function SignIn() {
     const [error, setError] = useState("");
 
     const auth = useAuth();
-    console.log("URL" + import.meta.env.BASE_URL);
+
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");

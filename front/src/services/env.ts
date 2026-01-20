@@ -1,14 +1,16 @@
 import { z } from "zod";
 
-export const BASE_URL = z
-    .string()
-    .min(1)
-    .refine((v) => {
-        try {
-            new URL(v);
-            return true;
-        } catch {
-            return false;
-        }
-    }, "VITE_BASE_URL inválida")
-    .parse(import.meta.env.VITE_BASE_URL);
+const envSchema = z.object({
+    VITE_BASE_URL: z
+        .string()
+        .min(1, "VITE_BASE_URL não pode estar vazia")
+        .url("VITE_BASE_URL deve ser uma URL válida")
+        .refine(
+            (url) => url.startsWith("http://") || url.startsWith("https://"),
+            "VITE_BASE_URL deve começar com http:// ou https://",
+        ),
+});
+
+const env = envSchema.parse(import.meta.env);
+
+export const BASE_URL = env.VITE_BASE_URL;
