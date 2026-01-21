@@ -16,7 +16,7 @@ export function Tecnicos() {
             <h2 className="text-2xl text-purple-800 font-bold mb-4">
                 Técnicos
             </h2>
-            {/*  */}
+
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
                 {loading ? (
                     <div className="p-4 text-center text-gray-400">
@@ -30,12 +30,12 @@ export function Tecnicos() {
                     </div>
                 ) : (
                     <ul>
-                        {users.map((tech) => (
+                        {/* {users.map((tech) => (
                             <li key={tech.id}>
                                 {tech.name} – {tech.email}
                                 {tech.role} - {tech.id}
-                            </li>
-                        ))}
+                            </li>   
+                        ))} */}
                     </ul>
                     // <Table
                     //     role={role}

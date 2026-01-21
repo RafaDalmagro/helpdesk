@@ -88,9 +88,7 @@ export function UserInitials({
             )}
 
             {showPerfil && effectiveVariant === "with-profile-card" && (
-                <div className="absolute -bottom-3 -right-42 mt-2 z-50">
-                    <CardPerfil />
-                </div>
+                <CardPerfil />
             )}
         </div>
     );
