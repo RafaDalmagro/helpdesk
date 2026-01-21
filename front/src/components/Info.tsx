@@ -1,9 +1,10 @@
 import { Status } from "./Status";
 import { UserInitials } from "./UserInitials";
-import { formatDate } from "../utils/formatDate";
+
 import { useAuth } from "../hooks/useAuth";
 import { useTickets } from "../context/TicketContext";
 
+import { formatDate } from "../utils/formatDate";
 import { formatCurrency } from "../utils/formatCurrency";
 
 import { useEffect } from "react";
@@ -108,7 +109,7 @@ export function Info({ chamado }: Props) {
                                 <span>Preço base</span>
                                 <span>
                                     {formatCurrency(
-                                        chamado.ticketServices[0].service.price
+                                        chamado.ticketServices[0].service.price,
                                     )}
                                 </span>
                             </div>
@@ -118,24 +119,30 @@ export function Info({ chamado }: Props) {
                                 Adicionais
                             </h4>
 
-                            <table className="w-full text-xs text-gray-200">
-                                <tbody>
-                                    {services.map((servico) => (
-                                        <tr
-                                            key={servico.service.id}
-                                            className="flex justify-between gap-1">
-                                            <td className="text-left py-1">
-                                                {servico.service.name}
-                                            </td>
-                                            <td className="align-text-top py-1 whitespace-nowrap">
-                                                {formatCurrency(
-                                                    servico.service.price
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            {services.length !== 0 ? (
+                                <table className="w-full text-xs text-gray-200">
+                                    <tbody>
+                                        {services.map((servico) => (
+                                            <tr
+                                                key={servico.service.id}
+                                                className="flex justify-between gap-1">
+                                                <td className="text-left py-1">
+                                                    {servico.service.name}
+                                                </td>
+                                                <td className="align-text-top py-1 whitespace-nowrap">
+                                                    {formatCurrency(
+                                                        servico.service.price,
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className="text-xs text-right text-gray-200">
+                                    <span>Sem serviços adicionais</span>
+                                </div>
+                            )}
                         </div>
                         <div className="pt-3 border-t border-gray-500">
                             <div className="flex justify-between">
@@ -181,7 +188,9 @@ export function Info({ chamado }: Props) {
                         <h4 className="text-xs text-gray-400 font-bold">
                             Categoria
                         </h4>
-                        <p className="text-sm text-gray-200">Não tem</p>
+                        <p className="text-sm text-gray-200">
+                            {chamado.category.name}
+                        </p>
                     </div>
                     <div className="flex flex-1 gap-8">
                         <div className="flex flex-1 flex-col gap-0.5">
@@ -224,23 +233,42 @@ export function Info({ chamado }: Props) {
                             </h4>
                             <div className="flex justify-between text-xs text-gray-200">
                                 <span>Preço base</span>
-                                <span>{chamado.totalValue}</span>
+                                <span>
+                                    {formatCurrency(
+                                        chamado.ticketServices[0].service.price,
+                                    )}
+                                </span>
                             </div>
                         </div>
                         <div className="flex flex-1 flex-col gap-2">
                             <h4 className="text-xs text-gray-400 font-bold">
                                 Adicionais
                             </h4>
-                            <div className="text-xs text-gray-200">
-                                {chamado.ticketServices.map((servico) => (
-                                    <div
-                                        key={servico.service.id}
-                                        className="flex justify-between">
-                                        <span>{servico.service.name}</span>
-                                        <span>{servico.service.price}</span>
-                                    </div>
-                                ))}
-                            </div>
+
+                            {services.length !== 0 ? (
+                                <table className="w-full text-xs text-gray-200">
+                                    <tbody>
+                                        {services.map((servico) => (
+                                            <tr
+                                                key={servico.service.id}
+                                                className="flex justify-between gap-1">
+                                                <td className="text-left py-1">
+                                                    {servico.service.name}
+                                                </td>
+                                                <td className="align-text-top py-1 whitespace-nowrap">
+                                                    {formatCurrency(
+                                                        servico.service.price,
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className="text-xs text-right text-gray-200">
+                                    <span>Sem serviços adicionais</span>
+                                </div>
+                            )}
                         </div>
                         <div className="pt-3 border-t border-gray-500">
                             <div className="flex justify-between">
@@ -248,7 +276,7 @@ export function Info({ chamado }: Props) {
                                     Total
                                 </span>
                                 <span className="text-gray-200 font-bold text-sm">
-                                    {chamado.totalValue}
+                                    {formatCurrency(chamado.totalValue)}
                                 </span>
                             </div>
                         </div>

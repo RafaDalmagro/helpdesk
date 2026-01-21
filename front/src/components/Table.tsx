@@ -2,6 +2,7 @@ import olhoSvg from "../assets/eye.svg";
 import pencilSvg from "../assets/pen-line.svg";
 
 import { formatDate } from "../utils/formatDate";
+import { formatCurrency } from "../utils/formatCurrency";
 
 import { Status } from "./Status";
 import { UserInitials } from "./UserInitials";
@@ -72,7 +73,7 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                 </div>
                             </td>
                             <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
-                                {chamado.totalValue}
+                                {formatCurrency(chamado.totalValue)}
                             </td>
                             <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                                 <div className="flex items-center justify-start gap-2">
@@ -165,7 +166,7 @@ export function Table({ data, onVisualizar, role }: TableProps) {
                                 {chamado.ticketServices[0]?.service.name}
                             </td>
                             <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
-                                {chamado.totalValue}
+                                {formatCurrency(chamado.totalValue)}
                             </td>
                             <td className="text-sm text-gray-200 hidden md:table-cell md:p-3 p-2">
                                 <div className="flex items-center justify-start gap-2">

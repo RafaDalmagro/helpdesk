@@ -82,7 +82,7 @@ class TicketController {
                 if (!category) {
                     throw new AppError(
                         "Categoria não encontrada ou inativa",
-                        404
+                        404,
                     );
                 }
 
@@ -92,7 +92,7 @@ class TicketController {
                 if (!tech) {
                     throw new AppError(
                         "Técnico não encontrado ou inativo",
-                        404
+                        404,
                     );
                 }
 
@@ -117,10 +117,11 @@ class TicketController {
                     where: { id: serviceId, isActive: true },
                     select: { id: true, price: true, name: true },
                 });
+                
                 if (!service) {
                     throw new AppError(
                         "Serviço não encontrado ou inativo",
-                        404
+                        404,
                     );
                 }
 
@@ -194,7 +195,7 @@ class TicketController {
         if (user.role === "client") {
             throw new AppError(
                 "Você não tem permissão para atualizar este ticket",
-                401
+                401,
             );
         }
 
@@ -206,7 +207,7 @@ class TicketController {
             if (prevTicket?.techId !== user.id) {
                 throw new AppError(
                     "Você não é o técnico responsável por este ticket",
-                    401
+                    401,
                 );
             }
 
@@ -353,7 +354,7 @@ class TicketController {
         if (user.role === "client") {
             throw new AppError(
                 "Você não tem permissão para deletar este ticket",
-                401
+                401,
             );
         }
 
