@@ -3,10 +3,9 @@ import { Link } from "react-router";
 import { AxiosError } from "axios";
 import { z, ZodError } from "zod";
 
-import { api } from "../../services/api";
-
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
+import { Loading } from "../../components/Loading";
 
 import { useAuth } from "../../hooks/useAuth";
 
@@ -21,22 +20,18 @@ const signInSchema = z.object({
 export function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
     const auth = useAuth();
+    const { isLoading } = useAuth();
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
-        setIsLoading(true);
 
         try {
             const data = signInSchema.parse({ email, password });
-
-            const response = await api.post("/sessions", data);
-
-            auth.save(response.data);
+            await auth.signIn(data);
         } catch (err) {
             let errorMessage = "Não foi possível iniciar a sessão";
 
@@ -49,9 +44,15 @@ export function SignIn() {
             }
 
             setError(errorMessage);
-        } finally {
-            setIsLoading(false);
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="h-screen w-screen flex">
+                <Loading />
+            </div>
+        );
     }
 
     return (
@@ -73,6 +74,7 @@ export function SignIn() {
                     type="email"
                     placeholder="exemplo@mail.com"
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                 />
                 <Input
                     label="Senha"
@@ -80,6 +82,7 @@ export function SignIn() {
                     type="password"
                     placeholder="Digite sua senha"
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                 />
                 {error && <p className="text-xs text-red font-bold">{error}</p>}
                 <Button
