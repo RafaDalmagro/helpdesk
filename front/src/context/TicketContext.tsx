@@ -15,7 +15,7 @@ type TicketsContextType = {
     loadingAdditionalServicesByTicketId: Record<string, boolean>;
 
     getAdditionalServicesByTicketId: (
-        ticketId: Ticket["id"]
+        ticketId: Ticket["id"],
     ) => Promise<AdditionalService[]>;
     clearAdditionalServicesCache: (ticketId?: Ticket["id"]) => void;
 };
@@ -24,6 +24,9 @@ const TicketsContext = createContext<TicketsContextType | null>(null);
 
 export function TicketsProvider({ children }: { children: React.ReactNode }) {
     const { tickets, setTickets, loading, error } = useTicket();
+
+    const [refetchLoading, setRefetchLoading] = useState(false);
+    const [refetchError, setRefetchError] = useState<string | null>(null);
 
     const [additionalServicesByTicketId, setAdditionalServicesByTicketId] =
         useState<Record<string, AdditionalService[]>>({});
@@ -36,8 +39,8 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
     const setStatusById = (id: Ticket["id"], status: TicketStatus) => {
         setTickets((prev) =>
             prev.map((ticket) =>
-                ticket.id === id ? { ...ticket, status } : ticket
-            )
+                ticket.id === id ? { ...ticket, status } : ticket,
+            ),
         );
     };
 
@@ -45,7 +48,24 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
         tickets.find((ticket) => ticket.id === id);
 
     const refetch = async () => {
-        window.location.reload();
+        setRefetchLoading(true);
+        setRefetchError(null);
+
+        try {
+            const { data } = await api.get("/tickets");
+
+            const nextTickets = (data.tickets ?? data) as Ticket[];
+
+            setTickets(nextTickets);
+        } catch (e: any) {
+            const msg =
+                e?.response?.data?.message ||
+                e?.message ||
+                "Erro ao atualizar chamados";
+            setRefetchError(msg);
+        } finally {
+            setRefetchLoading(false);
+        }
     };
 
     const getAdditionalServicesByTicketId = async (ticketId: Ticket["id"]) => {
@@ -59,7 +79,7 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
 
         try {
             const { data } = await api.get(
-                `/ticket-services/${ticketId}/additional-services`
+                `/ticket-services/${ticketId}/additional-services`,
             );
 
             const services = data.additionalServices as AdditionalService[];
@@ -89,11 +109,14 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
         });
     };
 
+    const combinedLoading = loading || refetchLoading;
+    const combinedError = error || refetchError;
+
     const value = useMemo(
         () => ({
             tickets,
-            loading,
-            error,
+            loading: combinedLoading,
+            error: combinedError,
             setStatusById,
             getTicketById,
             refetch,
@@ -105,11 +128,11 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
         }),
         [
             tickets,
-            loading,
-            error,
+            combinedLoading,
+            combinedError,
             additionalServicesByTicketId,
             loadingAdditionalServicesByTicketId,
-        ]
+        ],
     );
 
     return (

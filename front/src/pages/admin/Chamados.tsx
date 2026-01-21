@@ -1,6 +1,8 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { Table } from "../../components/Table";
 import { useTickets } from "../../context/TicketContext";
+
+import { useEffect } from "react";
 
 type Props = {
     role: "admin" | "tech" | "client";
@@ -8,7 +10,12 @@ type Props = {
 
 export function Chamados({ role }: Props) {
     const navigate = useNavigate();
-    const { tickets = [], loading, error } = useTickets();
+    const location = useLocation();
+    const { tickets = [], loading, error, refetch } = useTickets();
+
+    useEffect(() => {
+        refetch();
+    }, [location.key]);
 
     const handleVisualizar = (id: string | number) => {
         navigate(`/chamado/${id}`);
