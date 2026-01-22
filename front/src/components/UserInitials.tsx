@@ -46,7 +46,7 @@ export function UserInitials({
     return (
         <div
             ref={wrapperRef}
-            className="relative flex items-center gap-3 h-fit w-fit">
+            className="relative inline-flex items-center gap-3 h-fit">
             {effectiveVariant === "with-profile-card" ? (
                 <button
                     type="button"
