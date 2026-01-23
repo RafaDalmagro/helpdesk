@@ -20,3 +20,16 @@ type UserResponse = {
 type UsersAPIResponse = {
     users: UserResponse[];
 };
+
+type UserTech = {
+    id: string;
+    name: string;
+    email: string;
+    role: "tech";
+    TechAvailability: [
+        {
+            time: string;
+            weekday: number;
+        },
+    ];
+};

@@ -3,7 +3,7 @@ import { api } from "../services/api";
 import { AxiosError } from "axios";
 
 type TechContext = {
-    users: UserResponse[];
+    techs: UserTech[];
     loading: boolean;
     error: any;
 };
@@ -11,7 +11,7 @@ type TechContext = {
 export const TechContext = createContext({} as TechContext);
 
 export function TechProvider({ children }: { children: ReactNode }) {
-    const [users, setUsers] = useState<UserResponse[]>([]);
+    const [techs, setTechs] = useState<UserTech[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -19,16 +19,16 @@ export function TechProvider({ children }: { children: ReactNode }) {
         async function fetchTechs() {
             try {
                 setError(null);
-                const response = await api.get<UsersAPIResponse>(
-                    "/users?role=tech"
+                const response = await api.get<{ users: UserTech[] }>(
+                    "/users?role=tech",
                 );
 
-                setUsers(response.data.users);
+                setTechs(response.data?.users ?? []);
             } catch (error) {
                 if (error instanceof AxiosError) {
                     const errorMessage =
                         error.response?.data?.message ||
-                        "Erro ao buscar tickets";
+                        "Erro ao buscar técnicos";
                     setError(errorMessage);
                 } else {
                     setError("Erro ao buscar técnicos");
@@ -44,7 +44,7 @@ export function TechProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <TechContext.Provider value={{ users, loading, error }}>
+        <TechContext.Provider value={{ techs, loading, error }}>
             {children}
         </TechContext.Provider>
     );
