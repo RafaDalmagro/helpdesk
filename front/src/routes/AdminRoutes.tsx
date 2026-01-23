@@ -6,6 +6,7 @@ import { Chamado } from "../pages/admin/Chamado";
 import { Tecnicos } from "../pages/admin/Tecnicos";
 import { Clientes } from "../pages/admin/Clientes";
 import { Servicos } from "../pages/admin/Servicos";
+import { Tecnico } from "../pages/admin/Tecnico";
 
 import { TicketsProvider } from "../context/TicketContext";
 import { TechProvider } from "../context/TechContext";
@@ -35,6 +36,7 @@ export function AdminRoutes() {
                         </TechProvider>
                     }
                 />
+                <Route path="users/:id" element={<Tecnico />} />
                 <Route path="clientes" element={<Clientes />} />
                 <Route path="servicos" element={<Servicos />} />
             </Route>
