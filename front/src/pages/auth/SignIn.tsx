@@ -33,17 +33,19 @@ export function SignIn() {
             const data = signInSchema.parse({ email, password });
             await auth.signIn(data);
         } catch (err) {
-            let errorMessage = "Não foi possível iniciar a sessão";
-
             if (err instanceof ZodError) {
-                errorMessage = err.issues[0].message;
+                setError(err.issues[0]?.message ?? "Dados inválidos");
+                return;
             }
 
             if (err instanceof AxiosError) {
-                errorMessage = err.response?.data.message || errorMessage;
+                setError(
+                    err.response?.data?.message ??
+                        "Não foi possível iniciar a sessão",
+                );
+                return;
             }
-
-            setError(errorMessage);
+            setError("Não foi possível iniciar a sessão");
         }
     }
 
