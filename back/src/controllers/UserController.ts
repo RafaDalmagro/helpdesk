@@ -22,6 +22,12 @@ class UserController {
                 ticketsAsTech: {
                     select: { id: true, title: true },
                 },
+                TechAvailability: {
+                    select: {
+                        time: true,
+                        weekday: true,
+                    },
+                },
             },
             where: {
                 isActive: true,
@@ -36,7 +42,51 @@ class UserController {
             throw new AppError("Usuários não encontrados", 404);
         }
 
-        return res.status(200).json({ users });
+        const currentWeekday = new Date().getDay();
+
+        // Filtrar tickets e disponibilidade baseado na role de cada usuário
+        const filteredUsers = users.map((user) => {
+            const {
+                ticketsAsClient,
+                ticketsAsTech,
+                TechAvailability,
+                ...userData
+            } = user;
+
+            const filteredAvailability = TechAvailability?.filter(
+                (availability) => availability.weekday === currentWeekday,
+            );
+
+            if (user.role === "client") {
+                return {
+                    ...userData,
+                    ticketsAsClient,
+                    ...(filteredAvailability &&
+                        filteredAvailability.length > 0 && {
+                            TechAvailability: filteredAvailability,
+                        }),
+                };
+            } else if (user.role === "tech") {
+                return {
+                    ...userData,
+                    ticketsAsTech,
+                    ...(filteredAvailability &&
+                        filteredAvailability.length > 0 && {
+                            TechAvailability: filteredAvailability,
+                        }),
+                };
+            } else {
+                return {
+                    ...userData,
+                    ...(filteredAvailability &&
+                        filteredAvailability.length > 0 && {
+                            TechAvailability: filteredAvailability,
+                        }),
+                };
+            }
+        });
+
+        return res.status(200).json({ users: filteredUsers });
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
@@ -173,7 +223,7 @@ class UserController {
         if (req.user?.id !== id && req.user?.role !== "admin") {
             throw new AppError(
                 "Você não está autorizado a atualizar este usuário",
-                401
+                401,
             );
         }
 
@@ -275,11 +325,11 @@ class UserController {
         if (userLoged.id !== id && userLoged.role !== "admin") {
             throw new AppError(
                 "Você não tem permissão para alterar esta senha",
-                403
+                403,
             );
         }
         const { password, confirmPassword, oldPassword } = bodySchema.parse(
-            req.body
+            req.body,
         );
 
         if (confirmPassword && password !== confirmPassword) {
@@ -297,7 +347,7 @@ class UserController {
         if (user.firstLogin === true) {
             throw new AppError(
                 "A senha só pode ser alterada após o primeiro acesso",
-                403
+                403,
             );
         }
 
@@ -335,7 +385,7 @@ class UserController {
         if (userLoged.id !== id && userLoged.role !== "admin") {
             throw new AppError(
                 "Você não tem permissão para essa alteração.",
-                403
+                403,
             );
         }
 
