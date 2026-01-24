@@ -1,8 +1,10 @@
 import { Voltar } from "../../components/VoltarLink";
 import { Info } from "../../components/Info";
 import { Button } from "../../components/Button";
+
 import { api } from "../../services/api";
 import { AxiosError } from "axios";
+
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { useTickets } from "../../context/TicketContext";

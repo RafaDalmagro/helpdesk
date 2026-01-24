@@ -4,7 +4,7 @@ import { TechContext } from "../context/TechContext";
 export function useTechs() {
     const context = useContext(TechContext);
 
-    if (!context) {
+    if (!context || !context.fetchTechById) {
         throw new Error("useTechs must be used within a TechProvider");
     }
 

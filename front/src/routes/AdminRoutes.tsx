@@ -10,6 +10,9 @@ import { Tecnico } from "../pages/admin/Tecnico";
 
 import { TicketsProvider } from "../context/TicketContext";
 import { TechProvider } from "../context/TechContext";
+
+import { Outlet } from "react-router";
+
 import { getUserRole } from "../utils/getUserRole";
 
 export function AdminRoutes() {
@@ -29,14 +32,14 @@ export function AdminRoutes() {
                 />
                 <Route path="chamado/:id" element={<Chamado />} />
                 <Route
-                    path="tecnicos"
                     element={
                         <TechProvider>
-                            <Tecnicos />
+                            <Outlet />
                         </TechProvider>
-                    }
-                />
-                <Route path="users/:id" element={<Tecnico />} />
+                    }>
+                    <Route path="tecnicos" element={<Tecnicos />} />
+                    <Route path="users/:id" element={<Tecnico />} />
+                </Route>
                 <Route path="clientes" element={<Clientes />} />
                 <Route path="servicos" element={<Servicos />} />
             </Route>

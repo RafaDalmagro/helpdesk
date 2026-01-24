@@ -145,7 +145,6 @@ class UserController {
         if (!userWithoutRole) {
             throw new AppError("Usuário não encontrado", 404);
         }
-        console.log(userWithoutRole.role);
 
         if (userWithoutRole?.role === "client") {
             role = await prisma.user.findUnique({
@@ -174,6 +173,12 @@ class UserController {
                         select: {
                             id: true,
                             title: true,
+                        },
+                    },
+                    TechAvailability: {
+                        select: {
+                            time: true,
+                            weekday: true,
                         },
                     },
                 },

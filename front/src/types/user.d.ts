@@ -26,10 +26,15 @@ type UserTech = {
     name: string;
     email: string;
     role: "tech";
-    TechAvailability: [
-        {
-            time: string;
-            weekday: number;
-        },
-    ];
+    TechAvailability?: {
+        time: string;
+        weekday: number;
+    }[];
+};
+
+type UserTechDetail = UserTech & {
+    ticketsAsTech?: {
+        id: string;
+        title: string;
+    }[];
 };

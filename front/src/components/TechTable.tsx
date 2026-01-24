@@ -50,7 +50,7 @@ export function TechTable({ data, onVisualizar }: TableProps) {
                             {tech.email}
                         </td>
                         <td className="flex md:p-3 p-2 flex-wrap gap-1">
-                            {tech.TechAvailability.map((availability) => (
+                            {(tech.TechAvailability ?? []).map((availability) => (
                                 <AvailabilityTime
                                     key={availability.time}
                                     time={availability.time}
