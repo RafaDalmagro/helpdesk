@@ -13,6 +13,7 @@ export function Tecnico() {
 
     const { loading, error, fetchTechById } = useTechs();
 
+    const [horarios, setHorarios] = useState<string[]>([]);
     const [tech, setTech] = useState<UserTechDetail | null>(null);
     const [isFetching, setIsFetching] = useState(true);
 
@@ -36,7 +37,7 @@ export function Tecnico() {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form submitted");
+        console.log(horarios);
     };
 
     return (
@@ -107,7 +108,10 @@ export function Tecnico() {
                             </div>
                         </div>
                     </div>
-                    <ScheduleSelector className="flex-2" />
+                    <ScheduleSelector
+                        className="flex-2"
+                        onChange={(selectedSlots) => setHorarios(selectedSlots)}
+                    />
                 </div>
             ) : (
                 <div className="p-4 text-center text-gray-400">

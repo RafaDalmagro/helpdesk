@@ -26,16 +26,18 @@ export function ScheduleSelector({
 
     const handleToggleSlot = (time: string) => {
         setSelectedSlots((prevSlots) => {
-            if (prevSlots.includes(time)) {
-                const newSlots = prevSlots.filter((t) => t !== time);
-                if (onChange) onChange(newSlots);
-                return newSlots;
-            }
+            const newSlots = prevSlots.includes(time)
+                ? prevSlots.filter((t) => t !== time)
+                : [...prevSlots, time];
 
-            const newSlots = [...prevSlots, time];
-            if (onChange) onChange(newSlots); // Avisa o pai
             return newSlots;
         });
+
+        const newSlots = selectedSlots.includes(time)
+            ? selectedSlots.filter((t) => t !== time)
+            : [...selectedSlots, time];
+
+        if (onChange) onChange(newSlots);
     };
 
     return (

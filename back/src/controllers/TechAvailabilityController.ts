@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 import {
     BUSINESS_WEEKDAYS,
+    BUSINESS_TIMES,
     TECH1_TIMES,
     TECH2_TIMES,
     TECH3_TIMES,
@@ -66,10 +67,10 @@ class TechAvailabilityController {
                 time === "1"
                     ? TECH1_TIMES
                     : time === "2"
-                    ? TECH2_TIMES
-                    : time === "3"
-                    ? TECH3_TIMES
-                    : null;
+                      ? TECH2_TIMES
+                      : time === "3"
+                        ? TECH3_TIMES
+                        : null;
 
             if (!selectedTimes) {
                 return res
@@ -118,7 +119,7 @@ class TechAvailabilityController {
 
             // para cada array de dias úteis, cria os registros de disponibilidade
             const dataToCreate = weekdays.flatMap((weekday) =>
-                selectedTimes.map((t) => ({ techId, weekday, time: t }))
+                selectedTimes.map((t) => ({ techId, weekday, time: t })),
             );
 
             await prisma.techAvailability.createMany({
@@ -157,13 +158,24 @@ class TechAvailabilityController {
             });
 
             const bodySchema = z.object({
-                time: z.enum(["1", "2", "3"], {
-                    message: "Informe 1, 2 ou 3 para o grupo de horários",
-                }),
+                times: z
+                    .array(z.string(), {
+                        message: "Os horários devem ser um array de strings",
+                    })
+                    .min(1, { message: "Informe pelo menos um horário" })
+                    .refine(
+                        (times) =>
+                            times.every((time) =>
+                                BUSINESS_TIMES.includes(time),
+                            ),
+                        {
+                            message: `Horários inválidos. Horários permitidos: ${BUSINESS_TIMES.join(", ")}`,
+                        },
+                    ),
             });
 
             const { techId } = paramsSchema.parse(req.params);
-            const { time } = bodySchema.parse(req.body);
+            const { times } = bodySchema.parse(req.body);
 
             const tech = await prisma.user.findUnique({
                 where: { id: techId },
@@ -179,36 +191,22 @@ class TechAvailabilityController {
                     .status(400)
                     .json({ message: "Usuário informado não é um técnico" });
 
-            const selectedTimes =
-                time === "1"
-                    ? TECH1_TIMES
-                    : time === "2"
-                    ? TECH2_TIMES
-                    : time === "3"
-                    ? TECH3_TIMES
-                    : null;
-
-            if (!selectedTimes) {
-                return res
-                    .status(400)
-                    .json({ message: "Grupo de horários inválido" });
-            }
-
-            // verifica se os horários selecionados já correspondem ao que o técnico possui
             const weekdays = Array.from(BUSINESS_WEEKDAYS);
+
             const existing = await prisma.techAvailability.findMany({
                 where: { techId, weekday: { in: weekdays } },
                 select: { weekday: true, time: true },
             });
 
             const existingMap = new Map<number, Set<string>>();
+
             for (const r of existing) {
                 if (!existingMap.has(r.weekday))
                     existingMap.set(r.weekday, new Set());
                 existingMap.get(r.weekday)!.add(r.time);
             }
 
-            const selectedSet = new Set(selectedTimes);
+            const selectedSet = new Set(times);
 
             let identical = true;
             for (const weekday of weekdays) {
@@ -229,12 +227,12 @@ class TechAvailabilityController {
             if (identical) {
                 return res.status(400).json({
                     message:
-                        "Horário selecionado já é o atual do técnico. Não é possível prosseguir.",
+                        "Horários selecionados já são os atuais do técnico. Não é possível prosseguir.",
                 });
             }
 
             const dataToCreate = weekdays.flatMap((weekday) =>
-                selectedTimes.map((t) => ({ techId, weekday, time: t }))
+                times.map((time) => ({ techId, weekday, time })),
             );
 
             await prisma.$transaction(async (tx) => {

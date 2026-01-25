@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TechAvailabilityController } from "@/controllers/TechAvailability";
+import { TechAvailabilityController } from "@/controllers/TechAvailabilityController";
 import { verifyUserAuthorization } from "@/middlewares/verifyUserAuthorization";
 
 const techAvailabilityRoutes = Router();
@@ -11,12 +11,12 @@ techAvailabilityRoutes.get(
     techAvailabilityController.index
 );
 techAvailabilityRoutes.post(
-    "/:techId/availability",
+    "/availability/:techId",
     verifyUserAuthorization(["admin"]),
     techAvailabilityController.create
 );
 techAvailabilityRoutes.put(
-    "/:techId/availability",
+    "/availability/:techId",
     verifyUserAuthorization(["admin"]),
     techAvailabilityController.update
 );
