@@ -11,11 +11,13 @@ export function Tecnico() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { loading, error, fetchTechById } = useTechs();
+    const { loading, error, fetchTechById, updateTechAvailability } =
+        useTechs();
 
     const [horarios, setHorarios] = useState<string[]>([]);
     const [tech, setTech] = useState<UserTechDetail | null>(null);
     const [isFetching, setIsFetching] = useState(true);
+    const [saveSuccess, setSaveSuccess] = useState(false);
 
     useEffect(() => {
         async function loadTech() {
@@ -35,9 +37,23 @@ export function Tecnico() {
         navigate(-1);
     }
 
-    const onSubmit = (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(horarios);
+
+        if (!id || !horarios.length) {
+            return;
+        }
+
+        setSaveSuccess(false);
+
+        const success = await updateTechAvailability(id, horarios);
+
+        if (success) {
+            setSaveSuccess(true);
+            setTimeout(() => {
+                navigate(-1);
+            }, 1500);
+        }
     };
 
     return (
@@ -57,11 +73,13 @@ export function Tecnico() {
                         variant="primary"
                         buttonName="Cancelar"
                         className="w-full md:h-fit px-4 md:w-fit"
+                        disabled={loading}
                     />
                     <Button
                         variant="default"
-                        buttonName="Salvar"
+                        buttonName={loading ? "Salvando..." : "Salvar"}
                         type="submit"
+                        disabled={loading}
                         className="w-full md:h-fit px-4 md:w-fit"
                     />
                 </div>
@@ -71,8 +89,12 @@ export function Tecnico() {
                 <div className="p-4 text-center text-gray-400">
                     Carregando técnico...
                 </div>
-            ) : error ? (
+            ) : error && !saveSuccess ? (
                 <div className="p-4 text-center text-red-400">{error}</div>
+            ) : saveSuccess ? (
+                <div className="p-4 text-center text-gray-400 font-bold">
+                    Horários atualizados com sucesso! Você será redirecionado...
+                </div>
             ) : tech ? (
                 <div className="overflow-x-auto flex flex-col md:flex-row gap-4 md:gap-6 justify-center max-w-4xl w-full">
                     <div className="border flex flex-col h-fit gap-5 md:gap-6 border-gray-500 rounded-xl p-5 md:p-6 flex-1">

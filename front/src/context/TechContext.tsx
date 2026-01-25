@@ -13,6 +13,10 @@ type TechContext = {
     loading: boolean;
     error: any;
     fetchTechById: (id: string) => Promise<UserTechDetail | null>;
+    updateTechAvailability: (
+        techId: string,
+        times: string[],
+    ) => Promise<boolean>;
 };
 
 export const TechContext = createContext({} as TechContext);
@@ -47,6 +51,33 @@ export function TechProvider({ children }: { children: ReactNode }) {
         [],
     );
 
+    const updateTechAvailability = useCallback(
+        async (techId: string, times: string[]): Promise<boolean> => {
+            try {
+                setError(null);
+                setLoading(true);
+                await api.put(`/tech-availability/availability/${techId}`, {
+                    times,
+                });
+                setLoading(false);
+                return true;
+            } catch (error) {
+                setLoading(false);
+                if (error instanceof AxiosError) {
+                    const errorMessage =
+                        error.response?.data?.message ||
+                        "Erro ao atualizar disponibilidade";
+                    setError(errorMessage);
+                } else {
+                    setError("Erro ao atualizar disponibilidade");
+                }
+                console.error("Erro ao atualizar disponibilidade:", error);
+                return false;
+            }
+        },
+        [],
+    );
+
     useEffect(() => {
         async function fetchTechs() {
             try {
@@ -76,7 +107,14 @@ export function TechProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <TechContext.Provider value={{ techs, loading, error, fetchTechById }}>
+        <TechContext.Provider
+            value={{
+                techs,
+                loading,
+                error,
+                fetchTechById,
+                updateTechAvailability,
+            }}>
             {children}
         </TechContext.Provider>
     );
