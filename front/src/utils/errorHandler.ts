@@ -16,18 +16,6 @@ interface ParsedError {
     field?: string;
 }
 
-interface ZodIssue {
-    path: (string | number)[];
-    message: string;
-}
-
-interface ValidationErrorResponse {
-    message: string;
-    issues: {
-        [key: string]: ZodIssue | ZodIssue[];
-    };
-}
-
 export function parseApiError(error: unknown): ParsedError {
     if (!(error instanceof AxiosError)) {
         return {
