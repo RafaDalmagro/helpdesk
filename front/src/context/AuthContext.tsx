@@ -37,10 +37,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const token = localStorage.getItem(`${LOCAL_STORAGE_KEY}:token`);
 
         if (user && token) {
-            setSession({
-                userWithoutPassword: JSON.parse(user),
-                token,
-            });
+            try {
+                const parsedUser = JSON.parse(user);
+                if (parsedUser && parsedUser.id && parsedUser.role) {
+                    setSession({
+                        userWithoutPassword: parsedUser,
+                        token,
+                    });
+                } else {
+                    removeSession();
+                }
+            } catch (error) {
+                console.error(
+                    "Erro ao carregar sessão do localStorage:",
+                    error,
+                );
+                removeSession();
+            }
         }
 
         setIsLoading(false);

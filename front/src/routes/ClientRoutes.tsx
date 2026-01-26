@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router";
 
 import { DefaultLayout } from "../components/layouts/DefaultLayout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 import { TicketsProvider } from "../context/TicketContext";
 
@@ -15,9 +16,11 @@ export function ClientRoutes() {
             <Route
                 path="/"
                 element={
-                    <TicketsProvider>
-                        <DefaultLayout />
-                    </TicketsProvider>
+                    <ProtectedRoute requiredRole="client">
+                        <TicketsProvider>
+                            <DefaultLayout />
+                        </TicketsProvider>
+                    </ProtectedRoute>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
                 <Route

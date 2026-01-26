@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router";
 
 import { TechLayout } from "../components/layouts/TechLayout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 import { TechProvider } from "../context/TechContext";
 
@@ -13,9 +14,11 @@ export function TechRoutes() {
             <Route
                 path="/"
                 element={
-                    <TechProvider>
-                        <TechLayout />
-                    </TechProvider>
+                    <ProtectedRoute requiredRole="tech">
+                        <TechProvider>
+                            <TechLayout />
+                        </TechProvider>
+                    </ProtectedRoute>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
                 <Route

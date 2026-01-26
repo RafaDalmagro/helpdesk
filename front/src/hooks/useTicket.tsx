@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { AxiosError } from "axios";
+import { useAuth } from "./useAuth";
 
 export function useTicket() {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { session } = useAuth();
 
     useEffect(() => {
         let mounted = true;
 
         async function fetchTickets() {
-            const token = localStorage.getItem("@HelpDesk:session:token");
-
-            if (!token) {
+            if (!session?.token) {
                 if (mounted) {
-                    setError("Token não encontrado");
+                    setError("Usuário não autenticado");
                     setLoading(false);
                 }
                 return;
@@ -26,7 +26,7 @@ export function useTicket() {
                 setError(null);
 
                 const response = await api.get<{ tickets: Ticket[] }>(
-                    "/tickets"
+                    "/tickets",
                 );
 
                 if (!mounted) return;
@@ -39,6 +39,16 @@ export function useTicket() {
                     const errorMessage =
                         err.response?.data?.message || "Erro ao buscar tickets";
                     setError(errorMessage);
+
+                    if (
+                        err.response?.status === 401 ||
+                        err.response?.status === 403
+                    ) {
+                        localStorage.removeItem("@HelpDesk:session:user");
+                        localStorage.removeItem("@HelpDesk:session:token");
+                        window.location.assign("/");
+                        return;
+                    }
                 } else {
                     setError("Erro ao buscar tickets");
                 }
@@ -56,7 +66,7 @@ export function useTicket() {
         return () => {
             mounted = false;
         };
-    }, []);
+    }, [session]);
 
     return { tickets, setTickets, loading, error };
 }

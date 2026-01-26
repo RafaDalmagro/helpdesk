@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router";
 
 import { AdminLayout } from "../components/layouts/AdminLayout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 import { Chamados } from "../pages/admin/Chamados";
 import { Chamado } from "../pages/admin/Chamado";
@@ -23,9 +24,11 @@ export function AdminRoutes() {
             <Route
                 path="/"
                 element={
-                    <TicketsProvider>
-                        <AdminLayout />
-                    </TicketsProvider>
+                    <ProtectedRoute requiredRole="admin">
+                        <TicketsProvider>
+                            <AdminLayout />
+                        </TicketsProvider>
+                    </ProtectedRoute>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
                 <Route

@@ -20,6 +20,23 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (axios.isAxiosError(error)) {
+            if (
+                error.response?.status === 401 ||
+                error.response?.status === 403
+            ) {
+                localStorage.removeItem("@HelpDesk:session:user");
+                localStorage.removeItem("@HelpDesk:session:token");
+
+                if (
+                    !window.location.pathname.includes("/login") &&
+                    !window.location.pathname.includes("/signup") &&
+                    window.location.pathname !== "/"
+                ) {
+                    window.location.assign("/");
+                }
+                return Promise.reject(error);
+            }
+
             console.error("Erro Axios detectado");
             console.error("Data:", error.response?.data);
             console.error("URL:", error.config?.url);
