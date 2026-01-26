@@ -15,6 +15,11 @@ type ClientContext = {
     error: any;
     fetchClientById: (id: string) => Promise<UserResponse | null>;
     createClient: (data: UserResponse) => Promise<boolean>;
+    deleteClient: (id: string) => Promise<boolean>;
+    updateClient: (
+        id: string,
+        data: { name: string; email: string },
+    ) => Promise<boolean>;
 };
 
 export const ClientContext = createContext({} as ClientContext);
@@ -83,6 +88,73 @@ export function ClientProvider({ children }: { children: ReactNode }) {
         [],
     );
 
+    const deleteClient = useCallback(async (id: string): Promise<boolean> => {
+        try {
+            setError(null);
+            setLoading(true);
+
+            await api.delete(`/users/${id}`);
+
+            const response = await api.get<{ users: UserResponse[] }>(
+                "/users?role=client",
+            );
+            setUsers(response.data?.users ?? []);
+
+            setLoading(false);
+            return true;
+        } catch (error: unknown) {
+            setLoading(false);
+            if (error instanceof AxiosError) {
+                const errorMessage =
+                    error.response?.data?.message || "Erro ao deletar cliente";
+                setError(errorMessage);
+                console.error("Erro ao deletar cliente:", error);
+                throw error;
+            } else {
+                console.error("Erro ao deletar cliente:", error);
+                setError("Erro ao deletar cliente");
+                throw new Error("Erro ao deletar cliente");
+            }
+        }
+    }, []);
+
+    const updateClient = useCallback(
+        async (
+            id: string,
+            data: { name: string; email: string },
+        ): Promise<boolean> => {
+            try {
+                setError(null);
+                setLoading(true);
+
+                await api.put(`/users/${id}`, data);
+
+                const response = await api.get<{ users: UserResponse[] }>(
+                    "/users?role=client",
+                );
+                setUsers(response.data?.users ?? []);
+
+                setLoading(false);
+                return true;
+            } catch (error: unknown) {
+                setLoading(false);
+                if (error instanceof AxiosError) {
+                    const errorMessage =
+                        error.response?.data?.message ||
+                        "Erro ao atualizar cliente";
+                    setError(errorMessage);
+                    console.error("Erro ao atualizar cliente:", error);
+                    throw error;
+                } else {
+                    console.error("Erro ao atualizar cliente:", error);
+                    setError("Erro ao atualizar cliente");
+                    throw new Error("Erro ao atualizar cliente");
+                }
+            }
+        },
+        [],
+    );
+
     useEffect(() => {
         async function fetchClients() {
             try {
@@ -119,6 +191,8 @@ export function ClientProvider({ children }: { children: ReactNode }) {
                 error,
                 fetchClientById,
                 createClient,
+                deleteClient,
+                updateClient,
             }}>
             {children}
         </ClientContext.Provider>

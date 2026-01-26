@@ -5,21 +5,23 @@ import { UserInitials } from "./UserInitials";
 
 type TableProps = {
     data: UserResponse[];
-    onVisualizar?: (id: string | number) => void;
+    onVisualizar?: (id: string) => void;
+    deleteClient?: (id: string) => void;
 };
 
-export function ClientTable({ data, onVisualizar }: TableProps) {
-    const handleVisualizar = (id: string | number) => {
-        console.log("Visualizar cliente com ID:", id);
-        // if (onVisualizar) {
-        //     onVisualizar(id);
-        // }
+export function ClientTable({ data, onVisualizar, deleteClient }: TableProps) {
+    const handleVisualizar = (id: string) => {
+        if (onVisualizar) {
+            onVisualizar(id);
+        }
     };
 
-    const handleDelete = (id: string | number) => {
-        console.log("Excluir cliente com ID:", id);
+    const handleDelete = (id: string) => {
+        if (deleteClient) {
+            deleteClient(id);
+        }
     };
-    console.log(data);
+
     return (
         <table className="w-full border-collapse">
             <thead>

@@ -1,15 +1,31 @@
 import { useNavigate } from "react-router";
+import { useState } from "react";
 
 import { useClients } from "../../hooks/useClients";
 import { ClientTable } from "../../components/ClientTable";
+import { ClientProfile } from "../../components/ClientProfile";
+import { CardDelete } from "../../components/CardDelete";
 
 export function Clientes() {
     const navigate = useNavigate();
+    const [selectedClientId, setSelectedClientId] = useState<string | null>(
+        null,
+    );
+    const [clientToDelete, setClientToDelete] = useState<string | null>(null);
 
-    const { users = [], loading, error } = useClients();
+    const { users = [], loading, error, deleteClient } = useClients();
 
-    const handleVisualizar = (id: string | number) => {
-        navigate(`/users/${id}`);
+    const handleVisualizar = (id: string) => {
+        setSelectedClientId(id);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedClientId(null);
+    };
+
+    const handleDelete = (id: string) => {
+        setClientToDelete(id);
+        console.log("Deletar cliente com ID:", id);
     };
 
     if (!users) {
@@ -25,18 +41,35 @@ export function Clientes() {
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
                 {loading ? (
                     <div className="p-4 text-center text-gray-400">
-                        Carregando técnicos...
+                        Carregando clientes...
                     </div>
                 ) : error ? (
                     <div className="p-4 text-center text-red-400">{error}</div>
                 ) : users.length === 0 ? (
                     <div className="p-4 text-center text-gray-400">
-                        Nenhum técnico encontrado.
+                        Nenhum cliente encontrado.
                     </div>
                 ) : (
-                    <ClientTable data={users} onVisualizar={handleVisualizar} />
+                    <ClientTable
+                        data={users}
+                        onVisualizar={handleVisualizar}
+                        deleteClient={handleDelete}
+                    />
                 )}
             </div>
+
+            {selectedClientId && (
+                <ClientProfile
+                    clientId={selectedClientId}
+                    onClose={handleCloseModal}
+                />
+            )}
+            {clientToDelete && (
+                <CardDelete
+                    id={clientToDelete}
+                    onClose={() => setClientToDelete(null)}
+                />
+            )}
         </section>
     );
 }
