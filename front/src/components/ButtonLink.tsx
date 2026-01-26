@@ -50,13 +50,17 @@ export function ButtonLink({ title, iconSvg, variant, to, onClick }: Props) {
                 onClick
                     ? onClick
                     : variant === "sair"
-                    ? auth.removeSession
-                    : undefined
+                      ? auth.removeSession
+                      : undefined
             }
             className={
                 variant !== "sair" && variant !== "perfil"
-                    ? `flex gap-3 p-3 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear w-full ${
-                          isActive ? "bg-purple-800" : "bg-inherit"
+                    ? `flex gap-3 p-3 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear ${
+                          variant === "create"
+                              ? "bg-gray-200"
+                              : isActive
+                                ? "bg-purple-800"
+                                : "bg-inherit"
                       }`
                     : `flex gap-2 w-20 p-0 rounded-lg hover:cursor-pointer hover:opacity-70 transition ease-linear ${
                           isActive ? "bg-purple-800" : "bg-inherit"
@@ -68,8 +72,8 @@ export function ButtonLink({ title, iconSvg, variant, to, onClick }: Props) {
                     variant === "sair"
                         ? "text-sm md:text-md text-red"
                         : variant === "perfil"
-                        ? "text-sm md:text-md text-gray-500"
-                        : "text-sm text-gray-600"
+                          ? "text-sm md:text-md text-gray-500"
+                          : "text-sm text-gray-600"
                 }>
                 {title}
             </span>
