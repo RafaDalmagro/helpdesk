@@ -1,19 +1,11 @@
-import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
-import { ScheduleSelector } from "../../components/ScheduleSelector";
 import { Button } from "../../components/Button";
 import { Voltar } from "../../components/VoltarLink";
-import { UserInitials } from "../../components/UserInitials";
 
 export function NovoTecnico() {
     const { id } = useParams();
     const navigate = useNavigate();
-
-    const [horarios, setHorarios] = useState<string[]>([]);
-    const [tech, setTech] = useState<UserTechDetail | null>(null);
-    const [isFetching, setIsFetching] = useState(true);
-    const [saveSuccess, setSaveSuccess] = useState(false);
 
     function handleCancelar() {
         navigate(-1);
@@ -29,7 +21,7 @@ export function NovoTecnico() {
             onSubmit={onSubmit}>
             <header className="flex flex-col md:flex-row gap-4 justify-between max-w-4xl w-full">
                 <div className="flex flex-col gap-1">
-                    <Voltar title="Voltar" to="/chamados" />
+                    <Voltar title="Voltar" />
                     <h2 className="text-xl text-purple-800 font-bold">
                         Perfil de técnico
                     </h2>

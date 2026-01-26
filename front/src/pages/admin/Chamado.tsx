@@ -16,7 +16,7 @@ export function Chamado() {
     const ticketDoContexto = id ? getTicketById(id) : undefined;
 
     const [ticketAtual, setTicketAtual] = useState<Ticket | undefined>(
-        ticketDoContexto
+        ticketDoContexto,
     );
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export function Chamado() {
             });
 
             setTicketAtual((prev) =>
-                prev ? { ...prev, status: "closed" as TicketStatus } : prev
+                prev ? { ...prev, status: "closed" as TicketStatus } : prev,
             );
         } catch (error) {
             tratarErro(error, "encerrar chamado");
@@ -54,7 +54,9 @@ export function Chamado() {
             });
 
             setTicketAtual((prev) =>
-                prev ? { ...prev, status: "in_progress" as TicketStatus } : prev
+                prev
+                    ? { ...prev, status: "in_progress" as TicketStatus }
+                    : prev,
             );
         } catch (error) {
             tratarErro(error, "iniciar atendimento");
@@ -75,7 +77,7 @@ export function Chamado() {
             <div className="flex flex-col gap-4 md:gap-6 lg:w-200">
                 <header className="flex gap-4 justify-between">
                     <div className="flex flex-col gap-1">
-                        <Voltar title="Voltar" to="/chamados" />
+                        <Voltar title="Voltar" />
                         <h2 className="text-xl text-purple-800 font-bold">
                             Chamado detalhado
                         </h2>

@@ -62,7 +62,7 @@ export function Tecnico() {
             onSubmit={onSubmit}>
             <header className="flex flex-col md:flex-row gap-4 justify-between max-w-4xl w-full">
                 <div className="flex flex-col gap-1">
-                    <Voltar title="Voltar" to="/chamados" />
+                    <Voltar title="Voltar" />
                     <h2 className="text-xl text-purple-800 font-bold">
                         Perfil de técnico
                     </h2>
