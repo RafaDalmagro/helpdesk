@@ -1,10 +1,10 @@
-import { useParams, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import { Button } from "../../components/Button";
 import { Voltar } from "../../components/VoltarLink";
 
 export function NovoTecnico() {
-    const { id } = useParams();
+    // const { id } = useParams();
     const navigate = useNavigate();
 
     function handleCancelar() {
