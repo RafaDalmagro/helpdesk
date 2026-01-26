@@ -10,25 +10,25 @@ import { api } from "../services/api";
 import { AxiosError } from "axios";
 
 type ClientContext = {
-    users: UsersAPIResponse[];
+    users: UserResponse[];
     loading: boolean;
     error: any;
-    fetchClientById: (id: string) => Promise<UsersAPIResponse | null>;
-    createClient: (data: UsersAPIResponse) => Promise<boolean>;
+    fetchClientById: (id: string) => Promise<UserResponse | null>;
+    createClient: (data: UserResponse) => Promise<boolean>;
 };
 
 export const ClientContext = createContext({} as ClientContext);
 
 export function ClientProvider({ children }: { children: ReactNode }) {
-    const [users, setUsers] = useState<UsersAPIResponse[]>([]);
+    const [users, setUsers] = useState<UserResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchClientById = useCallback(
-        async (id: string): Promise<UsersAPIResponse | null> => {
+        async (id: string): Promise<UserResponse | null> => {
             try {
                 setError(null);
-                const response = await api.get<{ user: UsersAPIResponse }>(
+                const response = await api.get<{ user: UserResponse }>(
                     `/users/${id}`,
                 );
 
@@ -51,13 +51,13 @@ export function ClientProvider({ children }: { children: ReactNode }) {
     );
 
     const createClient = useCallback(
-        async (data: UsersAPIResponse): Promise<boolean> => {
+        async (data: UserResponse): Promise<boolean> => {
             try {
                 setError(null);
                 setLoading(true);
                 await api.post("/users", data);
 
-                const response = await api.get<{ users: UsersAPIResponse[] }>(
+                const response = await api.get<{ users: UserResponse[] }>(
                     "/users?role=client",
                 );
                 setUsers(response.data?.users ?? []);
@@ -87,7 +87,7 @@ export function ClientProvider({ children }: { children: ReactNode }) {
         async function fetchClients() {
             try {
                 setError(null);
-                const response = await api.get<{ users: UsersAPIResponse[] }>(
+                const response = await api.get<{ users: UserResponse[] }>(
                     "/users?role=client",
                 );
 
