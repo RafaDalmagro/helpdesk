@@ -39,6 +39,7 @@ api.interceptors.response.use(
 
             console.error("Erro Axios detectado");
             console.error("Data:", error.response?.data);
+            console.error("Mensagem:", error.response?.data.message);
             console.error("URL:", error.config?.url);
         } else {
             console.error("Erro desconhecido");

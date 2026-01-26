@@ -17,6 +17,7 @@ type TechContext = {
         techId: string,
         times: string[],
     ) => Promise<boolean>;
+    createTech: (data: CreateTechData) => Promise<boolean>;
 };
 
 export const TechContext = createContext({} as TechContext);
@@ -56,13 +57,17 @@ export function TechProvider({ children }: { children: ReactNode }) {
             try {
                 setError(null);
                 setLoading(true);
+
                 await api.put(`/tech-availability/availability/${techId}`, {
                     times,
                 });
+
                 setLoading(false);
+
                 return true;
             } catch (error) {
                 setLoading(false);
+
                 if (error instanceof AxiosError) {
                     const errorMessage =
                         error.response?.data?.message ||
@@ -73,6 +78,39 @@ export function TechProvider({ children }: { children: ReactNode }) {
                 }
                 console.error("Erro ao atualizar disponibilidade:", error);
                 return false;
+            }
+        },
+        [],
+    );
+
+    const createTech = useCallback(
+        async (data: CreateTechData): Promise<boolean> => {
+            try {
+                setError(null);
+                setLoading(true);
+                await api.post("/users", data);
+
+                const response = await api.get<{ users: UserTech[] }>(
+                    "/users?role=tech",
+                );
+                setTechs(response.data?.users ?? []);
+
+                setLoading(false);
+                return true;
+            } catch (error: unknown) {
+                setLoading(false);
+                if (error instanceof AxiosError) {
+                    const errorMessage =
+                        error.response?.data?.message ||
+                        "Erro ao criar técnico";
+                    setError(errorMessage);
+                    console.error("Erro ao criar técnico:", error);
+                    throw error;
+                } else {
+                    console.error("Erro ao criar técnico:", error);
+                    setError("Erro ao criar técnico");
+                    throw new Error("Erro ao criar técnico");
+                }
             }
         },
         [],
@@ -114,6 +152,7 @@ export function TechProvider({ children }: { children: ReactNode }) {
                 error,
                 fetchTechById,
                 updateTechAvailability,
+                createTech,
             }}>
             {children}
         </TechContext.Provider>

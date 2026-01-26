@@ -44,8 +44,8 @@ export function AdminRoutes() {
                     }>
                     <Route path="tecnicos" element={<Tecnicos />} />
                     <Route path="users/:id" element={<Tecnico />} />
+                    <Route path="novo-tecnico" element={<NovoTecnico />} />
                 </Route>
-                <Route path="novo-tecnico" element={<NovoTecnico />} />
                 <Route path="clientes" element={<Clientes />} />
                 <Route path="servicos" element={<Servicos />} />
             </Route>

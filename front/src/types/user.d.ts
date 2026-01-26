@@ -38,3 +38,11 @@ type UserTechDetail = UserTech & {
         title: string;
     }[];
 };
+
+type CreateTechData = {
+    name: string;
+    email: string;
+    password: string;
+    role: "tech";
+    times: string[];
+};

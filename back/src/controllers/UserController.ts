@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@/utils/AppError";
 import { z } from "zod";
+
+import { AppError } from "@/utils/AppError";
+
+import { BUSINESS_TIMES, BUSINESS_WEEKDAYS } from "@/utils/availability";
+
 import { prisma } from "@/database/prisma";
 import { hash } from "bcrypt";
 
@@ -99,9 +103,24 @@ class UserController {
                 .string()
                 .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
             role: z.enum(["admin", "client", "tech"]).optional(),
+            times: z
+                .array(z.string(), {
+                    message: "Os horários devem ser um array de strings",
+                })
+                .min(1, { message: "Informe pelo menos um horário" })
+                .refine(
+                    (times) =>
+                        times.every((time) => BUSINESS_TIMES.includes(time)),
+                    {
+                        message: `Horários inválidos. Horários permitidos: ${BUSINESS_TIMES.join(", ")}`,
+                    },
+                )
+                .optional(),
         });
 
-        const { name, email, password } = userSchema.parse(req.body);
+        const { name, email, password, times, role } = userSchema.parse(
+            req.body,
+        );
 
         const userAlreadyExists = await prisma.user.findUnique({
             where: {
@@ -115,12 +134,33 @@ class UserController {
 
         const hashedPassword = await hash(password, 8);
 
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-            },
+        const user = await prisma.$transaction(async (tx) => {
+            const createdUser = await tx.user.create({
+                data: {
+                    name,
+                    email,
+                    password: hashedPassword,
+                    role,
+                },
+            });
+
+            if (role === "tech" && times && times.length > 0) {
+                const weekdays = Array.from(BUSINESS_WEEKDAYS);
+                const dataToCreate = weekdays.flatMap((weekday) =>
+                    times.map((time) => ({
+                        techId: createdUser.id,
+                        weekday,
+                        time,
+                    })),
+                );
+
+                await tx.techAvailability.createMany({
+                    data: dataToCreate,
+                    skipDuplicates: true,
+                });
+            }
+
+            return createdUser;
         });
 
         const { password: _, ...userWithoutPassword } = user;
