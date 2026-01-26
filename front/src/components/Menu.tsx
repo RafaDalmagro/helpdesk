@@ -16,7 +16,7 @@ export function Menu({ className = "hidden" }: MenuProps) {
         case "admin":
             return (
                 <nav
-                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-100 w-full px-4 md:flex-10`}>
                     <ButtonLink
                         title="Chamados"
                         variant="chamados"
@@ -42,7 +42,7 @@ export function Menu({ className = "hidden" }: MenuProps) {
         case "tech":
             return (
                 <nav
-                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-100 w-full px-4 md:flex-10`}>
                     <ButtonLink
                         title="Meus Chamados"
                         variant="chamados"
@@ -53,7 +53,7 @@ export function Menu({ className = "hidden" }: MenuProps) {
         case "client":
             return (
                 <nav
-                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-200 w-full py-5 px-4 md:flex-10`}>
+                    className={`${className} md:flex md:flex-col md:gap-1 border-t border-b border-gray-100 w-full px-4 md:flex-10`}>
                     <ButtonLink
                         title="Meus Chamados"
                         variant="chamados"
@@ -61,7 +61,7 @@ export function Menu({ className = "hidden" }: MenuProps) {
                     />
                     <ButtonLink
                         title="Criar chamado"
-                        variant="create"
+                        variant="new"
                         to="/novo-chamado"
                     />
                 </nav>

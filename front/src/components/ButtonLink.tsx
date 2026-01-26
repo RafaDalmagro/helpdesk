@@ -16,6 +16,7 @@ type Props = {
         | "tecnicos"
         | "clientes"
         | "servicos"
+        | "new"
         | "create"
         | "perfil"
         | "sair";
@@ -38,6 +39,7 @@ export function ButtonLink({ title, iconSvg, variant, to, onClick }: Props) {
         create: createIcon,
         perfil: perfilIcon,
         sair: sairIcon,
+        new: createIcon,
     };
 
     const iconSrc = variant ? variantClasses[variant] : iconSvg;
