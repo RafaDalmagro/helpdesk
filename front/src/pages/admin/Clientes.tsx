@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router";
 import { useState } from "react";
 
 import { useClients } from "../../hooks/useClients";
@@ -7,13 +6,12 @@ import { ClientProfile } from "../../components/ClientProfile";
 import { CardDelete } from "../../components/CardDelete";
 
 export function Clientes() {
-    const navigate = useNavigate();
     const [selectedClientId, setSelectedClientId] = useState<string | null>(
         null,
     );
     const [clientToDelete, setClientToDelete] = useState<string | null>(null);
 
-    const { users = [], loading, error, deleteClient } = useClients();
+    const { users = [], loading, error } = useClients();
 
     const handleVisualizar = (id: string) => {
         setSelectedClientId(id);

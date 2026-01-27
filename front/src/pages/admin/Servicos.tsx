@@ -5,7 +5,7 @@ import { ButtonLink } from "../../components/ButtonLink";
 export function Servicos() {
     const { services, loading, error } = useServices();
 
-    const handleVisualizar = (id: string) => {
+    const handleVisualizar = () => {
         // Lógica para visualizar o serviço
     };
 

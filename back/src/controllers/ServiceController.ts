@@ -158,6 +158,40 @@ class ServiceController {
 
         return res.status(204).send();
     }
+
+    async updateStatus(req: Request, res: Response, next: NextFunction) {
+        const paramsSchema = z.object({
+            id: z.uuid({ message: "ID inválido" }),
+        });
+
+        const bodySchema = z.object({
+            isActive: z.boolean({ message: "Status é obrigatório" }),
+        });
+
+        const { id } = paramsSchema.parse(req.params);
+        const { isActive } = bodySchema.parse(req.body);
+
+        const item = await prisma.service.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!item) {
+            throw new AppError("Item não encontrado", 404);
+        }
+
+        const updatedItem = await prisma.service.update({
+            where: {
+                id,
+            },
+            data: {
+                isActive,
+            },
+        });
+
+        return res.status(200).json({ service: updatedItem });
+    }
 }
 
 export { ServiceController };

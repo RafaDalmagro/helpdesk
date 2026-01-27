@@ -4,17 +4,18 @@ import banSvg from "../assets/ban.svg";
 
 import { Status } from "./Status";
 import { formatCurrency } from "../utils/formatCurrency";
+import { useServices } from "../hooks/useServices";
 
 type TableProps = {
     data: Service[];
     onVisualizar?: (id: string) => void;
-    deleteService?: (id: string) => void;
+    inativateService?: (id: string) => void;
 };
 
 export function ServiceTable({
     data,
     onVisualizar,
-    deleteService,
+    inativateService,
 }: TableProps) {
     const handleVisualizar = (id: string) => {
         if (onVisualizar) {
@@ -22,11 +23,13 @@ export function ServiceTable({
         }
     };
 
-    const handleDelete = (id: string) => {
-        if (deleteService) {
-            deleteService(id);
+    const handleInativate = (id: string) => {
+        if (inativateService) {
+            inativateService(id);
         }
     };
+
+    const { services } = useServices();
 
     return (
         <table className="w-full border-collapse">
@@ -60,7 +63,7 @@ export function ServiceTable({
                         </td>
                         <td className="flex gap-2 md:px-3 md:py-4.5 px-2 py-3.5 justify-self-end">
                             <div className="flex h-full items-center gap-2">
-                                <div className="flex gap-1">
+                                <button className="hover:cursor-pointer flex gap-1" onClick={}>
                                     <img
                                         className="size-3.5 shrink-0"
                                         src={
@@ -79,7 +82,8 @@ export function ServiceTable({
                                             ? "Desativar"
                                             : "Reativar"}
                                     </span>
-                                </div>
+                                </button>
+
                                 <span
                                     className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
                                     onClick={() =>
