@@ -3,10 +3,9 @@ import { Route, Routes, Navigate } from "react-router";
 import { TechLayout } from "../components/layouts/TechLayout";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
-import { TechProvider } from "../context/TechContext";
+import { TicketsProvider } from "../context/TicketContext";
 
-import { Chamados } from "../pages/client/Chamados";
-import { getUserRole } from "../utils/getUserRole";
+import { Chamados } from "../pages/tech/Chamados";
 
 export function TechRoutes() {
     return (
@@ -15,16 +14,13 @@ export function TechRoutes() {
                 path="/"
                 element={
                     <ProtectedRoute requiredRole="tech">
-                        <TechProvider>
+                        <TicketsProvider>
                             <TechLayout />
-                        </TechProvider>
+                        </TicketsProvider>
                     </ProtectedRoute>
                 }>
                 <Route index element={<Navigate to="/chamados" replace />} />
-                <Route
-                    path="chamados"
-                    element={<Chamados role={getUserRole()} />}
-                />
+                <Route path="chamados" element={<Chamados />} />
             </Route>
         </Routes>
     );
