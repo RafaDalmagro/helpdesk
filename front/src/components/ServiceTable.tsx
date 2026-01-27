@@ -1,0 +1,74 @@
+import pencilSvg from "../assets/pen-line.svg";
+
+import { Status } from "./Status";
+
+type TableProps = {
+    data: Service[];
+    onVisualizar?: (id: string) => void;
+    deleteService?: (id: string) => void;
+};
+
+export function ServiceTable({
+    data,
+    onVisualizar,
+    deleteService,
+}: TableProps) {
+    const handleVisualizar = (id: string) => {
+        if (onVisualizar) {
+            onVisualizar(id);
+        }
+    };
+
+    const handleDelete = (id: string) => {
+        if (deleteService) {
+            deleteService(id);
+        }
+    };
+
+    return (
+        <table className="w-full border-collapse">
+            <thead>
+                <tr className="grid grid-cols-[2fr_2fr_1fr_auto] items-center border-b border-t border-gray-500">
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
+                        Titulo
+                    </th>
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
+                        Valor
+                    </th>
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3">
+                        Status
+                    </th>
+                    <th className="text-left text-sm text-gray-400 font-bold py-3 px-3 justify-self-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {data.map((service) => (
+                    <tr
+                        key={service.id}
+                        className="grid grid-cols-[2fr_2fr_1fr_auto] items-center border-b border-gray-500">
+                        <td className="text-sm text-gray-200 md:flex md:p-3 p-2">
+                            {service.name}
+                        </td>
+                        <td className="text-xs font-medium text-gray-200 md:p-3 p-2">
+                            {service.price}
+                        </td>
+                        <td className="text-xs font-medium text-gray-200 md:p-3 p-2">
+                            <Status status={service.isActive} />
+                        </td>
+                        <td className="flex gap-2 md:px-3 md:py-4.5 px-2 py-3.5 justify-self-end">
+                            <div className="flex h-full items-center">
+                                <span
+                                    className="size-7 p-2 bg-gray-500 rounded-md cursor-pointer hover:opacity-70 transition-opacity "
+                                    onClick={() =>
+                                        handleVisualizar(service.id)
+                                    }>
+                                    <img src={pencilSvg} alt="Visualizar" />
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+}

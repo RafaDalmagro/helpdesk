@@ -13,6 +13,7 @@ class ServiceController {
                 price: true,
                 createdAt: true,
                 updatedAt: true,
+                isActive: true,
             },
             where: {
                 isActive: true,

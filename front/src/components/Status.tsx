@@ -3,12 +3,12 @@ import encerradoSvg from "../assets/circle-check-big.svg";
 import abertoSvg from "../assets/circle-help.svg";
 
 type StatusProps = {
-    status: TicketStatus;
+    status: TicketStatus | boolean;
     className?: string;
 };
 
 const STATUS_UI: Record<
-    TicketStatus,
+    TicketStatus | string,
     { icon: string; bg: string; text: string }
 > = {
     open: {
@@ -26,10 +26,20 @@ const STATUS_UI: Record<
         bg: "bg-green/20",
         text: "text-green",
     },
+    true: {
+        icon: encerradoSvg,
+        bg: "bg-green/20",
+        text: "text-green",
+    },
+    false: {
+        icon: abertoSvg,
+        bg: "bg-pink/20",
+        text: "text-pink",
+    },
 };
 
 export function Status({ status, className = "" }: StatusProps) {
-    const variant = STATUS_UI[status];
+    const variant = STATUS_UI[String(status)];
 
     return (
         <div
@@ -37,16 +47,20 @@ export function Status({ status, className = "" }: StatusProps) {
             <img
                 src={variant.icon}
                 alt={`Status ${status}`}
-                className="size-4 shrink-0"
+                className="size-4 shrink-0 md:hidden"
             />
 
             <span
                 className={`text-xs font-semibold whitespace-nowrap max-[500px]:hidden block capitalize ${variant.text} ${className}`}>
-                {status === "open"
-                    ? "Aberto"
-                    : status === "in_progress"
-                    ? "Em Andamento"
-                    : "Encerrado"}
+                {typeof status === "boolean"
+                    ? status
+                        ? "Ativo"
+                        : "Inativo"
+                    : status === "open"
+                      ? "Aberto"
+                      : status === "in_progress"
+                        ? "Em Andamento"
+                        : "Encerrado"}
             </span>
         </div>
     );
