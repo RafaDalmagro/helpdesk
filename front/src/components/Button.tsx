@@ -1,5 +1,5 @@
 import encerrarSvg from "../assets/circle-check-big-gray.svg";
-import iniciarSvg from "../assets/clock-2-gray.svg";
+import iniciarSvg from "../assets/clock-2-white.svg";
 
 type Props = React.ComponentProps<"button"> & {
     isLoading?: boolean;
