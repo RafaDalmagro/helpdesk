@@ -32,6 +32,7 @@ type ServiceContext = {
         id: string,
         data: Partial<ServicePayload>,
     ) => Promise<boolean>;
+    updateServiceStatus: (id: string, isActive: boolean) => Promise<boolean>;
 };
 
 export const ServiceContext = createContext({} as ServiceContext);
@@ -198,6 +199,50 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
         [],
     );
 
+    const updateServiceStatus = useCallback(
+        async (id: string, isActive: boolean): Promise<boolean> => {
+            try {
+                setError(null);
+                setLoading(true);
+
+                await api.put(`/services/${id}/status`, { isActive });
+
+                const response = await api.get<{ items: ApiService[] }>(
+                    "/services",
+                );
+                setServices(
+                    (response.data?.items ?? []).map((item) =>
+                        mapService(item),
+                    ),
+                );
+
+                setLoading(false);
+                return true;
+            } catch (error: unknown) {
+                setLoading(false);
+                if (error instanceof AxiosError) {
+                    const errorMessage =
+                        error.response?.data?.message ||
+                        "Erro ao atualizar status do serviço";
+                    setError(errorMessage);
+                    console.error(
+                        "Erro ao atualizar status do serviço:",
+                        error,
+                    );
+                    throw error;
+                } else {
+                    console.error(
+                        "Erro ao atualizar status do serviço:",
+                        error,
+                    );
+                    setError("Erro ao atualizar status do serviço");
+                    throw new Error("Erro ao atualizar status do serviço");
+                }
+            }
+        },
+        [],
+    );
+
     useEffect(() => {
         async function fetchServices() {
             try {
@@ -240,6 +285,7 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
                 createService,
                 deleteService,
                 updateService,
+                updateServiceStatus,
             }}>
             {children}
         </ServiceContext.Provider>

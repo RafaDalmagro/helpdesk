@@ -1,5 +1,5 @@
 import pencilSvg from "../assets/pen-line.svg";
-import curcleChecSvg from "../assets/circle-check.svg";
+import circleCheckSvg from "../assets/circle-check.svg";
 import banSvg from "../assets/ban.svg";
 
 import { Status } from "./Status";
@@ -9,27 +9,17 @@ import { useServices } from "../hooks/useServices";
 type TableProps = {
     data: Service[];
     onVisualizar?: (id: string) => void;
-    inativateService?: (id: string) => void;
 };
 
-export function ServiceTable({
-    data,
-    onVisualizar,
-    inativateService,
-}: TableProps) {
+export function ServiceTable({ data, onVisualizar }: TableProps) {
+    const { updateServiceStatus } = useServices();
+
     const handleVisualizar = (id: string) => {
         if (onVisualizar) {
+			
             onVisualizar(id);
         }
     };
-
-    const handleInativate = (id: string) => {
-        if (inativateService) {
-            inativateService(id);
-        }
-    };
-
-    const { services } = useServices();
 
     return (
         <table className="w-full border-collapse">
@@ -63,13 +53,20 @@ export function ServiceTable({
                         </td>
                         <td className="flex gap-2 md:px-3 md:py-4.5 px-2 py-3.5 justify-self-end">
                             <div className="flex h-full items-center gap-2">
-                                <button className="hover:cursor-pointer flex gap-1" onClick={}>
+                                <button
+                                    className="hover:cursor-pointer flex gap-1"
+                                    onClick={() =>
+                                        updateServiceStatus(
+                                            service.id,
+                                            !service.isActive,
+                                        )
+                                    }>
                                     <img
                                         className="size-3.5 shrink-0"
                                         src={
                                             service.isActive
                                                 ? banSvg
-                                                : curcleChecSvg
+                                                : circleCheckSvg
                                         }
                                         alt={
                                             service.isActive

@@ -27,22 +27,18 @@ class ServiceController {
     async create(req: Request, res: Response, next: NextFunction) {
         const bodySchema = z.object({
             name: z.string().trim().min(1, { message: "Nome é obrigatório" }),
-            description: z
-                .string()
-                .trim()
-                .min(1, { message: "Descrição é obrigatória" }),
             price: z
                 .number({ message: "O preço é obrigatório" })
                 .positive({ message: "Preço deve ser um número positivo" }),
         });
 
-        const { name, description, price } = bodySchema.parse(req.body);
+        const { name, price } = bodySchema.parse(req.body);
 
         const service = (await prisma.service.create({
             data: {
                 name,
-                description,
                 price,
+                description: "",
             },
         })) as Service;
 
@@ -89,11 +85,7 @@ class ServiceController {
                 .trim()
                 .min(1, { message: "Nome é obrigatório" })
                 .optional(),
-            description: z
-                .string()
-                .trim()
-                .min(1, { message: "Descrição é obrigatória" })
-                .optional(),
+            description: z.string().trim().optional(),
             price: z
                 .number({ message: "O preço é obrigatório" })
                 .positive({ message: "Preço deve ser um número positivo" })

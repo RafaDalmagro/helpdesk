@@ -1,12 +1,25 @@
-import { ServiceTable } from "../../components/ServiceTable";
 import { useServices } from "../../hooks/useServices";
+
+import { ServiceTable } from "../../components/ServiceTable";
 import { ButtonLink } from "../../components/ButtonLink";
+import { ServiceCard } from "../../components/ServiceCard";
+import { useState } from "react";
 
 export function Servicos() {
     const { services, loading, error } = useServices();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedServiceId, setSelectedServiceId] = useState<
+        string | undefined
+    >();
 
-    const handleVisualizar = () => {
-        // Lógica para visualizar o serviço
+    const handleVisualizar = (id: string) => {
+        setSelectedServiceId(id);
+        setIsModalOpen(true);
+    };
+
+    const handleNovoServico = () => {
+        setSelectedServiceId(undefined);
+        setIsModalOpen(true);
     };
 
     return (
@@ -15,7 +28,12 @@ export function Servicos() {
                 <h2 className="text-2xl text-purple-800 font-bold mb-4">
                     Serviços
                 </h2>
-                <ButtonLink to="/novo-servico" variant="create" title="Novo" />
+                <ButtonLink
+                    variant="create"
+                    title="Novo"
+                    to="/servicos"
+                    onClick={handleNovoServico}
+                />
             </header>
             <div className="overflow-x-auto border border-gray-500 rounded-xl">
                 {loading ? (
@@ -35,6 +53,25 @@ export function Servicos() {
                     />
                 )}
             </div>
+            <ServiceCard
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                serviceId={selectedServiceId}
+                initialData={
+                    selectedServiceId
+                        ? {
+                              name:
+                                  services.find(
+                                      (s) => s.id === selectedServiceId,
+                                  )?.name || "",
+                              price:
+                                  services
+                                      .find((s) => s.id === selectedServiceId)
+                                      ?.price.toString() || "",
+                          }
+                        : undefined
+                }
+            />
         </section>
     );
 }
