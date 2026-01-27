@@ -14,6 +14,7 @@ import { Servicos } from "../pages/admin/Servicos";
 import { TicketsProvider } from "../context/TicketContext";
 import { TechProvider } from "../context/TechContext";
 import { ClientProvider } from "../context/ClientContext";
+import { ServiceProvider } from "../context/ServiceContext";
 
 import { Outlet } from "react-router";
 
@@ -55,7 +56,14 @@ export function AdminRoutes() {
                     }>
                     <Route path="clientes" element={<Clientes />} />
                 </Route>
-                <Route path="servicos" element={<Servicos />} />
+                <Route
+                    element={
+                        <ServiceProvider>
+                            <Outlet />
+                        </ServiceProvider>
+                    }>
+                    <Route path="servicos" element={<Servicos />} />
+                </Route>
             </Route>
         </Routes>
     );

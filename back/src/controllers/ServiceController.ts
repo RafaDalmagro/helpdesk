@@ -15,9 +15,6 @@ class ServiceController {
                 updatedAt: true,
                 isActive: true,
             },
-            where: {
-                isActive: true,
-            },
         });
 
         if (!items) {
