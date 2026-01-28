@@ -15,7 +15,6 @@ interface ClientProfileProps {
 
 export function ClientProfile({ clientId, onClose }: ClientProfileProps) {
     const { fetchClientById, updateClient } = useClients();
-    const [client, setClient] = useState<UserResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
@@ -28,7 +27,6 @@ export function ClientProfile({ clientId, onClose }: ClientProfileProps) {
             try {
                 setLoading(true);
                 const clientData = await fetchClientById(clientId);
-                setClient(clientData);
                 if (clientData) {
                     setName(clientData.name);
                     setEmail(clientData.email);
