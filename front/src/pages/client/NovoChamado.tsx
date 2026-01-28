@@ -85,6 +85,7 @@ export function NovoChamado() {
                 categoryId,
                 clientId,
                 techId: randomTechId,
+                serviceId: "f04af4e2-7acd-44fe-9bf7-a58779d46ca6",
             });
 
             const responseTickets = await api.post("/tickets", data);

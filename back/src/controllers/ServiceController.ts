@@ -98,7 +98,6 @@ class ServiceController {
         const item = await prisma.service.findUnique({
             where: {
                 id,
-                isActive: true,
             },
         });
 
