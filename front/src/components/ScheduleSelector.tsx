@@ -4,7 +4,7 @@ import x from "../assets/x-white.svg";
 const PERIODS = [
     {
         label: "Manhã",
-        times: ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00"],
+        times: ["08:00", "09:00", "10:00", "11:00", "12:00"],
     },
     {
         label: "Tarde",
