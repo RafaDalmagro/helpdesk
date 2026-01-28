@@ -37,6 +37,21 @@ class TechAvailabilityController {
         return res.status(200).json({ techs });
     }
 
+    async show(req: Request, res: Response, next: NextFunction) {
+        const paramsSchema = z.object({
+            techId: z.uuid({ message: "ID de técnico inválido" }),
+        });
+
+        const { techId } = paramsSchema.parse(req.params);
+
+        const availabilities = await prisma.techAvailability.findMany({
+            where: { techId },
+            orderBy: [{ weekday: "asc" }, { time: "asc" }],
+        });
+
+        return res.status(200).json({ availabilities });
+    }
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const paramsSchema = z.object({

@@ -10,6 +10,11 @@ techAvailabilityRoutes.get(
     verifyUserAuthorization(["admin", "client", "tech"]),
     techAvailabilityController.index
 );
+techAvailabilityRoutes.get(
+    "/:techId",
+    verifyUserAuthorization(["admin", "tech"]),
+    techAvailabilityController.show
+);
 techAvailabilityRoutes.post(
     "/availability/:techId",
     verifyUserAuthorization(["admin"]),

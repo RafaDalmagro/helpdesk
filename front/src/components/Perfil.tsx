@@ -15,6 +15,24 @@ import trashIcon from "../assets/trash.svg";
 
 import { getUserId } from "../utils/getUserId";
 import { UserInitials } from "./UserInitials";
+import { AvailabilityTime } from "./AvailabilityTime";
+
+const WEEKDAY_NAMES = [
+    "Domingo",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+];
+
+type TechAvailability = {
+    id: string;
+    techId: string;
+    weekday: number;
+    time: string;
+};
 
 type Props = {
     name?: string;
@@ -27,8 +45,23 @@ export function Perfil({ name, email, onClose }: Props) {
     const [showUpdatePassword, setShowUpdatePassword] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+    const [availabilities, setAvailabilities] = useState<TechAvailability[]>(
+        [],
+    );
+    const [loadingAvailabilities, setLoadingAvailabilities] = useState(false);
+    const [userRole, setUserRole] = useState<string | undefined>(undefined);
 
     const userId = getUserId();
+
+    useEffect(() => {
+        const session = localStorage.getItem("@HelpDesk:session:user");
+        if (session) {
+            try {
+                const userObj = JSON.parse(session);
+                setUserRole(userObj.role);
+            } catch {}
+        }
+    }, []);
 
     function handleOpenUpdatePassword() {
         setShowUpdatePassword(true);
@@ -57,6 +90,26 @@ export function Perfil({ name, email, onClose }: Props) {
         }
     }, [file === null]);
 
+    useEffect(() => {
+        if (!userId || userRole !== "tech") return;
+
+        const fetchAvailabilities = async () => {
+            try {
+                setLoadingAvailabilities(true);
+                const response = await api.get<{
+                    availabilities: TechAvailability[];
+                }>(`/tech-availability/${userId}`);
+                setAvailabilities(response.data?.availabilities ?? []);
+            } catch (error) {
+                console.error("Erro ao buscar disponibilidades:", error);
+            } finally {
+                setLoadingAvailabilities(false);
+            }
+        };
+
+        fetchAvailabilities();
+    }, [userId, userRole]);
+
     async function onsubmit(event: React.FormEvent) {
         event.preventDefault();
 
@@ -66,13 +119,13 @@ export function Perfil({ name, email, onClose }: Props) {
                     filename: null,
                 });
                 const userObj = JSON.parse(
-                    localStorage.getItem("@HelpDesk:session:user") || "{}"
+                    localStorage.getItem("@HelpDesk:session:user") || "{}",
                 );
                 userObj.filename = response.data.filename;
                 localStorage.setItem(
                     "@HelpDesk:session:user",
 
-                    JSON.stringify(userObj)
+                    JSON.stringify(userObj),
                 );
                 setImageUrl(undefined);
                 return console.log("Dados salvos com sucesso!");
@@ -85,17 +138,17 @@ export function Perfil({ name, email, onClose }: Props) {
 
             const response = await api.post(
                 `/uploads/${userId}`,
-                fileUploadForm
+                fileUploadForm,
             );
 
             if (response.data && response.data.filename) {
                 const userObj = JSON.parse(
-                    localStorage.getItem("@HelpDesk:session:user") || "{}"
+                    localStorage.getItem("@HelpDesk:session:user") || "{}",
                 );
                 userObj.filename = response.data.filename;
                 localStorage.setItem(
                     "@HelpDesk:session:user",
-                    JSON.stringify(userObj)
+                    JSON.stringify(userObj),
                 );
                 setFile(null);
                 console.log("Nova imagem alterada com sucesso!");
@@ -138,7 +191,7 @@ export function Perfil({ name, email, onClose }: Props) {
                 className="flex flex-col rounded-md bg-gray-600 md:min-w-2xl h-fit mx-4"
                 onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between px-7 py-5 w-full border-b border-gray-500">
-                    <h2 className="text-gray-200">Perfil</h2>
+                    <h2 className="text-gray-200 font-bold">Perfil</h2>
                     <button
                         className="hover:cursor-pointer opacity-80"
                         onClick={handleClose}>
@@ -162,7 +215,7 @@ export function Perfil({ name, email, onClose }: Props) {
                                     src={
                                         file
                                             ? URL.createObjectURL(file)
-                                            : imageUrl ?? undefined
+                                            : (imageUrl ?? undefined)
                                     }
                                     alt="Foto do perfil"
                                 />
@@ -225,6 +278,59 @@ export function Perfil({ name, email, onClose }: Props) {
                             buttonName="Salvar"
                         />
                     </div>
+                    {userRole === "tech" && (
+                        <div>
+                            <div className="px-7 pt-6 pb-3">
+                                <h3 className="text-sm font-bold text-gray-300">
+                                    Disponibilidade
+                                </h3>
+                                <span className="text-xs text-gray-400">
+                                    Horários de atendimento definidos pelo admin
+                                </span>
+                            </div>
+                            <div className="px-7 pb-7 flex flex-col gap-3">
+                                {loadingAvailabilities ? (
+                                    <p className="text-xs text-gray-400">
+                                        Carregando...
+                                    </p>
+                                ) : availabilities.length === 0 ? (
+                                    <p className="text-xs text-gray-400">
+                                        Nenhuma disponibilidade cadastrada
+                                    </p>
+                                ) : (
+                                    Object.entries(
+                                        availabilities.reduce(
+                                            (acc, av) => {
+                                                const dayName =
+                                                    WEEKDAY_NAMES[av.weekday];
+                                                if (!acc[dayName])
+                                                    acc[dayName] = [];
+                                                acc[dayName].push(av.time);
+                                                return acc;
+                                            },
+                                            {} as Record<string, string[]>,
+                                        ),
+                                    ).map(([day, times]) => (
+                                        <div
+                                            key={day}
+                                            className="border border-gray-500 rounded-md p-3">
+                                            <p className="text-xs font-bold text-gray-300 mb-2">
+                                                {day}
+                                            </p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {times.map((time) => (
+                                                    <AvailabilityTime
+                                                        time={time}
+                                                        key={time}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>
