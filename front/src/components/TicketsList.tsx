@@ -7,9 +7,12 @@ import { Status } from "./Status";
 import { formatDate } from "../utils/formatDate";
 import { formatCurrency } from "../utils/formatCurrency";
 
+import { useNavigate } from "react-router";
+
 type TicketsListProps = {
     data: Ticket[];
     onEdit?: (id: string) => void;
+    onIniciar?: (id: string) => void;
     onClose?: (id: string) => void;
 };
 
@@ -19,8 +22,16 @@ const TICKET_SECTIONS = {
     closed: { label: "Encerrado", status: "closed" },
 };
 
-export function TicketsList({ data, onEdit, onClose }: TicketsListProps) {
+export function TicketsList({
+    data,
+    onEdit,
+    onIniciar,
+    onClose,
+}: TicketsListProps) {
+    const navigate = useNavigate();
+
     const handleEdit = (id: string) => {
+        navigate(`/chamados/${id}`);
         if (onEdit) {
             onEdit(id);
         }
@@ -29,6 +40,12 @@ export function TicketsList({ data, onEdit, onClose }: TicketsListProps) {
     const handleClose = (id: string) => {
         if (onClose) {
             onClose(id);
+        }
+    };
+
+    const handleIniciar = (id: string) => {
+        if (onIniciar) {
+            onIniciar(id);
         }
     };
 
@@ -50,7 +67,7 @@ export function TicketsList({ data, onEdit, onClose }: TicketsListProps) {
                     {tickets.map((ticket) => (
                         <div
                             key={ticket.id}
-                            className="bg-gray-700 rounded-lg border border-gray-500 overflow-hidden transition-colors">
+                            className="rounded-lg border border-gray-500 overflow-hidden transition-colors">
                             {/* Header */}
                             <div className="bg-gray-600 pt-5 px-5 flex items-center justify-between gap-2">
                                 <span className="text-xs sm:text-sm font-bold text-gray-400 truncate">
@@ -68,8 +85,14 @@ export function TicketsList({ data, onEdit, onClose }: TicketsListProps) {
                                     </button>
                                     {ticket.status !== "closed" && (
                                         <Button
-                                            onClick={() =>
-                                                handleClose(ticket.id)
+                                            onClick={
+                                                ticket.status === "in_progress"
+                                                    ? () =>
+                                                          handleClose(ticket.id)
+                                                    : () =>
+                                                          handleIniciar(
+                                                              ticket.id,
+                                                          )
                                             }
                                             svg={
                                                 ticket.status === "in_progress"

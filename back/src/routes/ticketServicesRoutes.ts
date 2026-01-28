@@ -8,12 +8,16 @@ const ticketController = new TicketServiceController();
 ticketServicesRoutes.get("/", ticketController.index);
 ticketServicesRoutes.get(
     "/:id/additional-services",
-    ticketController.showAdditionalServices
+    ticketController.showAdditionalServices,
 );
 ticketServicesRoutes.post(
     "/",
-    verifyUserAuthorization(["admin"]),
-    ticketController.create
+    verifyUserAuthorization(["admin", "tech"]),
+    ticketController.create,
 );
-
+ticketServicesRoutes.delete(
+    "/:id",
+    verifyUserAuthorization(["admin", "tech"]),
+    ticketController.delete,
+);
 export { ticketServicesRoutes };

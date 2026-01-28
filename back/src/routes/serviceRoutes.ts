@@ -8,7 +8,7 @@ const serviceController = new ServiceController();
 serviceRoutes.get("/", serviceController.index);
 serviceRoutes.post(
     "/",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech"]),
     serviceController.create,
 );
 serviceRoutes.get("/:id", serviceController.show);
@@ -24,7 +24,7 @@ serviceRoutes.put(
 );
 serviceRoutes.delete(
     "/:id",
-    verifyUserAuthorization(["admin"]),
+    verifyUserAuthorization(["admin", "tech"]),
     serviceController.delete,
 );
 

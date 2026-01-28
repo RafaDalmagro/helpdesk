@@ -23,6 +23,8 @@ export function Info({ chamado }: Props) {
         getAdditionalServicesByTicketId(chamado.id);
     }, [chamado.id]);
 
+    console.log({ additionalServicesByTicketId });
+
     const services = additionalServicesByTicketId[chamado.id] ?? [];
 
     if (session?.userWithoutPassword.role === "admin") {

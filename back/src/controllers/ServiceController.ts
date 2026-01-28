@@ -130,12 +130,15 @@ class ServiceController {
         const itemExists = await prisma.service.findUnique({
             where: {
                 id,
-                isActive: true,
             },
         });
 
         if (!itemExists) {
             throw new AppError("Item não encontrado", 404);
+        }
+
+        if (!itemExists.isActive) {
+            throw new AppError("Item já está inativo", 400);
         }
 
         await prisma.service.update({

@@ -1,10 +1,12 @@
 import encerrarSvg from "../assets/circle-check-big-gray.svg";
 import iniciarSvg from "../assets/clock-2-white.svg";
+import deleteSvg from "../assets/trash.svg";
+import newSvg from "../assets/plus-white.svg";
 
 type Props = React.ComponentProps<"button"> & {
     isLoading?: boolean;
     variant?: "default" | "primary";
-    svg?: "encerrar" | "iniciar";
+    svg?: "encerrar" | "iniciar" | "delete" | "new";
     buttonName?: string;
     className?: string;
 };
@@ -45,6 +47,14 @@ export function Button({
                     alt="Ícone de iniciar atendimento"
                     className="size-4"
                 />
+            ) : svg === "delete" ? (
+                <img
+                    src={deleteSvg}
+                    alt="Ícone de deletar"
+                    className="size-4"
+                />
+            ) : svg === "new" ? (
+                <img src={newSvg} alt="Ícone de novo" className="size-4" />
             ) : null}
             {buttonName}
         </button>

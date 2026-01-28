@@ -27,7 +27,8 @@ type ServiceContext = {
     error: string | null;
     fetchServiceById: (id: string) => Promise<Service | null>;
     createService: (data: ServicePayload) => Promise<boolean>;
-    deleteService: (id: string) => Promise<boolean>;
+    addServiceToTicket: (ticketId: string, data: ServicePayload) => Promise<boolean>;
+    deleteServiceFromTicket: (id: string) => Promise<boolean>;
     updateService: (
         id: string,
         data: Partial<ServicePayload>,
@@ -121,37 +122,84 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
         [],
     );
 
-    const deleteService = useCallback(async (id: string): Promise<boolean> => {
+    const deleteServiceFromTicket = useCallback(async (id: string): Promise<boolean> => {
         try {
             setError(null);
-            setLoading(true);
 
-            await api.delete(`/services/${id}`);
+            await api.delete(`/ticket-services/${id}`);
 
-            const response = await api.get<{ items: ApiService[] }>(
-                "/services",
-            );
-            setServices(
-                (response.data?.items ?? []).map((item) => mapService(item)),
-            );
-
-            setLoading(false);
             return true;
         } catch (error: unknown) {
-            setLoading(false);
             if (error instanceof AxiosError) {
                 const errorMessage =
-                    error.response?.data?.message || "Erro ao deletar serviço";
+                    error.response?.data?.message || "Erro ao remover serviço do ticket";
                 setError(errorMessage);
-                console.error("Erro ao deletar serviço:", error);
+                console.error("Erro ao remover serviço do ticket:", error);
                 throw error;
             } else {
-                console.error("Erro ao deletar serviço:", error);
-                setError("Erro ao deletar serviço");
-                throw new Error("Erro ao deletar serviço");
+                console.error("Erro ao remover serviço do ticket:", error);
+                setError("Erro ao remover serviço do ticket");
+                throw new Error("Erro ao remover serviço do ticket");
             }
         }
     }, []);
+
+    const addServiceToTicket = useCallback(
+        async (ticketId: string, data: ServicePayload): Promise<boolean> => {
+            try {
+                setError(null);
+                setLoading(true);
+
+                const payload = {
+                    ...data,
+                    price: Number(data.price),
+                };
+
+                const serviceResponse = await api.post<{ service: ApiService }>(
+                    "/services",
+                    payload,
+                );
+
+                const serviceId = serviceResponse.data?.service?.id;
+
+                if (!serviceId) {
+                    throw new Error("Erro ao obter ID do serviço criado");
+                }
+
+                await api.post("/ticket-services", {
+                    ticketId,
+                    serviceId,
+                });
+
+                const response = await api.get<{ items: ApiService[] }>(
+                    "/services",
+                );
+                setServices(
+                    (response.data?.items ?? []).map((item) =>
+                        mapService(item),
+                    ),
+                );
+
+                setLoading(false);
+                return true;
+            } catch (error: unknown) {
+                setLoading(false);
+                if (error instanceof AxiosError) {
+                    const errorMessage =
+                        error.response?.data?.message ||
+                        "Erro ao adicionar serviço ao ticket";
+                    setError(errorMessage);
+                    console.error("Erro ao adicionar serviço ao ticket:", error);
+                    throw error;
+                } else {
+                    console.error("Erro ao adicionar serviço ao ticket:", error);
+                    setError("Erro ao adicionar serviço ao ticket");
+                    throw new Error("Erro ao adicionar serviço ao ticket");
+                }
+            }
+        },
+        [mapService],
+    );
 
     const updateService = useCallback(
         async (id: string, data: Partial<ServicePayload>): Promise<boolean> => {
@@ -283,7 +331,8 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
                 error,
                 fetchServiceById,
                 createService,
-                deleteService,
+                addServiceToTicket,
+                deleteServiceFromTicket,
                 updateService,
                 updateServiceStatus,
             }}>

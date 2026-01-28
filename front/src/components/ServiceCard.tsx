@@ -100,10 +100,11 @@ export function ServiceCard({
                         label="Valor"
                         type="number"
                         step="0.1"
+                        min="0"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         prefix="R$"
-						className="py-2"
+                        className="py-2"
                         required
                     />
 

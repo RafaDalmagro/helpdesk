@@ -2,16 +2,13 @@ import { Voltar } from "../../components/VoltarLink";
 import { Info } from "../../components/Info";
 import { Button } from "../../components/Button";
 
-import { api } from "../../services/api";
-import { AxiosError } from "axios";
-
 import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { useTickets } from "../../context/TicketContext";
 
 export function Chamado() {
     const { id } = useParams();
-    const { getTicketById } = useTickets();
+    const { getTicketById, updateTicketStatus } = useTickets();
 
     const ticketDoContexto = id ? getTicketById(id) : undefined;
 
@@ -28,47 +25,36 @@ export function Chamado() {
     if (!ticketAtual) return <div>Chamado não encontrado</div>;
 
     async function handleEncerrarChamado() {
+        if (!ticketAtual) return;
+
         try {
             if (!confirm("Tem certeza que deseja encerrar este chamado?")) {
                 return;
             }
-            await api.patch(`/tickets/${ticketAtual?.id}/status`, {
-                status: "closed",
-            });
-
+            await updateTicketStatus(ticketAtual.id, TicketStatus.CLOSED);
             setTicketAtual((prev) =>
-                prev ? { ...prev, status: "closed" as TicketStatus } : prev,
+                prev ? { ...prev, status: TicketStatus.CLOSED } : prev,
             );
         } catch (error) {
-            tratarErro(error, "encerrar chamado");
+            console.error("Erro ao encerrar chamado:", error);
+            alert("Erro ao encerrar chamado");
         }
     }
 
     async function handleIniciarAtendimento() {
+        if (!ticketAtual) return;
+
         try {
             if (!confirm("Deseja iniciar o atendimento deste chamado?")) {
                 return;
             }
-            await api.patch(`/tickets/${ticketAtual?.id}/status`, {
-                status: "in_progress",
-            });
-
+            await updateTicketStatus(ticketAtual.id, TicketStatus.IN_PROGRESS);
             setTicketAtual((prev) =>
-                prev
-                    ? { ...prev, status: "in_progress" as TicketStatus }
-                    : prev,
+                prev ? { ...prev, status: TicketStatus.IN_PROGRESS } : prev,
             );
         } catch (error) {
-            tratarErro(error, "iniciar atendimento");
-        }
-    }
-    function tratarErro(error: unknown, contexto: string) {
-        if (error instanceof AxiosError) {
-            const errorMessage =
-                error.response?.data?.message || `Axios Error ao ${contexto}`;
-            console.log(errorMessage);
-        } else {
-            console.error(`Erro ao ${contexto}:`, error);
+            console.error("Erro ao iniciar atendimento:", error);
+            alert("Erro ao iniciar atendimento");
         }
     }
 
@@ -84,7 +70,7 @@ export function Chamado() {
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        {ticketAtual.status === "open" && (
+                        {ticketAtual.status === TicketStatus.OPEN && (
                             <Button
                                 svg="iniciar"
                                 variant="primary"
@@ -93,7 +79,7 @@ export function Chamado() {
                                 onClick={handleIniciarAtendimento}
                             />
                         )}
-                        {ticketAtual.status !== "closed" && (
+                        {ticketAtual.status !== TicketStatus.CLOSED && (
                             <Button
                                 svg="encerrar"
                                 variant="primary"
@@ -103,7 +89,7 @@ export function Chamado() {
                             />
                         )}
 
-                        {ticketAtual.status === "closed" && (
+                        {ticketAtual.status === TicketStatus.CLOSED && (
                             <Button
                                 svg="iniciar"
                                 variant="primary"

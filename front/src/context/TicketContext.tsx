@@ -10,6 +10,10 @@ type TicketsContextType = {
     setStatusById: (id: Ticket["id"], status: TicketStatus) => void;
     getTicketById: (id: Ticket["id"]) => Ticket | undefined;
     refetch: () => Promise<void>;
+    updateTicketStatus: (
+        id: Ticket["id"],
+        status: TicketStatus,
+    ) => Promise<void>;
 
     additionalServicesByTicketId: Record<string, AdditionalService[]>;
     loadingAdditionalServicesByTicketId: Record<string, boolean>;
@@ -109,6 +113,23 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
         });
     };
 
+    const updateTicketStatus = async (
+        id: Ticket["id"],
+        status: TicketStatus,
+    ) => {
+        try {
+            await api.patch(`/tickets/${id}/status`, { status });
+            setStatusById(id, status);
+        } catch (e: any) {
+            const msg =
+                e?.response?.data?.message ||
+                e?.message ||
+                "Erro ao atualizar status do chamado";
+            setRefetchError(msg);
+            throw new Error(msg);
+        }
+    };
+
     const combinedLoading = loading || refetchLoading;
     const combinedError = error || refetchError;
 
@@ -120,6 +141,7 @@ export function TicketsProvider({ children }: { children: React.ReactNode }) {
             setStatusById,
             getTicketById,
             refetch,
+            updateTicketStatus,
 
             additionalServicesByTicketId,
             loadingAdditionalServicesByTicketId,

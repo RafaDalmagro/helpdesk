@@ -132,6 +132,57 @@ class TicketServiceController {
 
         return res.status(200).json({ additionalServices });
     }
+
+    async delete(req: Request, res: Response, next: NextFunction) {
+        if (!req.user) {
+            throw new AppError("Usuário não autenticado", 401);
+        }
+
+        if (req.user.role === "client") {
+            throw new AppError(
+                "Apenas administradores e técnicos podem remover serviços do ticket",
+                401,
+            );
+        }
+
+        const paramSchema = z.object({
+            id: z.uuid({ message: "ID do serviço do ticket inválido" }),
+        });
+
+        const { id } = paramSchema.parse(req.params);
+
+        const ticketService = await prisma.ticketService.findUnique({
+            where: { id },
+        });
+
+        if (!ticketService) {
+            throw new AppError("Serviço do ticket não encontrado", 404);
+        }
+
+        if (ticketService.type !== "additional") {
+            throw new AppError(
+                "Apenas serviços adicionais podem ser removidos",
+                400,
+            );
+        }
+
+        await prisma.$transaction(async (tx) => {
+            await tx.ticketService.delete({
+                where: { id },
+            });
+
+            await tx.ticket.update({
+                where: { id: ticketService.ticketId },
+                data: {
+                    totalValue: {
+                        decrement: ticketService.totalPrice,
+                    },
+                },
+            });
+        });
+
+        return res.status(204).send();
+    }
 }
 
 export { TicketServiceController };
