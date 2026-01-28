@@ -11,7 +11,7 @@ export function Voltar({ title }: Props) {
     return (
         <button
             onClick={() => navigate(-1)}
-            className="flex gap-2 items-center hover:opacity-70 transition">
+            className="flex gap-2 items-center hover:opacity-70 transition hover:cursor-pointer">
             <img
                 src={arrowSvg}
                 alt="Flecha para esquerda"
