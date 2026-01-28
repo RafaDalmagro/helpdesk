@@ -105,12 +105,13 @@ export function NovoTecnico() {
                             Defina as informações do perfil técnico
                         </span>
                     </div>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-5">
                         <Input
                             type="text"
                             label="Nome"
                             name="name"
                             placeholder="Nome"
+                            required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -119,6 +120,7 @@ export function NovoTecnico() {
                             name="email"
                             label="E-mail"
                             placeholder="E-mail"
+                            required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -126,6 +128,7 @@ export function NovoTecnico() {
                             type="password"
                             name="password"
                             label="Senha"
+                            required
                             placeholder="Senha"
                             span={"Mínimo 6 dígitos"}
                             value={password}

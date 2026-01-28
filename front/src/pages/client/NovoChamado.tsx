@@ -99,6 +99,12 @@ export function NovoChamado() {
             if (err instanceof AxiosError) {
                 errorMessage = err.response?.data.message || errorMessage;
             }
+
+            if (err instanceof Error) {
+                errorMessage = err.message;
+                alert(errorMessage);
+            }
+
             console.log(err);
         } finally {
             setLoading(false);

@@ -106,12 +106,14 @@ export function ClientProfile({ clientId, onClose }: ClientProfileProps) {
                             onChange={(e) => setName(e.target.value)}
                             label="Nome"
                             className="py-2"
+                            required
                         />
                         <Input
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             label="Email"
                             className="py-2"
+                            required
                         />
                         {error && (
                             <p className="text-red-400 text-sm">{error}</p>

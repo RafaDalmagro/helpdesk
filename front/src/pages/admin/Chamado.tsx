@@ -31,9 +31,9 @@ export function Chamado() {
             if (!confirm("Tem certeza que deseja encerrar este chamado?")) {
                 return;
             }
-            await updateTicketStatus(ticketAtual.id, TicketStatus.CLOSED);
+            await updateTicketStatus(ticketAtual.id, "closed" as TicketStatus);
             setTicketAtual((prev) =>
-                prev ? { ...prev, status: TicketStatus.CLOSED } : prev,
+                prev ? { ...prev, status: "closed" as TicketStatus } : prev,
             );
         } catch (error) {
             console.error("Erro ao encerrar chamado:", error);
@@ -48,9 +48,14 @@ export function Chamado() {
             if (!confirm("Deseja iniciar o atendimento deste chamado?")) {
                 return;
             }
-            await updateTicketStatus(ticketAtual.id, TicketStatus.IN_PROGRESS);
+            await updateTicketStatus(
+                ticketAtual.id,
+                "in_progress" as TicketStatus,
+            );
             setTicketAtual((prev) =>
-                prev ? { ...prev, status: TicketStatus.IN_PROGRESS } : prev,
+                prev
+                    ? { ...prev, status: "in_progress" as TicketStatus }
+                    : prev,
             );
         } catch (error) {
             console.error("Erro ao iniciar atendimento:", error);
@@ -70,7 +75,7 @@ export function Chamado() {
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        {ticketAtual.status === TicketStatus.OPEN && (
+                        {ticketAtual.status === "open" && (
                             <Button
                                 svg="iniciar"
                                 variant="primary"
@@ -79,7 +84,7 @@ export function Chamado() {
                                 onClick={handleIniciarAtendimento}
                             />
                         )}
-                        {ticketAtual.status !== TicketStatus.CLOSED && (
+                        {ticketAtual.status !== "closed" && (
                             <Button
                                 svg="encerrar"
                                 variant="primary"
@@ -89,10 +94,10 @@ export function Chamado() {
                             />
                         )}
 
-                        {ticketAtual.status === TicketStatus.CLOSED && (
+                        {ticketAtual.status === "closed" && (
                             <Button
                                 svg="iniciar"
-                                variant="primary"
+                                variant="default"
                                 buttonName="Reabrir chamado"
                                 className="h-fit px-4 w-fit"
                                 onClick={handleIniciarAtendimento}

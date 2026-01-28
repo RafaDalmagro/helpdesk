@@ -83,10 +83,12 @@ export function AddServiceModal({ onClose, onSubmit }: AddServiceModalProps) {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             label="Nome"
+                            required
                             className="py-2"
                             placeholder="Nome do serviço"
                         />
                         <Input
+                            required
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
                             label="Valor"

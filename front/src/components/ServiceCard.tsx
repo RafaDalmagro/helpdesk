@@ -81,7 +81,7 @@ export function ServiceCard({
                     </h2>
                     <button
                         onClick={handleClose}
-                        className="text-gray-400 hover:text-gray-200 text-2xl leading-none">
+                        className="text-gray-400 hover:text-gray-200 hover:cursor-pointer text-2xl leading-none">
                         <img src={x} alt="X" />
                     </button>
                 </div>
